@@ -115,8 +115,8 @@ const searchLocations = async (query, type, selectedCity = '') => {
 
 // Form field component
 const FormField = ({ label, children, bgColor }) => (
-  <div className={`rounded-2xl p-4 md:p-6 ${bgColor}`}>
-    <label className="block text-lg font-bold mb-2">{label}</label>
+  <div className={`p-4 rounded-2xl md:p-6 ${bgColor}`}>
+    <label className="block mb-2 text-lg font-bold">{label}</label>
     {children}
   </div>
 );
@@ -243,6 +243,7 @@ const Signup = () => {
       setIsSubmitting(false);
     }
   };
+  // reseted everything to default
 
   // Submit form data
   const submitToGoogleSheets = async (formData) => {
@@ -331,9 +332,9 @@ const Signup = () => {
       </Helmet>
       <Navbar2 backgroundColor='#FFFFFF' logo='./LANE_LOGO.svg' burgerMenu='/PurpleHamburger.png' />
 
-      <div className="w-full overflow-hidden flex justify-center items-center mt-28 mb-24">
+      <div className="flex overflow-hidden justify-center items-center mt-28 mb-24 w-full">
         <div className="inline-flex whitespace-nowrap">
-          <div className="animate-scroll flex sm:gap-16 gap-10">
+          <div className="flex gap-10 animate-scroll sm:gap-16">
             {[...Array(7)].map((_, index) => (
               <span 
               key={index} 
@@ -360,11 +361,11 @@ const Signup = () => {
         `}</style>
       </div>
 
-      <Box className="text-left mx-4 md:mx-40 bg-white p-4 md:p-8 rounded-lg border border-gray-200">
+      <Box className="p-4 mx-4 text-left bg-white rounded-lg border border-gray-200 md:mx-40 md:p-8">
         <div className="font-['Bricolage_Grotesque'] max-w-2xl mx-auto text-left font-bold" >
-          <p className="text-2xl md:text-3xl lg:text-4xl font mb-4">
+          <p className="mb-4 text-2xl md:text-3xl lg:text-4xl font">
             We offer 
-            <span className="font relative inline-block mx-2">
+            <span className="inline-block relative mx-2 font">
               <img
                 src={pitCrewTag}
                 alt="crew"
@@ -379,7 +380,7 @@ const Signup = () => {
           className="w-full max-w-2xl mx-auto font-['Bricolage_Grotesque']"
           onSubmit={handleSubmit}
         >
-          <div className="space-y-4 md:space-y-6 my-8 md:my-16">
+          <div className="my-8 space-y-4 md:space-y-6 md:my-16">
             {/* Email Field */}
             <FormField label="Your Email Id" bgColor="bg-[#D1B3FF]">
               <TextField
@@ -429,7 +430,7 @@ const Signup = () => {
                   const country = countryCodes.find(c => c.code === selected);
                   return (
                     <div className="flex items-center">
-                      {country && country.flag && <img src={country.flag} alt={country.name} className="w-6 h-4 mr-2" />}
+                      {country && country.flag && <img src={country.flag} alt={country.name} className="mr-2 w-6 h-4" />}
                       {country ? country.code : selected}
                     </div>
                   );
@@ -438,7 +439,7 @@ const Signup = () => {
                 {countryCodes.map(country => (
                   <MenuItem key={country.code} value={country.code}>
                     <div className="flex items-center">
-                      {country.flag && <img src={country.flag} alt={country.name} className="w-6 h-4 mr-2" />}
+                      {country.flag && <img src={country.flag} alt={country.name} className="mr-2 w-6 h-4" />}
                       {country.code} - {country.name}
                     </div>
                   </MenuItem>
