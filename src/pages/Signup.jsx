@@ -113,10 +113,14 @@ const searchLocations = async (query, type, selectedCity = '') => {
   }
 };
 
+
 // Form field component - Memoized to prevent unnecessary re-renders
 const FormField = React.memo(({ label, children, bgColor }) => (
   <div className={`rounded-2xl p-4 md:p-6 ${bgColor}`}>
     <label className="block text-lg font-bold mb-2">{label}</label>
+
+
+
     {children}
   </div>
 ));
@@ -298,6 +302,7 @@ const Signup = () => {
     }
   }, [formData, isSubmitting, isPhoneValid, navigate]);
 
+
   // Optimized form submission function
   const submitToGoogleSheets = useCallback(async (formData) => {
     try {
@@ -381,9 +386,9 @@ const Signup = () => {
       </Helmet>
       <Navbar2 backgroundColor='#FFFFFF' logo='./LANE_LOGO.svg' burgerMenu='/PurpleHamburger.png' />
 
-      <div className="w-full overflow-hidden flex justify-center items-center mt-28 mb-24">
+      <div className="flex overflow-hidden justify-center items-center mt-28 mb-24 w-full">
         <div className="inline-flex whitespace-nowrap">
-          <div className="animate-scroll flex sm:gap-16 gap-10">
+          <div className="flex gap-10 animate-scroll sm:gap-16">
             {[...Array(7)].map((_, index) => (
               <span 
                 key={index} 
@@ -410,11 +415,13 @@ const Signup = () => {
         `}</style>
       </div>
 
+
       <Box className="text-left mx-4 md:mx-40 bg-white p-4 md:p-8 rounded-lg border border-gray-200">
         <div className="font-['Bricolage_Grotesque'] max-w-2xl mx-auto text-left font-bold">
           <p className="text-2xl md:text-3xl lg:text-4xl font mb-4">
+
             We offer 
-            <span className="font relative inline-block mx-2">
+            <span className="inline-block relative mx-2 font">
               <img
                 src={pitCrewTag}
                 alt="crew"
@@ -429,7 +436,7 @@ const Signup = () => {
           className="w-full max-w-2xl mx-auto font-['Bricolage_Grotesque']"
           onSubmit={handleSubmit}
         >
-          <div className="space-y-4 md:space-y-6 my-8 md:my-16">
+          <div className="my-8 space-y-4 md:space-y-6 md:my-16">
             {/* Email Field */}
             <FormField label="Your Email Id" bgColor="bg-[#D1B3FF]">
               <TextField
@@ -471,6 +478,7 @@ const Signup = () => {
             <div className="h-6"></div>
             {/* Phone Number Field with Country Code */}
             <FormField label="Your Phone Number" bgColor="bg-[#00CE84]">
+
               <div className="flex gap-2">
                 <FormControl className="w-28">
                   <Select
@@ -517,6 +525,8 @@ const Signup = () => {
                 />
               </div>
             </FormField>
+
+         
             <div className="h-6"></div>
             {/* License Radio Group */}
             <FormField label="Do You Have A Four Wheeler (4W) Driver's License?" bgColor="bg-[#D1B3FF]">
