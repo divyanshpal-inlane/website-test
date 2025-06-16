@@ -1,28 +1,104 @@
+/* Course Features - Layout Shift Prevention */
 .courseFeatures {
-    background-color: #fff;
-    padding: 40px 20px;
-  }
-  
+  background-color: #fff;
+  padding: 40px 20px;
+  min-height: 300px; /* Reserve space to prevent container collapse */
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  min-height: 200px; /* Prevent flex container collapse during loading */
+  gap: 20px; /* More reliable than margins for flex items */
+}
+
+.featureItem {
+  flex: 1;
+  min-width: 200px;
+  margin: 20px;
+  text-align: center;
+  min-height: 150px; /* Critical: Prevents layout shift during content loading */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Image Optimization - Prevents major layout shifts */
+.featureItem img {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+  display: block; /* Removes inline spacing issues */
+  object-fit: contain; /* Prevents image distortion */
+  /* Reserve space even if image fails to load */
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  flex-shrink: 0; /* Prevents image from shrinking */
+}
+
+/* Text Content Stability */
+.featureItem div {
+  font-size: 16px;
+  line-height: 1.4;
+  min-height: 22px; /* Reserve space for text content */
+  width: 100%; /* Prevents text width jumping */
+  margin-top: auto; /* Push text to bottom if needed */
+}
+
+/* Responsive Optimization */
+@media (max-width: 768px) {
   .container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    min-height: 400px; /* Adjust for stacked layout */
   }
   
   .featureItem {
-    flex: 1;
-    min-width: 200px;
-    margin: 20px;
-    text-align: center;
+    min-width: 100%;
+    max-width: 300px;
+    margin: 10px 0;
+    min-height: 120px; /* Smaller height for mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .courseFeatures {
+    padding: 20px 10px;
+    min-height: 350px;
+  }
+  
+  .featureItem {
+    min-height: 100px;
+    margin: 8px 0;
   }
   
   .featureItem img {
-    width: 50px;
-    height: 50px;
-    margin-bottom: 10px;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 8px;
   }
   
   .featureItem div {
-    font-size: 16px;
+    font-size: 14px;
+    min-height: 20px;
   }
-  
+}
+
+/* Loading State Optimization (Optional) */
+.featureItem.loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

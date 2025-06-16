@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Helmet } from "react-helmet-async";
 import { useMediaQuery, useTheme, Box, TextField, Button, FormControlLabel, Radio, RadioGroup, Typography, FormControl, Select, MenuItem, Autocomplete, CircularProgress } from "@mui/material";
 import Navbar2 from "../components/Navbar";
@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 import pitCrewTag from "../assets/images/PitCrew_Tag.svg";
 import Rocket from "../components/SVGs/Rocket";
 import { Link, useNavigate } from "react-router-dom";
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 import ScrollToTop from '../components/ScrollToTop';
 import { useLocation } from 'react-router-dom';
 import LocationSelector from '../components/locationSelector';
@@ -113,13 +113,17 @@ const searchLocations = async (query, type, selectedCity = '') => {
   }
 };
 
-// Form field component
-const FormField = ({ label, children, bgColor }) => (
-  <div className={`p-4 rounded-2xl md:p-6 ${bgColor}`}>
-    <label className="block mb-2 text-lg font-bold">{label}</label>
+
+// Form field component - Memoized to prevent unnecessary re-renders
+const FormField = React.memo(({ label, children, bgColor }) => (
+  <div className={`rounded-2xl p-4 md:p-6 ${bgColor}`}>
+    <label className="block text-lg font-bold mb-2">{label}</label>
+
+
+
     {children}
   </div>
-);
+));
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -142,23 +146,65 @@ const Signup = () => {
     city: false,
     area: false
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Memoize theme and screen size checks to prevent unnecessary recalculations
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMediumScreen = useMediaQuery(theme.breakpoints.between("sm", "md"));
+  
+  // Memoize icon styles to prevent object recreation on every render
+  const iconStyles = useMemo(() => ({
+    small: { color: "#FFFFFF", width: 16, height: 16 },
+    medium: { color: "#FFFFFF", width: 34, height: 34 },
+    large: { color: "#FFFFFF", width: 40, height: 40 }
+  }), []);
+
+  const IconStyle = useMemo(() => {
+    return isSmallScreen
+      ? iconStyles.small
+      : isMediumScreen
+      ? iconStyles.medium
+      : iconStyles.large;
+  }, [isSmallScreen, isMediumScreen, iconStyles]);
+
+  // Extract UTM source from URL params
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const source = params.get('utm_source') || 'direct';
     setUtmSource(source);
   }, [location.search]);
 
+  // Load country codes on component mount
   useEffect(() => {
+    let isMounted = true;
+    
     const loadCountryCodes = async () => {
-      const codes = await fetchCountryCodes();
-      setCountryCodes(codes);
+      try {
+        const codes = await fetchCountryCodes();
+        if (isMounted) {
+          setCountryCodes(codes);
+        }
+      } catch (error) {
+        console.error('Failed to load country codes:', error);
+      }
     };
+    
     loadCountryCodes();
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  // Debounced search functions
+  // Optimized debounced search functions with proper cleanup
   const debouncedCitySearch = useCallback(
     debounce(async (query) => {
+      if (!query || query.length < 2) {
+        setCityOptions([]);
+        return;
+      }
+
       setLoading(prev => ({ ...prev, city: true }));
       try {
         const results = await searchLocations(query, 'city');
@@ -169,13 +215,16 @@ const Signup = () => {
       } finally {
         setLoading(prev => ({ ...prev, city: false }));
       }
-    }, 300),
+    }, 500), // Increased debounce time for better performance
     []
   );
 
   const debouncedAreaSearch = useCallback(
     debounce(async (query) => {
-      if (!formData.city) return;
+      if (!formData.city || !query || query.length < 2) {
+        setAreaOptions([]);
+        return;
+      }
       
       setLoading(prev => ({ ...prev, area: true }));
       try {
@@ -187,12 +236,20 @@ const Signup = () => {
       } finally {
         setLoading(prev => ({ ...prev, area: false }));
       }
-    }, 300),
+    }, 500), // Increased debounce time for better performance
     [formData.city]
   );
 
-  // Handle form input changes
-  const handleChange = (e) => {
+  // Cleanup debounced functions on unmount
+  useEffect(() => {
+    return () => {
+      debouncedCitySearch.cancel();
+      debouncedAreaSearch.cancel();
+    };
+  }, [debouncedCitySearch, debouncedAreaSearch]);
+
+  // Optimized form input handler
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     
     if (name === 'phone') {
@@ -204,18 +261,19 @@ const Signup = () => {
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
-  };
+  }, []);
 
-  // Function to check phone number validity
-  const isPhoneValid = (phone) => {
+  // Memoize phone validation function
+  const isPhoneValid = useCallback((phone) => {
     return phone.length === 10;
-  };
+  }, []);
 
-  // Updated handleSubmit to include phone validation
-  const handleSubmit = async (e) => {
+  // Optimized form submission
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
     
+    // Validation
     if (!formData.email || !formData.name || !formData.phone) {
       alert('Please fill in all required fields');
       return;
@@ -242,11 +300,11 @@ const Signup = () => {
     } finally {
       setIsSubmitting(false);
     }
-  };
-  // reseted everything to default
+  }, [formData, isSubmitting, isPhoneValid, navigate]);
 
-  // Submit form data
-  const submitToGoogleSheets = async (formData) => {
+
+  // Optimized form submission function
+  const submitToGoogleSheets = useCallback(async (formData) => {
     try {
       const googleSheetsUrl = 'https://script.google.com/macros/s/AKfycbz45poihO1GSt_f-UxHHWltKWHh8mDNyaXPcFzbIURMvTVKj1qPn9STBILUaMiGme7r/exec';
       const payload = {
@@ -260,7 +318,7 @@ const Signup = () => {
       };
       
       // Submit to Google Sheets
-      await fetch(googleSheetsUrl, {
+      const googleSheetsPromise = fetch(googleSheetsUrl, {
         method: 'POST',
         mode: 'no-cors',
         cache: 'no-cache',
@@ -273,13 +331,11 @@ const Signup = () => {
       // Submit to Cratio webhook
       const cratioPayload = {
         ...payload,
-        // Add any additional fields required by Cratio
         source: utmSource,
         timestamp: new Date().toISOString()
       };
 
-      // Using no-cors mode for Cratio webhook
-      const cratioResponse = await fetch(import.meta.env.VITE_CRATIO_WEBHOOK_URL, {
+      const cratioPromise = fetch(import.meta.env.VITE_CRATIO_WEBHOOK_URL, {
         method: 'POST',
         mode: 'no-cors',
         cache: 'no-cache',
@@ -290,6 +346,11 @@ const Signup = () => {
         body: JSON.stringify(cratioPayload)
       });
 
+      // Execute both requests in parallel for better performance
+      const [googleResponse, cratioResponse] = await Promise.all([
+        googleSheetsPromise,
+        cratioPromise
+      ]);
       
       if (cratioResponse.type === 'opaque') {
         console.log('Cratio webhook request sent successfully');
@@ -300,25 +361,18 @@ const Signup = () => {
       console.error('Form submission error:', error);
       throw error;
     }
-  };
+  }, [utmSource]);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  
-
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const isMediumScreen = useMediaQuery(theme.breakpoints.between("sm", "md"));
-  const smallIconStyle = { color: "#FFFFFF", width: 16, height: 16 };
-  const mediumIconStyle = { color: "#FFFFFF", width: 34, height: 34 };
-  const largeIconStyle = { color: "#FFFFFF", width: 40, height: 40 };
-  const IconStyle = isSmallScreen
-    ? smallIconStyle
-    : isMediumScreen
-    ? mediumIconStyle
-    : largeIconStyle;
-
-  const buttonHoverStyle = "hover:scale-105 transition-transform duration-300";
+  // Memoize static styles
+  const scrollingTextStyle = useMemo(() => ({
+    '.animate-scroll': {
+      animation: 'scroll 60s linear infinite'
+    },
+    '@keyframes scroll': {
+      '0%': { transform: 'translateX(0)' },
+      '100%': { transform: 'translateX(-50%)' }
+    }
+  }), []);
 
   return (
     <div className="bg-logoWhite">
@@ -337,11 +391,11 @@ const Signup = () => {
           <div className="flex gap-10 animate-scroll sm:gap-16">
             {[...Array(7)].map((_, index) => (
               <span 
-              key={index} 
-              className="text-7xl md:text-7xl lg:text-8xl xl:text-9xl font-semibold text-[#00CE84]"
-            >
-              By Your Side, Every Ride 🚗
-            </span>
+                key={index} 
+                className="text-7xl md:text-7xl lg:text-8xl xl:text-9xl font-semibold text-[#00CE84]"
+              >
+                By Your Side, Every Ride 🚗
+              </span>
             ))}
           </div>
         </div>
@@ -361,9 +415,11 @@ const Signup = () => {
         `}</style>
       </div>
 
-      <Box className="p-4 mx-4 text-left bg-white rounded-lg border border-gray-200 md:mx-40 md:p-8">
-        <div className="font-['Bricolage_Grotesque'] max-w-2xl mx-auto text-left font-bold" >
-          <p className="mb-4 text-2xl md:text-3xl lg:text-4xl font">
+
+      <Box className="text-left mx-4 md:mx-40 bg-white p-4 md:p-8 rounded-lg border border-gray-200">
+        <div className="font-['Bricolage_Grotesque'] max-w-2xl mx-auto text-left font-bold">
+          <p className="text-2xl md:text-3xl lg:text-4xl font mb-4">
+
             We offer 
             <span className="inline-block relative mx-2 font">
               <img
@@ -412,59 +468,65 @@ const Signup = () => {
                 required
                 className="bg-transparent"
                 placeholder='Enter your name'
-                inputProps={{ 'aria-label': 'Name',style: { fontFamily: "Bricolage Grotesque" } }}
+                inputProps={{ 
+                  'aria-label': 'Name',
+                  style: { fontFamily: "Bricolage Grotesque" } 
+                }}
                 InputLabelProps={{ style: { fontFamily: "Bricolage Grotesque" } }}
               />
             </FormField>
             <div className="h-6"></div>
             {/* Phone Number Field with Country Code */}
             <FormField label="Your Phone Number" bgColor="bg-[#00CE84]">
-          <div className="flex gap-2">
-            <FormControl className="w-28">
-              <Select
-                value={formData.countryCode}
-                name="countryCode"
-                onChange={handleChange}
-                className="w-28"
-                renderValue={(selected) => {
-                  const country = countryCodes.find(c => c.code === selected);
-                  return (
-                    <div className="flex items-center">
-                      {country && country.flag && <img src={country.flag} alt={country.name} className="mr-2 w-6 h-4" />}
-                      {country ? country.code : selected}
-                    </div>
-                  );
-                }}
-              >
-                {countryCodes.map(country => (
-                  <MenuItem key={country.code} value={country.code}>
-                    <div className="flex items-center">
-                      {country.flag && <img src={country.flag} alt={country.name} className="mr-2 w-6 h-4" />}
-                      {country.code} - {country.name}
-                    </div>
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <TextField
-              name="phone"
-              type="tel"
-              className='flex-1'
-              value={formData.phone}
-              onChange={handleChange}
-              required
-              error={formData.phone.length > 0 && !isPhoneValid(formData.phone)}
-              helperText={formData.phone.length > 0 && !isPhoneValid(formData.phone) ? "Please enter a valid 10-digit number" : ""}
-              placeholder="Enter phone number"
-              InputLabelProps={{ style: { fontFamily: "Bricolage Grotesque" } }}
-              inputProps={{
-                'aria-label': 'Phone Number',
-                maxLength: 10,
-                style: { fontFamily: "Bricolage Grotesque" }
-              }}
-            />
-          </div>
-        </FormField>
+
+              <div className="flex gap-2">
+                <FormControl className="w-28">
+                  <Select
+                    value={formData.countryCode}
+                    name="countryCode"
+                    onChange={handleChange}
+                    className="w-28"
+                    renderValue={(selected) => {
+                      const country = countryCodes.find(c => c.code === selected);
+                      return (
+                        <div className="flex items-center">
+                          {country && country.flag && <img src={country.flag} alt={country.name} className="w-6 h-4 mr-2" />}
+                          {country ? country.code : selected}
+                        </div>
+                      );
+                    }}
+                  >
+                    {countryCodes.map(country => (
+                      <MenuItem key={country.code} value={country.code}>
+                        <div className="flex items-center">
+                          {country.flag && <img src={country.flag} alt={country.name} className="w-6 h-4 mr-2" />}
+                          {country.code} - {country.name}
+                        </div>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <TextField
+                  name="phone"
+                  type="tel"
+                  className='flex-1'
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                  error={formData.phone.length > 0 && !isPhoneValid(formData.phone)}
+                  helperText={formData.phone.length > 0 && !isPhoneValid(formData.phone) ? "Please enter a valid 10-digit number" : ""}
+                  placeholder="Enter phone number"
+                  InputLabelProps={{ style: { fontFamily: "Bricolage Grotesque" } }}
+                  inputProps={{
+                    'aria-label': 'Phone Number',
+                    maxLength: 10,
+                    style: { fontFamily: "Bricolage Grotesque" }
+                  }}
+                />
+              </div>
+            </FormField>
+
+         
             <div className="h-6"></div>
             {/* License Radio Group */}
             <FormField label="Do You Have A Four Wheeler (4W) Driver's License?" bgColor="bg-[#D1B3FF]">
@@ -490,56 +552,56 @@ const Signup = () => {
             <div className="h-6"></div>
             {/* City and Area Selection */}
             <FormField label="Which Locality Are You Based out of?" bgColor="bg-[#D9FF7A]">
-            <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY} libraries={["places"]}>
-          <LocationSelector formData={formData} setFormData={setFormData} />
-          </APIProvider>
-        </FormField>
+              <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY} libraries={["places"]}>
+                <LocationSelector formData={formData} setFormData={setFormData} />
+              </APIProvider>
+            </FormField>
             <div className="h-6"></div>
             {/* Submit Button */}
             <div className="flex justify-center">
-    <Button
-      type="submit"
-      variant="contained"
-      disabled={isSubmitting}
-      startIcon={
-        isSubmitting ? (
-          <CircularProgress size={20} color="inherit" />
-        ) : (
-          <Rocket color={IconStyle} />
-        )
-      }
-      sx={{
-        background: isSubmitting 
-          ? "rgba(0, 206, 132, 0.7)" 
-          : "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
-        color: "white",
-        fontWeight: "bold",
-        fontFamily: "Bricolage Grotesque",
-        textDecoration: "none",
-        textTransform: "none",
-        "&:hover": {
-          background: isSubmitting 
-            ? "rgba(0, 206, 132, 0.7)" 
-            : "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
-        },
-        "&:disabled": {
-          color: "white",
-          cursor: "not-allowed",
-        },
-        border: "2px solid #FFFFFF",
-        borderRadius: "50px",
-        padding: {
-          xs: "10px 20px",
-          md: "6px 68px",
-        },
-        fontSize: { xs: "0.8rem", sm: "1rem", md: "24px" },
-        whiteSpace: "nowrap",
-        boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.35)",
-      }}
-    >
-      {isSubmitting ? 'Submitting...' : 'Submit'}
-    </Button>
-  </div>
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={isSubmitting}
+                startIcon={
+                  isSubmitting ? (
+                    <CircularProgress size={20} color="inherit" />
+                  ) : (
+                    <Rocket color={IconStyle} />
+                  )
+                }
+                sx={{
+                  background: isSubmitting 
+                    ? "rgba(0, 206, 132, 0.7)" 
+                    : "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
+                  color: "white",
+                  fontWeight: "bold",
+                  fontFamily: "Bricolage Grotesque",
+                  textDecoration: "none",
+                  textTransform: "none",
+                  "&:hover": {
+                    background: isSubmitting 
+                      ? "rgba(0, 206, 132, 0.7)" 
+                      : "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
+                  },
+                  "&:disabled": {
+                    color: "white",
+                    cursor: "not-allowed",
+                  },
+                  border: "2px solid #FFFFFF",
+                  borderRadius: "50px",
+                  padding: {
+                    xs: "10px 20px",
+                    md: "6px 68px",
+                  },
+                  fontSize: { xs: "0.8rem", sm: "1rem", md: "24px" },
+                  whiteSpace: "nowrap",
+                  boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.35)",
+                }}
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit'}
+              </Button>
+            </div>
           </div>
         </form>
       </Box>

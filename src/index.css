@@ -8,47 +8,122 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins',
-
+  /* Remove conflicting font declaration */
 }
 
-/* width */
+:root {
+  --font-bricolage: 'Bricolage Grotesque', sans-serif;
+  --font-fallback: system-ui, -apple-system, sans-serif;
+}
+
+.css-dvxtzn {
+  min-height: 200px;
+  contain: layout style paint;
+}
+
+.css-6sxg59-MuiTypography-root {
+  line-height: 1.2;
+  min-height: 1.2em;
+  font-display: swap;
+}
+
+.css-1m8vdma {
+  min-height: 400px;
+  position: relative;
+  contain: layout;
+}
+
+body {
+  font-family: var(--font-bricolage), var(--font-fallback);
+}
+
+/* Font Loading Optimization - Prevents Layout Shifts */
+@font-face {
+  font-family: "glancyr";
+  src: url('/src/assets/ttf/glancyr-glancyr-regular-400.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  /* Add size-adjust to match fallback font metrics */
+  size-adjust: 100%;
+}
+
+@font-face {
+  font-family: "glancyr";
+  src: url('/src/assets/ttf/glancyr-glancyr-medium-500.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  size-adjust: 100%;
+}
+
+@font-face {
+  font-family: "glancyr";
+  src: url('/src/assets/ttf/glancyr-glancyr-bold-700.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  size-adjust: 100%;
+}
+
+/* Prevent font-related layout shifts */
+.font-blog {
+  font-family: 'Bricolage Grotesque', var(--font-fallback);
+}
+
+/* Layout Shift Prevention Classes */
+.layout-stable {
+  min-height: var(--min-content-height, auto);
+}
+
+/* Specific fixes for your MUI components */
+.css-1m8vdma {
+  min-height: 200px; /* Adjust based on your content */
+}
+
+.css-6sxg59-MuiTypography-root {
+  min-height: 2.5rem; /* Standard h3 height */
+}
+
+.css-dvxtzn {
+  min-height: 100px; /* Adjust based on your content */
+}
+
+/* Scrollbar styles */
 ::-webkit-scrollbar {
   width: 10px;
 }
 
-/* Track */
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
 
-/* Handle */
 ::-webkit-scrollbar-thumb {
   background: #555;
 }
 
-/* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
 
+/* Background classes with optimized pseudo-elements */
 .bg-logoYellow {
+  position: relative;
   background-image: url('/Grey BG Pattern.svg');
   background-color: #FFFEEB;
-  /* background-size: cover; */
   background-position: center;
   background-repeat: repeat;
-  font-family: 'Bricolage Grotesque';
+  font-family: 'Bricolage Grotesque', var(--font-fallback);
 }
+
 .bg-logoYellow::before {
-  background-image: url('/Grey BG Pattern.svg');
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  /* background-size: 1100px; */
+  background-image: url('/Grey BG Pattern.svg');
   background-position: center;
   background-repeat: repeat;
   opacity: 1;
@@ -62,9 +137,8 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  font-family: 'Bricolage Grotesque'
+  font-family: 'Bricolage Grotesque', var(--font-fallback);
 }
-
 
 .bg-logoPurple {
   position: relative;
@@ -72,11 +146,33 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  font-family: 'Bricolage Grotesque';
+  font-family: 'Bricolage Grotesque', var(--font-fallback);
   isolation: isolate;
 }
 
 .bg-logoPurple::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;  
+  bottom: 0;
+  background-image: url('./assets/images/white_logo.png?w=400');
+  background-size: 1100px;
+  background-position: center;
+  background-repeat: repeat;
+  opacity: 0.3;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.bg-logoGreen {
+  position: relative;
+  background-color: #00CE84;
+  font-family: 'Bricolage Grotesque', var(--font-fallback);
+}
+
+.bg-logoGreen::before {
   content: '';
   position: absolute;
   top: 0;
@@ -91,53 +187,6 @@
   z-index: -1;
   pointer-events: none;
 }
-
-.bg-logoGreen {
-  position: relative;
-  background-color: #00CE84;
-  font-family: 'Bricolage Grotesque';
-}
-
-.bg-logoGreen::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url('./assets/images/white_logo.png?w=400');
-  background-size: 1100px;
-  background-position: center;
-  background-repeat: repeat;
-  opacity: 0.3;  /* Adjust this value between 0 and 1 to control opacity */
-  z-index: 0;
-}
-
-.font-blog {
-  font-family: 'Bricolage Grotesque'
-}
-
-@font-face {
-  font-family: "glancyr";
-  src: url('/src/assets/ttf/glancyr-glancyr-regular-400.ttf');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "glancyr";
-  src: url('/src/assets/ttf/glancyr-glancyr-bold-700.ttf');
-  font-weight: bold;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "glancyr";
-  src: url('/src/assets/ttf/glancyr-glancyr-medium-500.ttf');
-  font-weight: medium;
-  font-style: normal;
-}
-
 
 .link {
   text-decoration: none;

@@ -242,8 +242,8 @@ const Navbar2 = () => {
             <IconButton
               size="large"
               edge="end"
-              aria-label="menu"
-              aria-controls="menu-appbar"
+              arialabel="menu"
+              ariacontrols="menu-appbar"
               onClick={toggleDrawer}
               sx={{
                 position: "absolute",

@@ -23,7 +23,11 @@ import Blog from "./blog/Blog";
 import BlogPage from "./blog/BlogPage";
 import NewCoursePage from "./components/Courses/NewCoursePage";
 import { HelmetProvider } from 'react-helmet-async';
+
+import FAQPage from "./components/FAQ/FAQPage"; // Fixed casing to match actual file
+
 // import FAQPage from "./components/FAQ/FAQpage";
+// >>>>>>> 4b53845195cbc11865d309db0c13d02b675bf843
 import ThankYou from "./pages/ThankYouPage";
 import LocationPage from "./pages/LocationPage";
 import Page from "./pages/SignupForm";
@@ -67,10 +71,10 @@ const router = createBrowserRouter([
     path: "/courses",
     element: <NewCoursePage />,
   },
-  // {
-  //   path: "/faqs", // Standalone route with integrated header/footer
-  //   element: <FAQPage />,
-  // },
+  {
+    path: "/faqs", // Standalone route with integrated header/footer
+    element: <FAQPage />,
+  },
   {
     path: "/thank-you",
     element: <ThankYou />,
@@ -101,12 +105,7 @@ const router = createBrowserRouter([
         path: "/",
         element: <Homepage />,
       },
-     
-      // {
-      //   path: "/courses",
-      //   element: <CoursesPage />,
-      // },
-     
+
       {
         path: "/terms-and-conditions",
         element: <TermsAndConditions />,
@@ -141,7 +140,16 @@ const router = createBrowserRouter([
     path: "/signup-form",
     element: <Page />,
   }
-]);
+], {
+  future: {
+    v7_startTransition: true,
+    v7_relativeSplatPath: true,
+    v7_fetcherPersist: true,
+    v7_normalizeFormMethod: true,
+    v7_partialHydration: true,
+    v7_skipActionErrorRevalidation: true,
+  }
+});
 
 function App() {
   return (

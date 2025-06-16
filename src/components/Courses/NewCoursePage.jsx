@@ -251,18 +251,14 @@ const NewCoursePage = () => {
                                     startIcon={<img src="/course/rocket.svg" alt="rocket" className="w-6 h-6" />}
                                     sx={{
                                       background: "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
-                                      color: "white",
                                       "&:hover": {
                                         background: "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
+                                        backgroundColor: "#00CE84",
                                       },
                                       color: "white",
                                       fontWeight: "bold",
-                                      fontFamily: "Bricolage Grotesque",
                                       textDecoration: "none",
                                       textTransform: "none",
-                                      "&:hover": {
-                                        backgroundColor: "#00CE84",
-                                      },
                                       border: "2px solid white",
                                       borderRadius: "50px",
                                       padding: {

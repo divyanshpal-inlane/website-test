@@ -1,5 +1,56 @@
 {
-    "rewrites": [
-      { "source": "/(.*)", "destination": "/" }
-    ]
-  }
+  "buildCommand": "pnpm run build",
+  "outputDirectory": "dist",
+  "installCommand": "pnpm install",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/" }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/blog/ZLh99p8JPxhCjgZc3cPHf",
+      "destination": "/404",
+      "statusCode": 410
+    },
+    {
+      "source": "/blog/about-us",
+      "destination": "/404",
+      "statusCode": 410
+    },
+    {
+      "source": "/blog/2rnx10501LYudd07PE0mSe",
+      "destination": "/404",
+      "statusCode": 410
+    },
+    {
+      "source": "/blog/7F4ivuvFv2XejD7fsXzREv",
+      "destination": "/404",
+      "statusCode": 410
+    },
+    {
+      "source": "/blog/1htUmvvAXyQS085qoG0yvw",
+      "destination": "/404",
+      "statusCode": 410
+    },
+    {
+      "source": "/blog/1i7u0RQatz2BPZIQprV9X9",
+      "destination": "/404",
+      "statusCode": 410
+    },
+    {
+      "source": "/blog/4APjGm3XegfKrFFfna0Eqw",
+      "destination": "/404",
+      "statusCode": 410
+    }
+  ]
+}

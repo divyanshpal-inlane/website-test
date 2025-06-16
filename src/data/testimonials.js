@@ -77,13 +77,13 @@ const testimonialsData = [
     comment: "Lane is an absolute game changer! After having multiple bad attempts to learning to drive, I finally got behind the wheel and am able to drive confidently. They have the best and smoothest curriculum that makes learning easy and intuitive, will definitely recommend this!",
     date: "8 months ago"
   },
-  {
-    name: "Himank Amar",
-    rating: 5,
-    comment: "Last month I took driving classes from Lane and before this I hadn't driven even once, but the whole experience was so smooth and didn't feel difficult. In the first three or four lessons, I think I was very tense and excited. So I made lots and lots of mistakes with the changing the gears or starting or stopping the car and also the general traffic rules. But my instructor Nanda Bhaiya, he was super patient with me throughout. If I had been my own instructor, I would have lost it. But Nanda Bhaiya, he was very calm and made the whole experience very, like so much better. And also since like I'm working full time, I wanted the timing of the classes to be flexible and Lane did accommodate that request, be it early morning or late evenings, it was very convenient. So overall 10 on 10 I would recommend. And also the whole curriculum, it was very structured. It kept pace with my learning whenever I wanted to learn faster or I wanted to take more time to practice, they adjusted the lessons according to that. And in 10 hours, I was good to go for the driving test. I didn't actually think initially when I was signing up for this, I didn't think 10 hours would be enough, but I learned everything. So I would definitely recommend Lane.",
-    date: "8 months ago",
-    videoLink: "https://drive.google.com/file/d/1Srkjn9SRvEKCZz6sCb-CX5jN6600yntR/view?usp=drive_link"
-  },
+  // {
+  //   name: "Himank Amar",
+  //   rating: 5,
+  //   comment: "Last month I took driving classes from Lane and before this I hadn't driven even once, but the whole experience was so smooth and didn't feel difficult. In the first three or four lessons, I think I was very tense and excited. So I made lots and lots of mistakes with the changing the gears or starting or stopping the car and also the general traffic rules. But my instructor Nanda Bhaiya, he was super patient with me throughout. If I had been my own instructor, I would have lost it. But Nanda Bhaiya, he was very calm and made the whole experience very, like so much better. And also since like I'm working full time, I wanted the timing of the classes to be flexible and Lane did accommodate that request, be it early morning or late evenings, it was very convenient. So overall 10 on 10 I would recommend. And also the whole curriculum, it was very structured. It kept pace with my learning whenever I wanted to learn faster or I wanted to take more time to practice, they adjusted the lessons according to that. And in 10 hours, I was good to go for the driving test. I didn't actually think initially when I was signing up for this, I didn't think 10 hours would be enough, but I learned everything. So I would definitely recommend Lane.",
+  //   date: "8 months ago",
+  //   videoLink: "https://drive.google.com/file/d/1Srkjn9SRvEKCZz6sCb-CX5jN6600yntR/view?usp=drive_link"
+  // },
   {
     name: "Ojasvi Srivastava",
     rating: 5,

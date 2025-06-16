@@ -2,7 +2,7 @@ import React from "react";
 
 const Crossings = () => {
   return (
-    <svg>
+    <svg >
       <g stroke="#FFFEEB" strokeWidth={6} strokeMiterlimit={10}>
         <path d="M1018.8 709.5h-43.2M1018.8 734.9h-43.2M1018.8 760.3h-43.2M1018.8 785.6h-43.2M1018.8 811h-43.2" />
         <g>

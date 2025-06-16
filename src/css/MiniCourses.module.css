@@ -1,73 +1,192 @@
+/* Mini Courses Section - Layout Shift Prevention */
 .miniCoursesSection {
-    /* background-color: #5865F2; */
-    /* Background color similar to the one in the image */
     padding: 40px 20px;
     text-align: center;
     border-radius: 10px;
-}
-
-.miniCoursesDetails {
+    min-height: 300px; /* Reserve space for section */
+    box-sizing: border-box;
+  }
+  
+  .miniCoursesDetails {
     padding: 40px 20px;
-    /* display: flex; */
     justify-content: space-around;
     flex-wrap: wrap;
+    min-height: 200px; /* Prevent container collapse */
+    box-sizing: border-box;
   }
-
-
-.section-title {
+  
+  /* Typography Stability */
+  .section-title {
     font-size: 24px;
     color: #FFFFFF;
     margin-bottom: 10px;
-}
-
-.sectionSubtitle {
+    line-height: 1.3;
+    min-height: 31px; /* Reserve space for title */
+    margin-top: 0;
+  }
+  
+  .sectionSubtitle {
     font-size: 16px;
     color: #000000;
     margin-top: 16px;
-}
-
-.sectionSubtagline {
+    line-height: 1.4;
+    min-height: 22px; /* Reserve space for subtitle */
+    margin-bottom: 0;
+  }
+  
+  .sectionSubtagline {
     font-size: 14px;
     color: #ac2a2a;
     margin-top: 10px;
     margin-bottom: 24px;
     font-style: italic;
-}
-
-.courseHeader {
+    line-height: 1.4;
+    min-height: 20px; /* Reserve space for subtagline */
+  }
+  
+  /* Course Header Stability */
+  .courseHeader {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-}
-
-.courseHeader h2 {
+    min-height: 150px; /* Prevent header collapse */
+  }
+  
+  .courseHeader h2 {
     font-size: 36px;
-}
-
-/* .courseHeader p {
-    font-size: 36px;
-} */
-
-.sectionSubtagline {
-    font-size: 18px;
-}
-
-.coursesList {
+    line-height: 1.2;
+    margin: 0 0 10px 0;
+    min-height: 43px; /* Reserve space for h2 */
+  }
+  
+  .sectionSubtagline {
+    font-size: 18px; /* Overrides earlier declaration */
+    min-height: 25px; /* Adjust for larger font */
+  }
+  
+  /* Courses List Container - Critical for Layout Stability */
+  .coursesList {
     display: flex;
     flex-direction: row;
     gap: 20px;
     justify-content: space-evenly;
-
-
-}
-
-@media (max-width: 600px) {
-    .courseHeader {
-        padding: 20px;
-        text-align: center;
+    min-height: 300px; /* Critical: Prevents layout shift during card loading */
+    align-items: stretch; /* Equal height cards */
+    flex-wrap: wrap;
+  }
+  
+  /* Course Card Optimization - Major CLS Prevention */
+  .course-card {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    padding: 12px 24px 24px 24px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    /* Critical layout stability properties */
+    min-height: 200px; /* Prevents card height jumping */
+    min-width: 250px; /* Prevents card width jumping */
+    flex: 1;
+    max-width: 350px; /* Prevents cards from getting too wide */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    transition: all 0.2s ease; /* Smooth hover transitions */
+  }
+  
+  .course-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Card Content Stability */
+  .course-title {
+    font-size: 18px;
+    color: #1a1a1a;
+    margin: 0 0 10px 0;
+    line-height: 1.3;
+    min-height: 23px; /* Reserve space for title */
+    font-weight: 600;
+  }
+  
+  .course-duration {
+    font-size: 14px;
+    color: #757575;
+    margin-top: 5px;
+    line-height: 1.4;
+    min-height: 20px; /* Reserve space for duration */
+    margin-bottom: 0;
+  }
+  
+  /* Card Flip Animation - Optimized for Performance */
+  .cardContainer {
+    perspective: 1000px;
+    min-height: 200px; /* Match card height */
+    position: relative;
+    width: 100%;
+  }
+  
+  .cardFront, 
+  .cardBack {
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    transition: transform 0.6s ease;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 10px;
+    /* Prevent layout shift during flip */
+    min-height: 200px;
+    box-sizing: border-box;
+  }
+  
+  .cardFront {
+    transform: rotateY(0deg);
+    z-index: 2;
+  }
+  
+  .cardBack {
+    transform: rotateY(180deg);
+    z-index: 1;
+  }
+  
+  .flipped .cardFront {
+    transform: rotateY(-180deg);
+    z-index: 1;
+  }
+  
+  .flipped .cardBack {
+    transform: rotateY(0deg);
+    z-index: 2;
+  }
+  
+  /* Secondary Section Stability */
+  .miniCoursesSecondDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    min-height: 200px; /* Prevent section collapse */
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  /* Mobile Responsive with Layout Stability */
+  @media (max-width: 600px) {
+    .miniCoursesSection {
+      padding: 30px 15px;
+      min-height: 250px;
     }
-
+    
+    .courseHeader {
+      padding: 20px;
+      text-align: center;
+      min-height: 120px;
+    }
+  
     .courseHeader p,
     .courseHeader h1,
     .courseHeader h2,
@@ -75,86 +194,99 @@
     .courseHeader h4,
     .courseHeader h5,
     .courseHeader h6 {
-        margin-bottom: 6px;
-        /* Adjust the value as needed */
+      margin-bottom: 6px;
     }
-
-/* .coursesList {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    width: 100%;
-} */
+    
+    .courseHeader h2 {
+      font-size: 28px;
+      min-height: 34px; /* Adjust for smaller font */
+    }
+  
     .coursesList {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-
-
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      min-height: 400px; /* Adjust for stacked layout */
+      align-items: center;
     }
-
-}
-
-
-.course-card {
-    background-color: #FFFFFF;
-    border-radius: 10px;
-    padding: 12px 24px 24px 24px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    text-align: left;
-}
-
-.course-title {
-    font-size: 18px;
-    color: #1a1a1a;
-    margin: 0;
-}
-
-.course-duration {
-    font-size: 14px;
-    color: #757575;
-    margin-top: 5px;
-}
-
-.cardContainer {
-    perspective: 1000px;
-}
-
-.cardFront,
-.cardBack {
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    transition: transform 0.6s;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-.cardFront {
-    transform: rotateY(0deg);
-}
-
-.cardBack {
-    transform: rotateY(180deg);
-}
-
-.flipped .cardFront {
-    transform: rotateY(-180deg);
-}
-
-.flipped .cardBack {
-    transform: rotateY(0deg);
-}
-
-.miniCoursesSecondDiv {
-    display: flex;
+    
+    .course-card {
+      min-width: 90%;
+      max-width: 100%;
+      min-height: 150px; /* Smaller on mobile */
+    }
+    
+    .cardContainer {
+      min-height: 150px;
+      width: 100%;
+    }
+    
+    .cardFront, 
+    .cardBack {
+      min-height: 150px;
+    }
+    
+    .miniCoursesSecondDiv {
+      min-height: 150px;
+      padding: 15px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .miniCoursesSection {
+      padding: 20px 10px;
+      min-height: 200px;
+    }
+    
+    .section-title {
+      font-size: 20px;
+      min-height: 26px;
+    }
+    
+    .sectionSubtitle {
+      font-size: 14px;
+      min-height: 20px;
+    }
+    
+    .courseHeader h2 {
+      font-size: 24px;
+      min-height: 29px;
+    }
+    
+    .course-card {
+      padding: 10px 16px 16px 16px;
+      min-height: 130px;
+    }
+    
+    .course-title {
+      font-size: 16px;
+      min-height: 21px;
+    }
+    
+    .course-duration {
+      font-size: 13px;
+      min-height: 18px;
+    }
+  }
+  
+  /* Loading States (Optional) */
+  .course-card.loading {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  
+  .coursesList.loading {
+    min-height: 300px;
     justify-content: center;
-    /* Center horizontally */
     align-items: center;
-    /* Center vertically */
-    flex-direction: column;
-    /* Stack children vertically */
-    text-align: center;
-    /* Center text inside the div */
+  }
+  
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
   }

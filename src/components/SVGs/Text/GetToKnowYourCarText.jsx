@@ -2,7 +2,7 @@ import React from "react";
 
 function GetToKnowYourCarText() {
   return (
-    <svg>
+    <svg >
       <path
         d="M492.5 403.2l34.1-35.8-34.4-32.7H953c18.9 0 34.2 15.4 34.2 34.2 0 18.8-15.4 34.2-34.2 34.2H492.6l-.1.1z"
         fill="#FFFEEB"

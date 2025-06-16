@@ -1,29 +1,38 @@
+/* Layout Shift Prevention: Reserve space for content */
 .courseHeader {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-
+  min-height: 200px; /* Prevent layout shift during loading */
 }
 
 .courseHeader h2 {
   font-size: 36px;
+  line-height: 1.2; /* Consistent line height */
+  margin: 0; /* Remove default margins that can cause shifts */
+  min-height: 43px; /* Reserve space for h2 */
 }
 
 .courseHeader h4 {
   font-size: 28px;
+  line-height: 1.2;
+  margin: 0;
+  min-height: 34px; /* Reserve space for h4 */
 }
 
 .courseHeader p {
   font-size: 22px;
+  line-height: 1.4;
+  margin: 0;
+  min-height: 31px; /* Reserve space for p */
 }
-
-
 
 @media (max-width: 600px) {
   .courseHeader {
     padding: 20px;
     text-align: center;
+    min-height: 180px; /* Adjust for mobile */
   }
 
   .courseHeader p,
@@ -34,28 +43,30 @@
   .courseHeader h5,
   .courseHeader h6 {
     margin-bottom: 6px;
-    /* Adjust the value as needed */
   }
 
   .courseHeader h2 {
     font-size: 28px;
+    min-height: 34px; /* Mobile h2 height */
   }
 
   .courseHeader h4 {
     font-size: 22px;
+    min-height: 26px; /* Mobile h4 height */
   }
 
   .courseHeader p {
     font-size: 18px;
+    min-height: 25px; /* Mobile p height */
   }
 }
 
 .courseDetails {
-  background-image: url('/TestimonialBG.svg');
+  background-image: url('/TestimonialBG.webp');
   background-color: #00CE84;
   padding: 40px 20px;
-  /* display: flex; */
   justify-content: center;
+  min-height: 400px; /* Prevent layout shift for background image loading */
 }
 
 .container {
@@ -65,6 +76,7 @@
   flex-direction: column;
   align-content: space-around;
   align-items: flex-start;
+  min-height: 300px; /* Reserve space for content */
 }
 
 .courseOverview,
@@ -72,27 +84,35 @@
   flex: 1;
   min-width: 300px;
   margin: 20px;
+  min-height: 200px; /* Prevent collapse during loading */
 }
 
 .courseOverview h2,
 .courseInfo h2 {
   font-size: 28px;
   margin-bottom: 15px;
+  line-height: 1.2;
+  min-height: 34px; /* Consistent heading heights */
 }
 
 .courseOverview p {
   font-size: 16px;
+  line-height: 1.5;
+  min-height: 24px; /* Reserve space for paragraphs */
 }
 
 .courseInfo ul {
   list-style: none;
   padding: 0;
+  min-height: 50px; /* Prevent collapse of empty lists */
 }
 
 .courseInfo li {
   margin-bottom: 10px;
+  min-height: 20px; /* Consistent list item height */
 }
 
+/* Accordion Optimization */
 .accordion {
   border: none;
   color: #333;
@@ -102,12 +122,16 @@
   text-align: left;
   outline: none;
   transition: 0.4s;
+  min-height: 54px; /* Prevent button collapse */
+  display: flex;
+  align-items: center; /* Center content vertically */
 }
 
 .accordionDetails ul {
   list-style: none;
   padding: 0;
   margin: 0;
+  min-height: 40px; /* Reserve space for accordion content */
 }
 
 .accordionDetails li {
@@ -118,38 +142,75 @@
   border-radius: 5px;
   display: flex;
   align-items: center;
+  min-height: 40px; /* Consistent list item height */
+  transition: all 0.2s ease; /* Smooth height transitions */
 }
 
+/* Button Container Optimization */
 .buttonContainer {
   display: flex;
   justify-content: center;
   margin-top: 10px;
-  margin-bottom: 16px
+  margin-bottom: 16px;
+  min-height: 48px; /* Standard button height + margins */
 }
 
 .buttonContainer button {
   background-color: #ffc229;
   margin: 0 10px;
-  /* Optional: Additional margin if needed */
+  min-height: 40px; /* Consistent button height */
+  padding: 8px 16px; /* Consistent padding */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease; /* Smooth state transitions */
 }
 
+/* Button State Management */
 .clickedButton {
   background-color: #00c281 !important;
-  /* Highlight color */
   color: #ffffff !important;
-  /* Text color for better contrast */
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.5) !important;
-  /* Shadow effect */
+  transform: translateY(-1px); /* Subtle lift effect */
+}
+
+.buttonContainer button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .beginnerCourseSecondDiv {
   display: flex;
   justify-content: center;
-  /* Center horizontally */
   align-items: center;
-  /* Center vertically */
   flex-direction: column;
-  /* Stack children vertically */
   text-align: center;
-  /* Center text inside the div */
+  min-height: 200px; /* Prevent layout shift */
+}
+
+/* Additional Layout Stability Rules */
+.layout-stable-text {
+  min-height: 1.2em; /* Prevents text jump during font loading */
+}
+
+.layout-stable-image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16/9; /* Maintain aspect ratio during loading */
+}
+
+/* Skeleton Loading States (Optional) */
+.loading-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }

@@ -141,7 +141,7 @@ const Testimonial = () => {
       sx={{
         backgroundColor: "#00CE84",
         textAlign: "center",
-        backgroundImage: "url('/TestimonialBG.svg')",
+        backgroundImage: "url('/TestimonialBG.webp')",
         marginTop: { xs: "64px", sm: "96px", md: "128px" },
       }}
     >
@@ -222,6 +222,7 @@ const Testimonial = () => {
                       frameBorder="0"
                       allow="autoplay; encrypted-media"
                       allowFullScreen
+                      title="Testimonial Video"
                     />
                     <div className="absolute top-0 left-0 right-0 p-6 xs:p-4">
                       <div className="flex justify-between items-start">
@@ -302,6 +303,7 @@ const Testimonial = () => {
                       frameBorder="0"
                       allow="autoplay; encrypted-media"
                       allowFullScreen
+                      title="Testimonial Video"
                     />
                     <div className="absolute top-0 left-0 right-0 p-6 xs:p-4 bg-white/80">
                       <div className="flex justify-between items-start">
@@ -405,6 +407,7 @@ const Testimonial = () => {
                   frameBorder="0"
                   allow="autoplay; encrypted-media"
                   allowFullScreen
+                  title="Testimonial Video"
                 />
               ) : (
                 <>
@@ -470,7 +473,7 @@ const Testimonial = () => {
                   fontWeight: "bold",
                   textTransform: "none",
                   marginBottom: { xs: "64px", sm: "96px", md: "128px" },
-                  boxShadow: "6px 8px 4px rgba(0, 0, 0, 0.35)",
+                  // boxShadow: "6px 8px 4px rgba(0, 0, 0, 0.35)",
                 }}
               >
           Start Now!

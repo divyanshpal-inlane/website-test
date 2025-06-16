@@ -51,7 +51,245 @@
       text-align: center;
     }
   
-    .heroImage {
+    .heroImage {/* Hero Section - Layout Shift Prevention */
+      .hero {
+        align-items: center;
+        color: black;
+        padding: 36px 0px 36px 0px;
+        min-height: 400px; /* Critical: Reserve space for hero section */
+        overflow: hidden; /* Prevent horizontal scrolling during loading */
+      }
+      
+      .container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 50px 20px;
+        min-height: 300px; /* Prevent container collapse during loading */
+        gap: 40px; /* More reliable spacing than margins */
+        box-sizing: border-box;
+      }
+      
+      /* Content Area Stability */
+      .heroContent {
+        max-width: 50%;
+        flex: 1;
+        min-height: 200px; /* Reserve space for content */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      
+      /* Typography Stability - Critical for CLS */
+      .heroContent h1 {
+        font-size: 36px;
+        margin-bottom: 20px;
+        line-height: 1.2; /* Consistent line height */
+        min-height: 43px; /* Reserve space for heading */
+        margin-top: 0; /* Remove default top margin */
+        font-weight: 700; /* Explicit weight prevents font loading shifts */
+      }
+      
+      .heroContent p {
+        font-size: 18px;
+        margin-bottom: 20px;
+        line-height: 1.5;
+        min-height: 27px; /* Reserve space for paragraphs */
+        margin-top: 0;
+      }
+      
+      /* Button Stability */
+      .primaryButton {
+        background-color: #ff6600;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        display: inline-block; /* Prevents button from affecting text flow */
+        min-height: 44px; /* Standard touch target size */
+        min-width: 120px; /* Prevents button width jumping */
+        box-sizing: border-box;
+        text-align: center;
+        line-height: 1.4;
+        transition: all 0.2s ease; /* Smooth hover transitions */
+        font-size: 16px; /* Explicit font size */
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+      }
+      
+      .primaryButton:hover {
+        background-color: #e55a00;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      
+      .primaryButton:focus {
+        outline: 2px solid #ff6600;
+        outline-offset: 2px;
+      }
+      
+      /* Image Container - Major CLS Prevention */
+      .heroImage {
+        flex: 1;
+        max-width: 50%;
+        min-height: 200px; /* Critical: Reserve space for image area */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .heroImage img {
+        max-width: 100%;
+        height: auto;
+        display: block; /* Removes inline spacing issues */
+        /* Reserve space during image loading */
+        min-height: 200px;
+        background-color: #f5f5f5; /* Placeholder background */
+        border-radius: 8px;
+        object-fit: cover; /* Prevents image distortion */
+        transition: opacity 0.3s ease; /* Smooth loading transition */
+      }
+      
+      /* Image loading states */
+      .heroImage img[src=""] {
+        opacity: 0;
+      }
+      
+      .heroImage img:not([src=""]) {
+        opacity: 1;
+      }
+      
+      /* Responsive Design with Layout Stability */
+      @media (max-width: 768px) {
+        .hero {
+          min-height: 500px; /* Adjust for stacked layout */
+          padding: 24px 0px;
+        }
+        
+        .container {
+          flex-direction: column;
+          gap: 30px;
+          min-height: 400px;
+          padding: 30px 20px;
+        }
+      
+        .heroContent {
+          max-width: 100%;
+          text-align: center;
+          order: 1; /* Content first on mobile */
+          min-height: 150px;
+        }
+        
+        .heroContent h1 {
+          font-size: 28px;
+          min-height: 34px; /* Adjust for smaller font */
+          margin-bottom: 15px;
+        }
+        
+        .heroContent p {
+          font-size: 16px;
+          min-height: 24px;
+          margin-bottom: 15px;
+        }
+      
+        .heroImage {
+          text-align: center;
+          width: 100%;
+          max-width: 100%;
+          order: 2; /* Image second on mobile */
+          min-height: 180px;
+        }
+        
+        .heroImage img {
+          min-height: 180px;
+          max-width: 90%; /* Slight padding on mobile */
+        }
+        
+        .primaryButton {
+          min-width: 140px;
+          padding: 12px 24px;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .hero {
+          min-height: 450px;
+          padding: 20px 0px;
+        }
+        
+        .container {
+          padding: 20px 15px;
+          gap: 25px;
+          min-height: 350px;
+        }
+        
+        .heroContent h1 {
+          font-size: 24px;
+          min-height: 29px;
+          margin-bottom: 12px;
+        }
+        
+        .heroContent p {
+          font-size: 15px;
+          min-height: 23px;
+          margin-bottom: 12px;
+        }
+        
+        .heroImage {
+          min-height: 150px;
+        }
+        
+        .heroImage img {
+          min-height: 150px;
+        }
+        
+        .primaryButton {
+          min-width: 100%;
+          padding: 14px 20px;
+          font-size: 16px;
+        }
+      }
+      
+      /* Loading State Optimization (Optional) */
+      .hero.loading .heroContent {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: 8px;
+      }
+      
+      .hero.loading .heroImage {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: 8px;
+      }
+      
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+      
+      /* Aspect Ratio Container for Images (Modern Approach) */
+      .heroImage-container {
+        aspect-ratio: 16/9; /* Maintains ratio during loading */
+        width: 100%;
+        overflow: hidden;
+        border-radius: 8px;
+        background-color: #f5f5f5;
+      }
+      
+      .heroImage-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
       text-align: center;
       width: 100%;
       height: auto;

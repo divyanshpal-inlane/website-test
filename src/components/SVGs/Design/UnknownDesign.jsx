@@ -3,7 +3,7 @@ import Crossings from "./Crossings";
 
 const UnknownDesign = () => {
   return (
-    <svg>
+    <svg >
       <path
         d="M436.4 783.8c12.371 0 22.4-10.029 22.4-22.4 0-12.371-10.029-22.4-22.4-22.4-12.371 0-22.4 10.029-22.4 22.4 0 12.371 10.029 22.4 22.4 22.4z"
         fill="#1A1A1A"

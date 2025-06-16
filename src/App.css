@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.css-dvxtzn {
+    min-height: 200px;
+    contain: layout style paint;
+  }
+  
+  .css-6sxg59-MuiTypography-root {
+    line-height: 1.2;
+    min-height: 1.2em;
+    font-display: swap;
+  }
+  
+  .css-1m8vdma {
+    min-height: 400px;
+    position: relative;
+    contain: layout;
+  }

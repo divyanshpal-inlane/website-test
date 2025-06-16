@@ -122,6 +122,7 @@ const MiniCourses = () => {
       title: "Mini Course 1 - City driving",
       duration: 4,
       imgsrc: "/city-driving.jpg",
+      alt: "City Driving Mini Course",
       question: 'What will we ace together?',
       elements: [
         'Bumper to bumper traffic', 
@@ -134,6 +135,7 @@ const MiniCourses = () => {
       title: "Mini Course 2 - Parking",
       duration: 2,
       imgsrc: "/parking-mini-course.png",
+      alt: "Parking Mini Course",
       question: 'What will we ace together?',
       elements: [
         'Entry/Exit parking spots',
@@ -146,6 +148,7 @@ const MiniCourses = () => {
       title: "Mini Course 3 - Highway driving",
       duration: 2,
       imgsrc: "/highway-driving-course.png",
+      alt: "Highway Driving Mini Course",
       question: 'What will we ace together?',
       elements: [
         'Highway entry/exit with maintaining speed limit',

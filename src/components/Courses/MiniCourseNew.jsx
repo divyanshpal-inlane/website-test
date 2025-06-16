@@ -19,7 +19,7 @@ const MiniCourseNew = () => {
     }));
   };
 
- 
+
 
   return (
     <div className="max-w-6xl mx-auto mb-12 p-4 md:p-12 pt-8 md:pt-16 ">
@@ -43,9 +43,8 @@ const MiniCourseNew = () => {
               >
                 <span>What will we ace together?</span>
                 <svg
-                  className={`w-5 h-5 transition-transform ${
-                    expandedStates[index] ? "rotate-180" : ""
-                  }`}
+                  className={`w-5 h-5 transition-transform ${expandedStates[index] ? "rotate-180" : ""
+                    }`}
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -58,10 +57,9 @@ const MiniCourseNew = () => {
                   />
                 </svg>
               </button>
-                  
-              <div className={`transition-all duration-300 ${
-                expandedStates[index] ? 'opacity-100 max-h-[500px]' : 'opacity-0 max-h-0'
-              } overflow-hidden`}>
+
+              <div className={`transition-all duration-300 ${expandedStates[index] ? 'opacity-100 max-h-[500px]' : 'opacity-0 max-h-0'
+                } overflow-hidden`}>
                 <ul className="space-y- pl-4">
                   {course.points.map((point, idx) => (
                     <li key={idx} className="text-md font-normal list-disc ms-2">
@@ -101,43 +99,39 @@ const MiniCourseNew = () => {
       </div>
 
       <div className="flex justify-center mt-12 mb-12 md:mb-0">
-      <Link to="/signup">
-      <Button
-                  variant="contained"
-                  startIcon={<img src="/course/rocket.svg" alt="rocket" className="w-6 h-6" />}
-                  sx={{
-                    background: "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
-                    color: "white",
-                    "&:hover": {
-                      background: "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
-                    },
-                    color: "white",
-                    fontWeight: "bold",
-                    fontFamily: "Bricolage Grotesque",
-                    textDecoration: "none",
-                    textTransform: "none",
-                    "&:hover": {
-                      backgroundColor: "#00CE84",
-                    },
-                    width: "110%",
-                    border: "3px solid white",
-                    borderRadius: "50px",
-                    padding: {
-                      xs: "4px 24px",
-                      sm: "10px 20px",
-                      md: "1px 25px",
-                    },
-                    fontFamily: "Bricolage Grotesque",
-                    fontSize: {
-                      xs: "1rem",
-                      sm: "1.125rem",
-                      md: "1.5rem",
-                    },
-                  }}
-                >
-                  Sign Up
-                </Button>
-      </Link>
+        <Link to="/signup">
+          <Button
+            variant="contained"
+            startIcon={<img src="/course/rocket.svg" alt="rocket" className="w-6 h-6" />}
+            sx={{
+              background: "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
+              color: "white",
+              fontWeight: "bold",
+              fontFamily: "Bricolage Grotesque",
+              textDecoration: "none",
+              textTransform: "none",
+              width: "110%",
+              border: "3px solid white",
+              borderRadius: "50px",
+              padding: {
+                xs: "4px 24px",
+                sm: "10px 20px",
+                md: "1px 25px",
+              },
+              fontSize: {
+                xs: "1rem",
+                sm: "1.125rem",
+                md: "1.5rem",
+              },
+              "&:hover": {
+                backgroundColor: "#00CE84",
+              },
+            }}
+          >
+            Sign Up
+          </Button>
+
+        </Link>
       </div>
     </div>
   );

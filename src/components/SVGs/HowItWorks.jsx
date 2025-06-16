@@ -9,15 +9,15 @@ const HowItWorks = () => {
             id="Vector_3173"
             d="M629.2 144.3V291.3"
             stroke="#1A1A1A"
-            stroke-width="14"
-            stroke-miterlimit="10"
+            strokeWidth="14"
+            strokeMiterlimit="10"
           />
           <path
             id="Vector_3174"
             d="M1051.2 144.3V291.3"
             stroke="#1A1A1A"
-            stroke-width="14"
-            stroke-miterlimit="10"
+            strokeWidth="14"
+            strokeMiterlimit="10"
           />
         </g>
         <g id="Vector_3175" filter="url(#filter6_d_313_31)">
@@ -28,8 +28,8 @@ const HowItWorks = () => {
           <path
             d="M1097 24H583.4C573.901 24 566.2 31.7007 566.2 41.2V127.4C566.2 136.899 573.901 144.6 583.4 144.6H1097C1106.5 144.6 1114.2 136.899 1114.2 127.4V41.2C1114.2 31.7007 1106.5 24 1097 24Z"
             stroke="white"
-            stroke-width="2"
-            stroke-miterlimit="10"
+            strokeWidth="2"
+            strokeMiterlimit="10"
           />
         </g>
         <g id="Vector_3176" filter="url(#filter7_d_313_31)">
@@ -40,8 +40,8 @@ const HowItWorks = () => {
           <path
             d="M1093.4 34.3H587C581.588 34.3 577.2 38.6876 577.2 44.1V124.5C577.2 129.912 581.588 134.3 587 134.3H1093.4C1098.81 134.3 1103.2 129.912 1103.2 124.5V44.1C1103.2 38.6876 1098.81 34.3 1093.4 34.3Z"
             stroke="white"
-            stroke-width="4"
-            stroke-miterlimit="10"
+            strokeWidth="4"
+            strokeMiterlimit="10"
           />
         </g>
         <g id="Group_474">

@@ -16,12 +16,12 @@ const aboutUsData = [
         {
             name: "Diwakar Reddy",
             role: "Master of the pit stop, making sure everything runs smoothly! 🧑‍💼💥",
-            image: "/team/Diwakar_Reddy.jpg",
+            image: "/team/Diwakar_Reddy.webp",
         },
         {
             name: "Adi Koushik Reddy",
             role: 'The guy growing our reach faster than you can say "viral"! 📈📈',
-            image: "/team/Adi_Koushik_Reddy.jpg",
+            image: "/team/Adi_Koushik_Reddy.webp",
         },
         {
             name: "Shaji Vasudevan",
@@ -41,7 +41,7 @@ const aboutUsData = [
         {
             name: "Profam",
             role: "Our content pit crew, making social media cooler than the fastest lap! 📱😎",
-            image: "/team/Arpit, Chirag, Chinmay (Profam).jpg",
+            image: "/team/Arpit, Chirag, Chinmay (Profam).webp",
         },
     ],
   },

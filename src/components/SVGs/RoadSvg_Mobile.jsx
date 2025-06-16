@@ -9,6 +9,7 @@ import CourseWheel from "./Sections/CourseWheel_Mobile";
 const SvgComponent = (props) => {
     const carRef = useRef(null);
     useEffect(() => {
+        gsap.registerPlugin(MotionPathPlugin, ScrollTrigger);
         const car = carRef.current;
 
         gsap.to(car, {

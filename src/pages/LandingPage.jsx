@@ -133,134 +133,7 @@ const LandingPage = () => {
           </div>
         </Box>
       </Box>
-      {/* <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        {isSmallScreen ? (
-          <Box
-            sx={{
-              paddingTop: { xs: "24px" },
-              width: { xs: "95%", sm: "90%", md: "80%" },
-            }}
-          >
-            <HomeHeroSection_Sm />
-          </Box>
-        ) : !scrollPosition ? (
-          <Box
-            component={motion.div}
-            animate={controls}
-            initial={{ opacity: 1 }}
-            sx={{
-              margin: { xs: "20px", sm: "40px", md: "68px", lg: "-88px" },
-              minHeight: { xs: "100%", md: "861.41px" },
-              width: { xs: "50%", sm: "90%", md: "80%" },
-              height: { xs: "5%", md: "85%" },
-              backgroundImage: `url(${
-                isSmallScreen ? smallBackgroundImage : backgroundImage
-              })`,
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-            }}
-          ></Box>
-        ) : (
-          <Box
-            id="therightlane"
-            component={motion.div}
-            animate={controls}
-            initial={{ opacity: 1 }}
-            sx={{
-              margin: { xs: "20px", sm: "40px", md: "68px", lg: "16px" },
-              marginLeft: { xs: "0px", sm: "0px", md: "0px", lg: "34px" },
-              minHeight: { xs: "auto", md: "861.41px" },
-              width: { xs: "100%", sm: "90%", md: "80%" },
-              height: { xs: "auto", md: "85%" },
-              backgroundImage: `url(${
-                isSmallScreen ? smallFinalBackgroundImage : finalbackgroundImage
-              })`,
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              position: "relative", // Ensure the box positions are relative to this parent
-            }}
-          >
-            <Box
-              id="signupbox"
-              sx={{
-                width: "100%",
-                maxWidth: { xs: "90%", sm: "80%", md: "572px" },
-                padding: { xs: "15px", sm: "20px", md: "0px 32px 0px 32px" },
-                minHeight: { xs: "auto", md: "120px" },
-                backgroundColor: "#D1B3FF",
-                borderRadius: "24px",
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                alignItems: "center",
-                justifyContent: { xs: "center", sm: "space-between" },
-                gap: { xs: "15px", sm: "20px" },
-                position: "absolute", // Position this box absolutely
-                bottom: "282px", // Adjust this value to control how far it is from the bottom of the therightlane box
-                left: "50%",
-                top: "52.5%",
-                transform: "translateX(-50%)", // Center the signupbox horizontally
-                boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.35)",
-              }}
-            >
-              <Box
-                sx={{
-                  textAlign: { xs: "center", sm: "left" },
-                  flex: 1,
-                  color: "D1B3FF",
-                }}
-              >
-                <Typography
-                  variant="h2"
-                  fontFamily={"Bricolage Grotesque"}
-                  fontWeight={500}
-                  sx={{
-                    fontSize: { xs: ".8rem", sm: "1.5rem", md: "28px" },
-                  }}
-                >
-                  Let's start your driving journey
-                </Typography>
-              </Box>
-              <Box>
-                <Button
-                  variant="contained"
-                  component="a"
-                  href="https://forms.gle/Up128jny4nRz5DH59"
-                  startIcon={<Rocket color={IconStyle} />}
-                  sx={{
-                    background: "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
-                    color: "white",
-                    fontWeight: "bold",
-                    fontFamily: "Bricolage Grotesque",
-                    textDecoration: "none",
-                    textTransform: "none",
-                    "&:hover": {
-                      background: "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
-                    },
-                    border: "2px solid #FFFFFF",
-                    borderRadius: "50px",
-                    padding: {
-                      sm: "10px 20px",
-                      md: "6px 68px",
-                    },
-                    fontSize: { xs: "0.8rem", sm: "1rem", md: "24px" },
-                    whiteSpace: "nowrap",
-                    boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.35)",
-                  }}
-                >
-                  Sign Up
-                </Button>
-              </Box>
-            </Box>
-          </Box>
-        )}
-      </Box> */}
-
+    
       {/* second section of the hero page  */}
 
       <Box
@@ -268,24 +141,16 @@ const LandingPage = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          // gap: { xs: "20px", sm: "30px", md: "40px" },
-          // padding: { xs: "20px", sm: "30px", md: "40px" },
-          //   backgroundRepeat: "no-repeat",
-          //   position: "relative",
+         
         }}
       >
         <Box
           sx={{
-            // padding: { xs: "20px", sm: "30px", md: "40px" },
+           
             width: { xs: "100%", sm: "90%", md: "85%" },
-            // marginLeft: { xs: 0, sm: 0, md: 0 },
+           
             maxWidth: "1700px",
-            // justifyContent: "center",
-            // margin: { xs: "2rem", sm: "4rem", md: "8rem" },
-            // display: "flex",
-            // flexDirection: "column",
-            // alignItems: "center",
-            // gap: "20px",
+            
           }}
         >
           {!isSmallScreen ? <RoadSVG /> : <RoadSvg_Sm />}
@@ -388,6 +253,7 @@ const LandingPage = () => {
                   marginTop: { xs: "12px", sm: "30px", md: "40px" },
                 }}
               >
+                
                 Sign Up
               </Button>
           </Box>

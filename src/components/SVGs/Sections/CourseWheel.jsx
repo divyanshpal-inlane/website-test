@@ -66,6 +66,7 @@ const CourseWheel = () => {
           <AnimatePresence>
             {currentStep === "Card2" && (
               <motion.g
+                key="Card2"
                 id="Card2"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -146,6 +147,7 @@ const CourseWheel = () => {
 
             {currentStep !== "Card2" && (
               <motion.g
+                key="Card1"
                 id="Card1"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -269,6 +271,7 @@ const CourseWheel = () => {
           {/* <AnimatePresence>
             {wheelValue !== null && (*/}
           <motion.g
+            key="Wheel"
             id="Wheel"
             animate={{ rotate: wheelRotation }}
             transition={{ duration: 1 }}
@@ -369,6 +372,7 @@ const CourseWheel = () => {
           {/*  */}
           {currentStep === "Beginners" && (
             <motion.g
+              key="Beginners"
               id="Beginners"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -1212,6 +1216,7 @@ const CourseWheel = () => {
 
           {currentStep === "Parking" && (
             <motion.g
+              key="Parking"
               id="Parking"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -1243,8 +1248,8 @@ const CourseWheel = () => {
                   <text
                     x="114"
                     y="31"
-                    font-family="Bricolage Grotesque"
-                    font-size="9"
+                    fontFamily="Bricolage Grotesque"
+                    fontSize="9"
                     fontWeight="bold"
                     fill="black"
                   >
@@ -1832,6 +1837,7 @@ const CourseWheel = () => {
 
           {currentStep === "City_driving" && (
             <motion.g
+              key="City_driving"
               id="City_driving"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -1863,8 +1869,8 @@ const CourseWheel = () => {
                   <text
                     x="114"
                     y="31"
-                    font-family="Bricolage Grotesque"
-                    font-size="9"
+                    fontFamily="Bricolage Grotesque"
+                    fontSize="9"
                     fontWeight="bold"
                     fill="black"
                   >
@@ -2631,6 +2637,7 @@ const CourseWheel = () => {
           )}
           {currentStep === "Highway_Driving" && (
             <motion.g
+              key="Highway_Driving"
               id="Highway_Driving"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -2662,8 +2669,8 @@ const CourseWheel = () => {
                   <text
                     x="114"
                     y="31"
-                    font-family="Bricolage Grotesque"
-                    font-size="9"
+                    fontFamily="Bricolage Grotesque"
+                    fontSize="9"
                     fontWeight="bold"
                     fill="black"
                   >
@@ -3521,6 +3528,7 @@ const CourseWheel = () => {
 
           {currentStep === "Driving_on_slops" && (
              <motion.g
+             key="Driving_on_slops"
              id="Driving_on_slops"
              initial={{ opacity: 0 }}
              animate={{ opacity: 1 }}
@@ -3552,8 +3560,8 @@ const CourseWheel = () => {
                  <text
                    x="114"
                    y="31"
-                   font-family="Bricolage Grotesque"
-                   font-size="9"
+                   fontFamily="Bricolage Grotesque"
+                   fontSize="9"
                    fontWeight="bold"
                    fill="black"
                  >

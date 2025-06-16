@@ -93,14 +93,13 @@ const FAQ = () => {
               color: "white",
               "&:hover": {
                 background: "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
+                backgroundColor: "#00CE84",
               },
               fontWeight: "bold",
               fontFamily: "Bricolage Grotesque",
               textDecoration: "none",
               textTransform: "none",
-              "&:hover": {
-                backgroundColor: "#00CE84",
-              },
+              
               width: {
                 md: "20%",
               },

@@ -2,6 +2,9 @@ import React from "react";
 import PageTemplate from "./PageTemplate";
 import { Typography, Box } from "@mui/material";
 
+<link rel="canonical" href="https://inlane.in/about-us" />
+
+
 const AboutUs = () => {
   return (
     <PageTemplate title="About Us">

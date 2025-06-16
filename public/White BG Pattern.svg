@@ -20,11 +20,11 @@
       }
 
       .cls-5 {
-        clip-path: url(#clippath-1);
+        clipPath: url(#clippath-1);
       }
 
       .cls-6 {
-        clip-path: url(#clippath);
+        clipPath: url(#clippath);
       }
     </style>
     <clipPath id="clippath">

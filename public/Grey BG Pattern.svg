@@ -11,7 +11,7 @@
       }
 
       .cls-3 {
-        clip-path: url(#clippath-1);
+        clipPath: url(#clippath-1);
       }
 
       .cls-4 {
@@ -23,7 +23,7 @@
       }
 
       .cls-6 {
-        clip-path: url(#clippath);
+        clipPath: url(#clippath);
       }
 
       .cls-7 {

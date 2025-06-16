@@ -331,7 +331,7 @@ const Blog = () => {
                 } ${
                   selectedCategory === category
                     ? "!bg-[#D9FF7A] text-gray-700"
-                    : " hover:bg-gray-100"
+                    : "hover:bg-gray-100"
                 }`}
                 onClick={() => handleCategoryChange(category)}
               >
