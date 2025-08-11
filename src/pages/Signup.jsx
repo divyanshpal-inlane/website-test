@@ -304,6 +304,17 @@ const Signup = () => {
     }
   }, [formData, isSubmitting, isPhoneValid, navigate]);
 
+  function getOrCreateClientId() {
+    const key = 'custom_client_id';
+    let clientId = localStorage.getItem(key);
+
+    if (!clientId) {
+      clientId = crypto.randomUUID(); // UUID v4
+      localStorage.setItem(key, clientId);
+    }
+
+    return clientId;
+  }
 
   // Optimized form submission function
   const submitToGoogleSheets = useCallback(async (formData) => {
