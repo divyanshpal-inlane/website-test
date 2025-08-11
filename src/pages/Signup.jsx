@@ -11,6 +11,7 @@ import ScrollToTop from '../components/ScrollToTop';
 import { useLocation } from 'react-router-dom';
 import LocationSelector from '../components/locationSelector';
 import { APIProvider } from '@vis.gl/react-google-maps';
+import { supabase } from '../supabaseClient'
 
 // Fetch country codes and flags
 const fetchCountryCodes = async () => {
