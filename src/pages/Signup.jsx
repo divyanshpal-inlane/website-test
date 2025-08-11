@@ -373,7 +373,7 @@ const Signup = () => {
         {
           body: {
             eventSource: _eventName,
-            clientId: getOrCreateClientId(),
+            clientId: getOrCreateClientId()??'',
             leadData: _phone,
           },
         }
