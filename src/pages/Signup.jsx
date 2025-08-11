@@ -288,6 +288,7 @@ const Signup = () => {
 
     try {
       await submitToGoogleSheets(formData);
+      sendEventToGA('landing_page_signup', formData.phone ?? "");
       navigate('/thank-you', { 
         state: { 
           name: formData.name,
@@ -362,6 +363,35 @@ const Signup = () => {
       throw error;
     }
   }, [utmSource]);
+
+  // Send GA event
+  async function sendEventToGA(eventName, _phone) {
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        "ga-event-manager",
+        {
+          body: {
+            eventSource: "event-from-form-page",
+            clientId: getOrCreateClientId(),
+            leadData: _phone,
+          },
+        }
+      );
+
+      if (error) {
+        console.error("Error sending event to GA:", error);
+        return error.message;
+      }
+
+      if (data) {
+        console.log("Event sent to GA successfully:", data);
+        return data;
+      }
+    } catch (error) {
+      console.error("Unexpected error while sending event to GA:", error);
+      return "Unexpected error occurred";
+    }
+  }
 
   // Memoize static styles
   const scrollingTextStyle = useMemo(() => ({
