@@ -288,6 +288,7 @@ const Signup = () => {
 
     try {
       await submitToGoogleSheets(formData);
+      sendEventToCRM(formData);
       sendEventToGA('landing_page_signup', formData.phone ?? "");
       navigate('/thank-you', { 
         state: { 
@@ -390,6 +391,59 @@ const Signup = () => {
     } catch (error) {
       console.error("Unexpected error while sending event to GA:", error);
       return "Unexpected error occurred";
+    }
+  }
+
+  // send event to cratio
+  async function sendEventToCRM(formData) {
+    // interface FormData {
+    //   email: string,
+    //   phone: string,
+    //   name: string,
+    //   amount: number,
+    //   area: string,
+    //   custom_area: string,
+    //   has_license: boolean | null
+    // }
+
+    // body: {
+    //   leadSource: "demo-page",
+    //   leadData: {
+    //     ..._leadData,
+    //     amount: _leadData.amount || 0,
+    //     phone: _leadData.phone.replace(/\D/g, ''), // Ensure phone is stored as digits only
+    //     has_license: _leadData.has_license ? 'Yes' : 'No'
+    //   }
+    // }
+
+    const payLoad = {
+      email: formData.email,
+      phone: `${formData.countryCode}${formData.phone}`,
+      name: formData.name,
+      amount: "NA",
+      area: `${formData?.city || ""}, ${formData?.area || ""}`,
+      custom_area: "NA",
+      has_license: formData.license,
+    };
+
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        "demo-page-forward-lead",
+        {
+          body: {
+            leadSource: utmSource,
+            leadData: payLoad,
+          },
+        }
+      );
+      if (error) {
+        console.log("Failed to send lead to CRM:", error);
+      }
+      if (data) {
+        console.log("Lead sent to CRM successfully:", data);
+      }
+    } catch (error) {
+      console.error("Unexpected error while sending lead to CRM:", error);
     }
   }
 
