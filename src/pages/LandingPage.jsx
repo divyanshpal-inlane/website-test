@@ -32,9 +32,13 @@ const LandingPage = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const controls = useAnimation();
   const controlsChanges = useAnimation();
-
+  const [utmSource, setUtmSource] = useState("direct");
+  const [utmMedium, setUtmMedium] = useState("");
+  const [utmCampaign, setUtmCampaign] = useState("");
+  const [utmContent, setUtmContent] = useState("");
   useEffect(() => {
-    scrollYProgress.onChange((v) => {
+    // Handle scroll animations
+    const unsubscribe = scrollYProgress.onChange((v) => {
       setScrollPosition(v);
       controls.start({
         opacity: 1,
@@ -45,7 +49,17 @@ const LandingPage = () => {
         transition: { duration: 5 },
       });
     });
-  }, [scrollYProgress, controls]);
+
+    // Capture URL parameters
+    const params = new URLSearchParams(location.search);
+    
+    setUtmSource(params.get("utm_source") || "direct");
+    setUtmMedium(params.get("utm_medium") || "");
+    setUtmCampaign(params.get("utm_campaign") || "");
+    setUtmContent(params.get("utm_content") || "");
+
+    return () => unsubscribe();
+  }, [scrollYProgress, controls, controlsChanges, location.search]);
 
   return (
     <>
@@ -99,7 +113,7 @@ const LandingPage = () => {
               <Button
                 variant="contained"
                 component={Link}
-                to="/signup"
+                to={`/signup?utm_source=${utmSource}&utm_medium=${utmMedium}&utm_campaign=${utmCampaign}&utm_content=${utmContent}`}
                 startIcon={<Rocket color={IconStyle} />}
                 sx={{
                   background: "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",

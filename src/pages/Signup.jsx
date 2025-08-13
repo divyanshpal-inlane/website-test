@@ -11,6 +11,7 @@ import ScrollToTop from '../components/ScrollToTop';
 import { useLocation } from 'react-router-dom';
 import LocationSelector from '../components/locationSelector';
 import { APIProvider } from '@vis.gl/react-google-maps';
+import { supabase } from '../supabaseClient'
 
 // Fetch country codes and flags
 const fetchCountryCodes = async () => {
@@ -128,7 +129,10 @@ const FormField = React.memo(({ label, children, bgColor }) => (
 const Signup = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [utmSource, setUtmSource] = useState('');
+  const [utmSource, setUtmSource] = useState("");
+  const [utmMedium, setUtmMedium] = useState("");
+  const [utmCampaign, setUtmCampaign] = useState("");
+  const [utmContent, setUtmContent] = useState("");
   const [formData, setFormData] = useState({
     email: '',
     name: '',
@@ -171,8 +175,10 @@ const Signup = () => {
   // Extract UTM source from URL params
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const source = params.get('utm_source') || 'direct';
-    setUtmSource(source);
+    setUtmSource(params.get("utm_source") || "direct");
+    setUtmMedium(params.get("utm_medium") || "");
+    setUtmCampaign(params.get("utm_campaign") || "");
+    setUtmContent(params.get("utm_content") || "");
   }, [location.search]);
 
   // Load country codes on component mount
@@ -288,6 +294,7 @@ const Signup = () => {
 
     try {
       await submitToGoogleSheets(formData);
+      await sendEventToGA('landing_page_signup', formData.phone ?? "");
       navigate('/thank-you', { 
         state: { 
           name: formData.name,
@@ -302,6 +309,17 @@ const Signup = () => {
     }
   }, [formData, isSubmitting, isPhoneValid, navigate]);
 
+  function getOrCreateClientId() {
+    const key = 'custom_client_id';
+    let clientId = localStorage.getItem(key);
+
+    if (!clientId) {
+      clientId = crypto.randomUUID(); // UUID v4
+      localStorage.setItem(key, clientId);
+    }
+
+    return clientId;
+  }
 
   // Optimized form submission function
   const submitToGoogleSheets = useCallback(async (formData) => {
@@ -332,6 +350,9 @@ const Signup = () => {
       const cratioPayload = {
         ...payload,
         source: utmSource,
+        medium: utmMedium,
+        campaign: utmCampaign,
+        content: utmContent,
         timestamp: new Date().toISOString()
       };
 
@@ -361,7 +382,38 @@ const Signup = () => {
       console.error('Form submission error:', error);
       throw error;
     }
-  }, [utmSource]);
+  }, [utmSource, utmMedium, utmCampaign, utmContent]);
+
+  // Send GA event
+  async function sendEventToGA(_eventName, _phone) {
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        "ga-event-manager",
+        {
+          body: {
+            eventSource: _eventName,
+            clientId: getOrCreateClientId()??'',
+            leadData: {
+              phone: _phone
+            },
+          },
+        }
+      );
+
+      if (error) {
+        console.error("Error sending event to GA:", error);
+        return error.message;
+      }
+
+      if (data) {
+        console.log("Event sent to GA successfully:", data);
+        return data;
+      }
+    } catch (error) {
+      console.error("Unexpected error while sending event to GA:", error);
+      return "Unexpected error occurred";
+    }
+  }
 
   // Memoize static styles
   const scrollingTextStyle = useMemo(() => ({
