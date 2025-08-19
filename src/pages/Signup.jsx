@@ -133,6 +133,7 @@ const Signup = () => {
   const [utmMedium, setUtmMedium] = useState("");
   const [utmCampaign, setUtmCampaign] = useState("");
   const [utmContent, setUtmContent] = useState("");
+  const [utmKeywords, setUtmKeywords] = useState("");
   const [formData, setFormData] = useState({
     email: '',
     name: '',
@@ -179,6 +180,7 @@ const Signup = () => {
     setUtmMedium(params.get("utm_medium") || "");
     setUtmCampaign(params.get("utm_campaign") || "");
     setUtmContent(params.get("utm_content") || "");
+    setUtmKeywords(params.get("keyword") || "");
   }, [location.search]);
 
   // Load country codes on component mount
@@ -353,6 +355,7 @@ const Signup = () => {
         medium: utmMedium,
         campaign: utmCampaign,
         content: utmContent,
+        keywords: utmKeywords,
         timestamp: new Date().toISOString()
       };
 
