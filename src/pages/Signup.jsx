@@ -180,7 +180,7 @@ const Signup = () => {
     setUtmMedium(params.get("utm_medium") || "");
     setUtmCampaign(params.get("utm_campaign") || "");
     setUtmContent(params.get("utm_content") || "");
-    setUtmKeywords(params.get("keywords") || "");
+    setUtmKeywords(params.get("keyword") || "");
   }, [location.search]);
 
   // Load country codes on component mount
