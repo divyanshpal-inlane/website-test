@@ -126,14 +126,20 @@ const FormField = React.memo(({ label, children, bgColor }) => (
   </div>
 ));
 
+function getAllQueryParams(url = window.location.href) {
+  const params = new URL(url).searchParams;
+  const result = {};
+
+  for (const [key, value] of params.entries()) {
+    result[key] = value;
+  }
+
+  return result;
+}
+
 const Signup = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [utmSource, setUtmSource] = useState("");
-  const [utmMedium, setUtmMedium] = useState("");
-  const [utmCampaign, setUtmCampaign] = useState("");
-  const [utmContent, setUtmContent] = useState("");
-  const [utmKeywords, setUtmKeywords] = useState("");
   const [formData, setFormData] = useState({
     email: '',
     name: '',
@@ -174,13 +180,17 @@ const Signup = () => {
   }, [isSmallScreen, isMediumScreen, iconStyles]);
 
   // Extract UTM source from URL params
+  const [queryParams, setQueryParams] = useState({});
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    setUtmSource(params.get("utm_source") || "direct");
-    setUtmMedium(params.get("utm_medium") || "");
-    setUtmCampaign(params.get("utm_campaign") || "");
-    setUtmContent(params.get("utm_content") || "");
-    setUtmKeywords(params.get("keyword") || "");
+    const result = {};
+
+    for (const [key, value] of params.entries()) {
+      result[key] = value;
+    }
+
+    setQueryParams(result);
+
   }, [location.search]);
 
   // Load country codes on component mount
@@ -334,7 +344,7 @@ const Signup = () => {
         license: formData.license === 'yes' ? 'yes' : 'no',
         locality: `${formData?.city || '' }, ${formData?.area || ''}`,
         adName: 'Signup Form',
-        leadSource: 'Website-'+utmSource,
+        leadSource: `Website-${new URLSearchParams(queryParams).get("utm_source") || "Direct"}`,
       };
       
       // Submit to Google Sheets
@@ -351,11 +361,7 @@ const Signup = () => {
       // Submit to Cratio webhook
       const cratioPayload = {
         ...payload,
-        source: utmSource,
-        medium: utmMedium,
-        campaign: utmCampaign,
-        content: utmContent,
-        keywords: utmKeywords,
+        ...queryParams,
         timestamp: new Date().toISOString()
       };
 
@@ -385,7 +391,7 @@ const Signup = () => {
       console.error('Form submission error:', error);
       throw error;
     }
-  }, [utmSource, utmMedium, utmCampaign, utmContent]);
+  }, [queryParams]);
 
   // Send GA event
   async function sendEventToGA(_eventName, _phone) {

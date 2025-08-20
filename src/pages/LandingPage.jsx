@@ -32,11 +32,7 @@ const LandingPage = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const controls = useAnimation();
   const controlsChanges = useAnimation();
-  const [utmSource, setUtmSource] = useState("direct");
-  const [utmMedium, setUtmMedium] = useState("");
-  const [utmCampaign, setUtmCampaign] = useState("");
-  const [utmContent, setUtmContent] = useState("");
-  const [utmKeywords, setUtmKeywords] = useState("");
+  const [queryParams, setQueryParams] = useState("");
 
   useEffect(() => {
     // Handle scroll animations
@@ -53,13 +49,15 @@ const LandingPage = () => {
     });
 
     // Capture URL parameters
-    const params = new URLSearchParams(location.search);
-    
-    setUtmSource(params.get("utm_source") || "direct");
-    setUtmMedium(params.get("utm_medium") || "");
-    setUtmCampaign(params.get("utm_campaign") || "");
-    setUtmContent(params.get("utm_content") || "");
-    setUtmKeywords(params.get("keyword") || "");
+    const params = new URLSearchParams(window.location.search);
+    const result = {};
+    for (const [key, value] of params.entries()) {
+      result[key] = value;
+    }
+    // Build query string
+    const queryString = new URLSearchParams(result).toString();
+    // Save into state
+    setQueryParams(queryString);
 
     return () => unsubscribe();
   }, [scrollYProgress, controls, controlsChanges, location.search]);
@@ -116,7 +114,7 @@ const LandingPage = () => {
               <Button
                 variant="contained"
                 component={Link}
-                to={`/signup?utm_source=${utmSource}&utm_medium=${utmMedium}&utm_campaign=${utmCampaign}&utm_content=${utmContent}&keyword=${utmKeywords}`}
+                to={`/signup?${queryParams}`}
                 startIcon={<Rocket color={IconStyle} />}
                 sx={{
                   background: "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
