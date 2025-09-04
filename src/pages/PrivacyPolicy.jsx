@@ -172,7 +172,7 @@ const PrivacyPolicy = () => {
         InLane Technologies Private Limited<br></br>
         8/1 Hardut Rai Chamaria Road, Howrah - 711101<br></br>
         Email: discover.laneschool@inlane.in<br></br>
-        Phone: +91 9611687011<br></br>
+        Phone: +91 7338098798<br></br>
         <br></br>
         By using our platform, you acknowledge that you have read and understood
         this Privacy Policy and agree to its terms.
