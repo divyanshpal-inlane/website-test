@@ -157,7 +157,7 @@ const PrivacyPolicy = () => {
         Depending on your jurisdiction, you may have rights regarding your
         personal data, including the right to access, correct, delete, or
         restrict its use. To exercise these rights, please contact us at +91
-        96116 87011.<br></br>
+        7338098798.<br></br>
         <br></br>
         Changes to This Policy<br></br>
         <br></br>
