@@ -149,12 +149,14 @@ const Testimonial = () => {
         id="bridge-text"
         variant="h3"
         sx={{
-          position: isSticky ? 'sticky' : 'relative',
+          position: isSticky ? "sticky" : "relative",
           top: 0,
           zIndex: 10,
-          background: isSticky ? 'linear-gradient(180deg, rgba(0, 206, 132, 0.9) 0%, rgba(0, 206, 132, 0) 100%)' : 'transparent',
-          backdropFilter: isSticky ? 'blur(8px)' : 'none',
-          WebkitBackdropFilter: isSticky ? 'blur(8px)' : 'none',
+          background: isSticky
+            ? "linear-gradient(180deg, rgba(0, 206, 132, 0.9) 0%, rgba(0, 206, 132, 0) 100%)"
+            : "transparent",
+          backdropFilter: isSticky ? "blur(8px)" : "none",
+          WebkitBackdropFilter: isSticky ? "blur(8px)" : "none",
           paddingY: 2,
           fontSize: { xs: "18px", sm: "40px", md: "40px" },
           color: "#000000",
@@ -168,8 +170,8 @@ const Testimonial = () => {
       </Typography>
       <Box
         sx={{
-          position: isWheelSticky ? 'sticky' : 'relative',
-          top: isSticky ? '80px' : 0,
+          position: isWheelSticky ? "sticky" : "relative",
+          top: isSticky ? "80px" : 0,
           zIndex: 9,
           display: "inline-block",
           backgroundImage: "url('src/assets/images/Tag5.svg')",
@@ -195,28 +197,31 @@ const Testimonial = () => {
           The Wheel
         </Typography>
       </Box>
-      <Box 
+      <Box
         id="reviews-section"
-        sx={{ 
-          visibility: 'visible',
+        sx={{
+          visibility: "visible",
           opacity: 1,
-          margin: "0 auto", 
+          margin: "0 auto",
           marginBottom: { xs: "64px", sm: "96px", md: "128px" },
           padding: 0,
-          position: 'relative',
-          zIndex: 8
+          position: "relative",
+          zIndex: 8,
         }}
       >
         <ScrollContainer>
           <ScrollingRow direction="left">
-          {firstRow.map((testimonial, index) => (
-              <div key={`${testimonial.name}-${index}`} className="min-w-[300px] sm:min-w-[350px] md:min-w-[400px]">
+            {firstRow.map((testimonial, index) => (
+              <div
+                key={`${testimonial.name}-${index}`}
+                className="min-w-[300px] sm:min-w-[350px] md:min-w-[400px]"
+              >
                 {testimonial.videoLink ? (
-                  <div 
+                  <div
                     className="rounded-[32px] border-[12px] xs:border-[8px] border-white overflow-hidden cursor-pointer relative h-[250px] xs:h-[200px] md:h-[300px]"
                     onClick={() => handleOpenModal(testimonial)}
                   >
-                    <iframe 
+                    <iframe
                       src={getEmbeddedDriveUrl(testimonial.videoLink)}
                       className="w-full h-full"
                       frameBorder="0"
@@ -231,15 +236,12 @@ const Testimonial = () => {
                         </h3>
                         <div className="flex gap-0.5">
                           {[...Array(testimonial.rating)].map((_, i) => (
-                            <BorderedStarIcon
-                              key={i}
-                              viewBox="0 0 24 24"
-                            >
+                            <BorderedStarIcon key={i} viewBox="0 0 24 24">
                               <path
                                 d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
                                 stroke="black"
                                 strokeWidth="1"
-                                fill={index % 2 === 0 ? '#D1B3FF' : '#D9FF7A'}
+                                fill={index % 2 === 0 ? "#D1B3FF" : "#D9FF7A"}
                               />
                             </BorderedStarIcon>
                           ))}
@@ -248,9 +250,11 @@ const Testimonial = () => {
                     </div>
                   </div>
                 ) : (
-                  <div 
+                  <div
                     className="rounded-[32px] p-6 xs:p-4 h-[250px] xs:h-[200px] md:h-[300px] border-[12px] xs:border-[8px] border-white"
-                    style={{ backgroundColor: index % 2 === 0 ? '#D9FF7A' : '#D1B3FF' }}
+                    style={{
+                      backgroundColor: index % 2 === 0 ? "#D9FF7A" : "#D1B3FF",
+                    }}
                     onClick={() => handleOpenModal(testimonial)}
                   >
                     <div className="space-y-3 xs:space-y-2 overflow-hidden">
@@ -260,15 +264,12 @@ const Testimonial = () => {
                         </h3>
                         <div className="flex gap-0.5">
                           {[...Array(testimonial.rating)].map((_, i) => (
-                            <BorderedStarIcon
-                              key={i}
-                              viewBox="0 0 24 24"
-                            >
+                            <BorderedStarIcon key={i} viewBox="0 0 24 24">
                               <path
                                 d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
                                 stroke="black"
                                 strokeWidth="1"
-                                fill={index % 2 === 0 ? '#D1B3FF' : '#D9FF7A'}
+                                fill={index % 2 === 0 ? "#D1B3FF" : "#D9FF7A"}
                               />
                             </BorderedStarIcon>
                           ))}
@@ -282,7 +283,6 @@ const Testimonial = () => {
                 )}
               </div>
             ))}
-            
           </ScrollingRow>
         </ScrollContainer>
 
@@ -291,13 +291,16 @@ const Testimonial = () => {
         <ScrollContainer>
           <ScrollingRow direction="right">
             {[...secondRow, ...secondRow].map((testimonial, index) => (
-              <div key={index} className="min-w-[300px] sm:min-w-[350px] md:min-w-[400px]">
+              <div
+                key={index}
+                className="min-w-[300px] sm:min-w-[350px] md:min-w-[400px]"
+              >
                 {testimonial.videoLink ? (
-                  <div 
+                  <div
                     className="rounded-[32px] border-[12px] xs:border-[8px] border-white overflow-hidden cursor-pointer relative h-[250px] xs:h-[200px] md:h-[300px]"
                     onClick={() => handleOpenModal(testimonial)}
                   >
-                    <iframe 
+                    <iframe
                       src={getEmbeddedDriveUrl(testimonial.videoLink)}
                       className="w-full h-full"
                       frameBorder="0"
@@ -312,15 +315,12 @@ const Testimonial = () => {
                         </h3>
                         <div className="flex gap-0.5">
                           {[...Array(testimonial.rating)].map((_, i) => (
-                            <BorderedStarIcon
-                              key={i}
-                              viewBox="0 0 24 24"
-                            >
+                            <BorderedStarIcon key={i} viewBox="0 0 24 24">
                               <path
                                 d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
                                 stroke="black"
                                 strokeWidth="1"
-                                fill={index % 2 === 0 ? '#D1B3FF' : '#D9FF7A'}
+                                fill={index % 2 === 0 ? "#D1B3FF" : "#D9FF7A"}
                               />
                             </BorderedStarIcon>
                           ))}
@@ -329,9 +329,11 @@ const Testimonial = () => {
                     </div>
                   </div>
                 ) : (
-                  <div 
+                  <div
                     className="rounded-[32px] p-6 xs:p-4 h-[250px] xs:h-[200px] md:h-[300px] border-[12px] xs:border-[8px] border-white"
-                    style={{ backgroundColor: index % 2 === 0 ? '#D9FF7A' : '#D1B3FF' }}
+                    style={{
+                      backgroundColor: index % 2 === 0 ? "#D9FF7A" : "#D1B3FF",
+                    }}
                     onClick={() => handleOpenModal(testimonial)}
                   >
                     <div className="space-y-3 xs:space-y-2">
@@ -341,15 +343,12 @@ const Testimonial = () => {
                         </h3>
                         <div className="flex gap-0.5">
                           {[...Array(testimonial.rating)].map((_, i) => (
-                            <BorderedStarIcon
-                              key={i}
-                              viewBox="0 0 24 24"
-                            >
+                            <BorderedStarIcon key={i} viewBox="0 0 24 24">
                               <path
                                 d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
                                 stroke="black"
                                 strokeWidth="1"
-                                fill={index % 2 === 0 ? '#D1B3FF' : '#D9FF7A'}
+                                fill={index % 2 === 0 ? "#D1B3FF" : "#D9FF7A"}
                               />
                             </BorderedStarIcon>
                           ))}
@@ -374,23 +373,23 @@ const Testimonial = () => {
       >
         <Box
           sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '90%',
-            maxWidth: '1000px',
-            bgcolor: 'background.paper',
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "90%",
+            maxWidth: "1000px",
+            bgcolor: "background.paper",
             boxShadow: 24,
             p: 4,
-            borderRadius: '16px',
+            borderRadius: "16px",
           }}
         >
           <IconButton
             aria-label="close"
             onClick={handleCloseModal}
             sx={{
-              position: 'absolute',
+              position: "absolute",
               right: 8,
               top: 8,
               color: (theme) => theme.palette.grey[500],
@@ -401,7 +400,7 @@ const Testimonial = () => {
           {activeReview && (
             <Box>
               {activeReview.videoLink ? (
-                <iframe 
+                <iframe
                   src={getEmbeddedDriveUrl(activeReview.videoLink)}
                   className="w-full h-[400px]"
                   frameBorder="0"
@@ -425,7 +424,7 @@ const Testimonial = () => {
                       <BorderedStarIcon
                         key={i}
                         viewBox="0 0 24 24"
-                        style={{ fill: '#F7DC6F' }}
+                        style={{ fill: "#F7DC6F" }}
                       >
                         <path
                           d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
@@ -447,38 +446,85 @@ const Testimonial = () => {
           )}
         </Box>
       </Modal>
-
-      <Link to="/signup">
-      <Button
-                variant="contained"
-                startIcon={
-                  <Rocket
-                    color={{ ...IconStyle, width: isSmallScreen || isMediumScreen ? 22 : 30, height: isSmallScreen || isMediumScreen ? 22 : 30 }}
-                  />
-                }
-                sx={{
-                  background: "linear-gradient(90deg, #D9FF7A 0%, #C1EC55 100%)",
-            color: "#000000",
-                  "&:hover": {
-              background: "linear-gradient(90deg, #D9FF7A 0%, #C1EC55 100%)",
-            },
-                  border: "3px solid #FFFFFF",
-                  borderRadius: "50px",
-                  boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.35)",
-                  padding: { xs: "12px 24px", sm: "14px 32px", md: "16px 44px" },
-                  width: { xs: "50%", sm: "30%", md: "40%", lg: 324.38 },
-                  height: { xs: 38, sm: 60, md: 69.47 },
-                  fontFamily: "Bricolage Grotesque",
-                  fontSize: { xs: "16px", sm: "24px", md: "30px", lg: "32px" },
-                  fontWeight: "bold",
-                  textTransform: "none",
-                  marginBottom: { xs: "64px", sm: "96px", md: "128px" },
-                  // boxShadow: "6px 8px 4px rgba(0, 0, 0, 0.35)",
+      <div
+        className="testimonial-buttons"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '24px', // space between buttons
+          marginTop: '32px',
+        }}
+      >
+        <Link to="https://maps.app.goo.gl/5FRXkT3b4FXt4Qwk9" target="_blank" rel="noopener noreferrer" style={{ width: '100%' }}>
+          <Button
+            variant="contained"
+            startIcon={
+              <Rocket
+                color={{
+                  ...IconStyle,
+                  width: isSmallScreen || isMediumScreen ? 22 : 30,
+                  height: isSmallScreen || isMediumScreen ? 22 : 30,
                 }}
-              >
-          Start Now!
-        </Button>
-      </Link>
+              />
+            }
+            sx={{
+              background: "linear-gradient(90deg, #D9FF7A 0%, #C1EC55 100%)",
+              color: "#000000",
+              "&:hover": {
+                background: "linear-gradient(90deg, #D9FF7A 0%, #C1EC55 100%)",
+              },
+              border: "3px solid #FFFFFF",
+              borderRadius: "50px",
+              boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.35)",
+              padding: { xs: "12px 24px", sm: "14px 32px", md: "16px 44px" },
+              width: { xs: "100%", sm: "100%", md: "100%", lg: 360 },
+              height: { xs: 38, sm: 60, md: 69.47 },
+              fontFamily: "Bricolage Grotesque",
+              fontSize: { xs: "16px", sm: "24px", md: "30px", lg: "32px" },
+              fontWeight: "bold",
+              textTransform: "none",
+              marginBottom: 0,
+            }}
+          >
+            More Reviews
+          </Button>
+        </Link>
+        <Link to="/signup" style={{ width: '100%' }}>
+          <Button
+            variant="contained"
+            startIcon={
+              <Rocket
+                color={{
+                  ...IconStyle,
+                  width: isSmallScreen || isMediumScreen ? 22 : 30,
+                  height: isSmallScreen || isMediumScreen ? 22 : 30,
+                }}
+              />
+            }
+            sx={{
+              background: "linear-gradient(90deg, #D9FF7A 0%, #C1EC55 100%)",
+              color: "#000000",
+              "&:hover": {
+                background: "linear-gradient(90deg, #D9FF7A 0%, #C1EC55 100%)",
+              },
+              border: "3px solid #FFFFFF",
+              borderRadius: "50px",
+              boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.35)",
+              padding: { xs: "12px 24px", sm: "14px 32px", md: "16px 44px" },
+              width: { xs: "100%", sm: "100%", md: "100%", lg: 360 },
+              height: { xs: 38, sm: 60, md: 69.47 },
+              fontFamily: "Bricolage Grotesque",
+              fontSize: { xs: "16px", sm: "24px", md: "30px", lg: "32px" },
+              fontWeight: "bold",
+              textTransform: "none",
+              marginBottom: 0,
+            }}
+          >
+            Start Now!
+          </Button>
+        </Link>
+      </div>
     </Box>
   );
 };
