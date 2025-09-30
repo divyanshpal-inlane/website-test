@@ -454,25 +454,18 @@ const Testimonial = () => {
           alignItems: 'center',
           gap: '24px', // space between buttons
           marginTop: '32px',
+          marginBottom: '48px',
+          paddingBottom: '12px',
         }}
       >
         <Link to="https://maps.app.goo.gl/5FRXkT3b4FXt4Qwk9" target="_blank" rel="noopener noreferrer" style={{ width: '100%' }}>
           <Button
             variant="contained"
-            startIcon={
-              <Rocket
-                color={{
-                  ...IconStyle,
-                  width: isSmallScreen || isMediumScreen ? 22 : 30,
-                  height: isSmallScreen || isMediumScreen ? 22 : 30,
-                }}
-              />
-            }
             sx={{
-              background: "linear-gradient(90deg, #D9FF7A 0%, #C1EC55 100%)",
+              background: "linear-gradient(90deg, #b28fff 0%, #d1b3ff 100%)",
               color: "#000000",
               "&:hover": {
-                background: "linear-gradient(90deg, #D9FF7A 0%, #C1EC55 100%)",
+                background: "linear-gradient(90deg, #b28fff 0%, #d1b3ff 100%)",
               },
               border: "3px solid #FFFFFF",
               borderRadius: "50px",
