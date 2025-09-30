@@ -454,12 +454,12 @@ const Testimonial = () => {
           alignItems: 'center',
           gap: '24px', // space between buttons
           marginTop: '32px',
-          marginBottom: '48px',
-          paddingBottom: '12px',
+          paddingBottom: '60px'
         }}
       >
         <Link to="https://maps.app.goo.gl/5FRXkT3b4FXt4Qwk9" target="_blank" rel="noopener noreferrer" style={{ width: '100%' }}>
           <Button
+            id="more-reviews-button"
             variant="contained"
             sx={{
               background: "linear-gradient(90deg, #b28fff 0%, #d1b3ff 100%)",
@@ -471,7 +471,7 @@ const Testimonial = () => {
               borderRadius: "50px",
               boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.35)",
               padding: { xs: "12px 24px", sm: "14px 32px", md: "16px 44px" },
-              width: { xs: "100%", sm: "100%", md: "100%", lg: 360 },
+              width: { xs: "50%", sm: "45%", md: "40%", lg: 360 },
               height: { xs: 38, sm: 60, md: 69.47 },
               fontFamily: "Bricolage Grotesque",
               fontSize: { xs: "16px", sm: "24px", md: "30px", lg: "32px" },
@@ -485,6 +485,7 @@ const Testimonial = () => {
         </Link>
         <Link to="/signup" style={{ width: '100%' }}>
           <Button
+            id="start-now-button"
             variant="contained"
             startIcon={
               <Rocket
@@ -504,8 +505,8 @@ const Testimonial = () => {
               border: "3px solid #FFFFFF",
               borderRadius: "50px",
               boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.35)",
-              padding: { xs: "12px 24px", sm: "14px 32px", md: "16px 44px" },
-              width: { xs: "100%", sm: "100%", md: "100%", lg: 360 },
+              padding: { xs: "12px 24px", sm: "14px 44px", md: "16px 60px" },
+              width: { xs: "50%", sm: "45%", md: "40%", lg: 360 },
               height: { xs: 38, sm: 60, md: 69.47 },
               fontFamily: "Bricolage Grotesque",
               fontSize: { xs: "16px", sm: "24px", md: "30px", lg: "32px" },
