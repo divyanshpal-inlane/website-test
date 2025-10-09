@@ -175,7 +175,17 @@ const PrivacyPolicy = () => {
         Phone: +91 7338098798<br></br>
         <br></br>
         By using our platform, you acknowledge that you have read and understood
-        this Privacy Policy and agree to its terms.
+        this Privacy Policy and agree to the{" "}
+        <Link
+          href="https://inlane.in/terms-and-conditions"
+          target="_blank"
+          rel="noopener noreferrer"
+          underline="always"
+          sx={{ color: "#00ce84" }}
+        >
+          Terms and Conditions
+        </Link>{" "}
+        as well.
       </Typography>
     </PageTemplate>
   );
