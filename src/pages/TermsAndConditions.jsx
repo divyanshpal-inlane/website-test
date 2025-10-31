@@ -325,7 +325,11 @@ const TermsAndConditions = () => {
         <br></br>
         6. PAYMENT
         <br></br>
-        Please refer to our Payment Policy at <a href="/payment-policy">link</a>
+        Please refer to our Payment Policy at <a href="/payment-policy" 
+        style={{ color: "#1976d2", textDecoration: "underline" }}>
+        link
+        </a>
+
         <br></br>
         <br></br>
         7. USER VIOLATION OF USER TERMS
