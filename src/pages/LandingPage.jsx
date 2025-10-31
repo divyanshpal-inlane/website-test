@@ -241,6 +241,27 @@ const LandingPage = () => {
                 padding: { xs: "10px", sm: "11px", md: "20px" },
               }}
             />
+              <div>
+                By continuing, you agree to our
+                <nav className="flex flex-row justify-center gap-4">
+                  <a
+                    target="_blank"
+                    href="https://inlane.in/terms-and-conditions"
+                    className="text-muted-foreground text-gray-500 underline"
+                    rel="noreferrer"
+                  >
+                    Terms of Service
+                  </a>
+                  <a
+                    target="_blank"
+                    href="https://inlane.in/privacy-policy"
+                    className="text-muted-foreground text-gray-500 underline"
+                    rel="noreferrer"
+                  >
+                    Privacy Policies
+                  </a>
+                </nav>
+              </div>
               <Button
                 variant="contained"
                 component={Link}
