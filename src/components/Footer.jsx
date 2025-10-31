@@ -92,6 +92,10 @@ const Footer = () => {
       text: "Disclaimer",
       href: "/disclaimer",
     },
+    {
+      text: "Payment Policy",
+      href: "/payment-policy",
+    },
   ];
   const infoLinks = [
     {
