@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node prerender.js",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "host": "vite --host"
+    "host": "vite --host",
+    "generate-sitemap": "node generate-sitemap.js"
   },
   "dependencies": {
     "@contentful/rich-text-react-renderer": "^15.22.11",

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Footer from "../components/Footer";
-// import FAQ from "../components/Courses/FAQ";
 import Navbar from "../components/Navbar";
 import { useParams } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import SEOHead from "../components/SEOHead";
+import { getLocationSEO } from "../utils/seoData";
 import BenefitsSplitLayout from "../components/SwipableBenefits";
 import { Button } from "@mui/material";
 import { Rocket } from "lucide-react";
@@ -53,36 +53,17 @@ const Locations = () => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
   
+  const seo = getLocationSEO(formattedLocation);
+  
   return (
     <div className="bg-green-400 font-[Bricolage Grotesque] bg-logoGreen">
-      <Helmet>
-        <title>
-          Driving Courses - Learn to Drive with InLane | Beginner to Advanced
-        </title>
-        <meta
-          name="description"
-          content="Join InLane's comprehensive driving courses. 10-hour beginner course, specialized training modules, and expert instruction. Learn driving with confidence in Bangalore."
-        />
-        <meta
-          name="keywords"
-          content="driving course bangalore, learn car driving, beginner driving course, driving lessons near me, driving school courses, car driving training, driving classes bangalore, best driving school"
-        />
-        {/* Essential meta tags */}
-        <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://inlane.in/courses" />
-
-        {/* Open Graph Tags */}
-        <meta
-          property="og:title"
-          content="Professional Driving Courses by InLane - From Basics to Mastery"
-        />
-        <meta
-          property="og:description"
-          content="Expert-led driving courses with structured learning modules. 10-hour beginner course, hands-on training, and comprehensive road safety education."
-        />
-        <meta property="og:url" content="https://inlane.in/courses" />
-        <meta property="og:type" content="website" />
-      </Helmet>
+      <SEOHead 
+        title={seo.title}
+        description={seo.description}
+        keywords={seo.keywords}
+        ogImage={seo.ogImage}
+        canonical={`/driving-school-in/${location}`}
+      />
       
       <Navbar
         backgroundColor="#00CE84"

@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback, memo } from 'react';
 import faqData from '../../data/faq';
 import Navbar2 from '../Navbar2';
 import Footer from '../Footer';
+import SEOHead from '../SEOHead';
+import { seoData } from '../../utils/seoData';
 
 // Memoized FAQ Item for performance
 const FAQItem = memo(({ faq, isActive, onClick, searchTerm }) => (
@@ -69,6 +71,7 @@ const FAQPage = () => {
   const [filteredFAQs, setFilteredFAQs] = useState(faqData);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [isTyping, setIsTyping] = useState(false);
+  const seo = seoData['/faqs'];
 
   // Define FAQ categories with emojis
   const categories = [
@@ -132,6 +135,13 @@ const FAQPage = () => {
 
   return (
     <>
+      <SEOHead 
+        title={seo.title}
+        description={seo.description}
+        keywords={seo.keywords}
+        ogImage={seo.ogImage}
+        canonical="/faqs"
+      />
       <style jsx>{`
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(8px);}

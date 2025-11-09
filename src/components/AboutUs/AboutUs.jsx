@@ -2,7 +2,8 @@ import React from "react";
 import Navbar2 from "../Navbar";
 import Footer from "../Footer";
 import aboutUsData from "../../data/aboutUs";
-import { Helmet } from "react-helmet-async";
+import { seoData } from "../../utils/seoData";
+import { useSEO } from "../../hooks/useSEO";
 import pitCrewTag from "../../assets/images/PitCrew_Tag.svg";
 import { Link } from "react-router-dom";
 
@@ -12,33 +13,11 @@ const AboutUs = () => {
     .flat();
   const weAtLane = aboutUsData.find((item) => item.title === "We at LANE");
   const founder = aboutUsData.find((item) => item.title === "Our Founder");
+  const seo = { ...seoData['/about-us'], canonical: '/about-us' };
+  useSEO(seo);
+  
   return (
     <>
-      <Helmet>
-        <title>
-          About InLane - India's Modern Driving School | Learn Safe Driving
-        </title>
-        <meta
-          name="description"
-          content="Meet the team behind InLane, India's modern driving school. Led by founder Samiksha, we're revolutionizing driver education with professional training and a mission for zero road fatalities."
-        />
-        <meta
-          name="keywords"
-          content="InLane driving school, driving lessons bangalore, learn driving bangalore, professional driving school, driving instructor near me, best driving school india, safe driving courses"
-        />
-        <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://inlane.in/about-us" />
-        <meta
-          property="og:title"
-          content="About InLane - India's Modern Driving School"
-        />
-        <meta
-          property="og:description"
-          content="Meet the team behind InLane, India's modern driving school. Led by founder Samiksha, we're revolutionizing driver education with professional training."
-        />
-        <meta property="og:url" content="https://inlane.in/about-us" />
-        <meta property="og:type" content="website" />
-      </Helmet>
       <Navbar2
         backgroundColor="#d1b3ff"
         logo="/svg/Logo_white.svg"
