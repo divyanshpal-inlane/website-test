@@ -1,14 +1,13 @@
 import React from "react";
-
 import LandingPage from "./LandingPage";
-import { Box } from "@mui/material";
+import { seoData } from "../utils/seoData";
+import { useSEO } from "../hooks/useSEO";
 
 const Homepage = () => {
-  return (
-    // <Box>
-      <LandingPage />
-    // </Box>
-  );
+  const seo = { ...seoData['/'], canonical: '/' };
+  useSEO(seo);
+  
+  return <LandingPage />;
 };
 
 export default Homepage;
