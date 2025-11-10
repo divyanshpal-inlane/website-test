@@ -321,7 +321,7 @@ const BenefitsSplitLayout = ({ location = "HSR Layout" }) => {
       </div>
       
       {/* Enhanced CSS */}
-      <style jsx>{`
+      <style jsx="true">{`
         .location-wrapper {
           position: relative;
           display: inline-block;
