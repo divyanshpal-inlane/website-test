@@ -1,74 +1,45 @@
-export const updatePageMeta = (title, description, keywords, ogImage, canonical) => {
-  // Update document title
-  document.title = title;
+export const updatePageMeta = (seoData) => {
+  const { title, description, keywords, ogImage, canonical, ogTitle } = seoData;
   
-  // Update meta description
-  const metaDescription = document.querySelector('meta[name="description"]');
-  if (metaDescription) {
-    metaDescription.setAttribute('content', description);
-  } else {
-    const meta = document.createElement('meta');
-    meta.name = 'description';
-    meta.content = description;
-    document.head.appendChild(meta);
+  if (title) {
+    document.title = title;
   }
   
-  // Update meta keywords
-  const metaKeywords = document.querySelector('meta[name="keywords"]');
-  if (metaKeywords) {
-    metaKeywords.setAttribute('content', keywords);
-  } else {
-    const meta = document.createElement('meta');
-    meta.name = 'keywords';
-    meta.content = keywords;
-    document.head.appendChild(meta);
-  }
-  
-  // Update Open Graph title
-  const ogTitle = document.querySelector('meta[property="og:title"]');
-  if (ogTitle) {
-    ogTitle.setAttribute('content', title);
-  } else {
-    const meta = document.createElement('meta');
-    meta.setAttribute('property', 'og:title');
-    meta.content = title;
-    document.head.appendChild(meta);
-  }
-  
-  // Update Open Graph description
-  const ogDescription = document.querySelector('meta[property="og:description"]');
-  if (ogDescription) {
-    ogDescription.setAttribute('content', description);
-  } else {
-    const meta = document.createElement('meta');
-    meta.setAttribute('property', 'og:description');
-    meta.content = description;
-    document.head.appendChild(meta);
-  }
-  
-  // Update Open Graph image
-  if (ogImage) {
-    const ogImg = document.querySelector('meta[property="og:image"]');
-    if (ogImg) {
-      ogImg.setAttribute('content', `https://inlane.in${ogImage}`);
+  const updateMeta = (selector, content) => {
+    if (!content) return;
+    let meta = document.querySelector(selector);
+    if (meta) {
+      meta.setAttribute('content', content);
     } else {
-      const meta = document.createElement('meta');
-      meta.setAttribute('property', 'og:image');
-      meta.content = `https://inlane.in${ogImage}`;
+      meta = document.createElement('meta');
+      if (selector.includes('property=')) {
+        meta.setAttribute('property', selector.match(/property="([^"]*)"/)[1]);
+      } else {
+        meta.name = selector.match(/name="([^"]*)"/)[1];
+      }
+      meta.content = content;
       document.head.appendChild(meta);
     }
-  }
+  };
+  
+  updateMeta('meta[name="description"]', description);
+  updateMeta('meta[name="keywords"]', keywords);
+  updateMeta('meta[property="og:title"]', ogTitle || title);
+  updateMeta('meta[property="og:description"]', description);
+  updateMeta('meta[property="og:image"]', ogImage?.startsWith('http') ? ogImage : `https://inlane.in${ogImage}`);
   
   // Update canonical URL
-  if (canonical) {
-    const canonicalLink = document.querySelector('link[rel="canonical"]');
-    if (canonicalLink) {
-      canonicalLink.setAttribute('href', `https://inlane.in${canonical}`);
-    } else {
-      const link = document.createElement('link');
-      link.rel = 'canonical';
-      link.href = `https://inlane.in${canonical}`;
-      document.head.appendChild(link);
-    }
+  const canonicalUrl = canonical || `https://inlane.in${window.location.pathname}`;
+  
+  let canonicalLink = document.querySelector('link[rel="canonical"]');
+  if (canonicalLink) {
+    canonicalLink.setAttribute('href', canonicalUrl);
+  } else {
+    canonicalLink = document.createElement('link');
+    canonicalLink.setAttribute('rel', 'canonical');
+    canonicalLink.setAttribute('href', canonicalUrl);
+    document.head.appendChild(canonicalLink);
   }
+  
+  console.log('Updated canonical to:', canonicalUrl);
 }

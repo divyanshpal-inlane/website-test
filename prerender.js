@@ -22,6 +22,11 @@ Object.entries(routes).forEach(([route, seo]) => {
     .replace(/<meta\s+property="og:title"\s+content="[^"]*"/, `<meta property="og:title" content="${seo.title}"`)
     .replace(/<meta\s+property="og:description"\s+content="[^"]*"/, `<meta property="og:description" content="${seo.description}"`)
   
+  // Only update canonical if it exists in seoData
+  if (seo.canonical) {
+    html = html.replace(/<link\s+rel="canonical"\s+href="[^"]*"/, `<link rel="canonical" href="${seo.canonical}"`)
+  }
+  
   const dir = route === '/' ? './dist' : `./dist${route}`
   if (route !== '/') {
     fs.mkdirSync(dir, { recursive: true })

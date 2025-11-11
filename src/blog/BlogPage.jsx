@@ -4,6 +4,8 @@ import { createClient } from "contentful";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import { BLOCKS, INLINES, MARKS } from "@contentful/rich-text-types";
 import MyButton from "../ui/button/MyButton";
+import { getBlogSEO } from "../utils/seoData";
+import { updatePageMeta } from "../utils/updatePageMeta";
 
 // Utility function to generate a URL-friendly slug
 const generateSlug = (title) => {
@@ -319,6 +321,11 @@ export default function BlogPost() {
         });
 
         setPost(entry);
+        
+        // Load SEO data
+        const blogSEO = getBlogSEO(slug, entry.fields.title, entry.fields.excerpt);
+        blogSEO.canonical = `https://inlane.in/blog/${slug}`;
+        updatePageMeta(blogSEO);
       } catch (err) {
         console.error("Error fetching blog post:", err);
         setError("Failed to load blog post. Please try again later.");
