@@ -26,28 +26,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-
-const locations = [
-  "HSR Layout",
-  "KR Puram",
-  "Mahadevapura",
-  "Whitefield",
-  "Marathahalli",
-  "Kudlu Gate",
-  "Kudlu",
-  "Begur",
-  "Indiranagar",
-  "Benniganhalli",
-  "Baiyappanahalli",
-  "Swami Vivekananda Road",
-  "TC Palya",
-  "Horamavu",
-  "Ramamurthy Nagar",
-  "Kasturi Nagar",
-  "Hoodi",
-  "ITPL",
-  "Avalahalli"
-];
+import { locations } from "../data/locations";
 
 
 const Navbar2 = ({ backgroundColor  = "#FAF9E6", logo = "./LANE_LOGO.svg", burgerMenu = "/PurpleHamburger.png" }) => {
