@@ -31,22 +31,44 @@ async function generatePages() {
 
   // Fetch blog posts from Contentful
   try {
+    console.log('Fetching blog posts from Contentful...')
     const blogResponse = await contentfulClient.getEntries({
-      content_type: 'blogPost',
+      content_type: 'blog',
       limit: 100
     })
     
-    blogResponse.items.forEach(post => {
-      const slug = post.fields.slug
+    console.log(`Found ${blogResponse.items.length} blog posts`)
+    
+    blogResponse.items.forEach((post, index) => {
+      let slug = post.fields.slug
+      
+      // If slug is a full URL, extract just the slug part
+      if (slug && slug.includes('/')) {
+        slug = slug.split('/').pop()
+      }
+      
+      // If no slug or empty, generate from title
+      if (!slug) {
+        slug = post.fields.title
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+          .trim()
+      }
+      console.log(`${index + 1}. Processing: "${post.fields.title}" -> /blog/${slug}`)
+      
       routes[`/blog/${slug}`] = {
         title: post.fields.title,
-        description: post.fields.description || post.fields.title,
+        description: post.fields.description || post.fields.blogSummary?.content?.[0]?.content?.[0]?.value || post.fields.title,
         keywords: post.fields.keywords || 'driving school, bangalore, blog',
         canonical: `https://inlane.in/blog/${slug}`
       }
     })
+    console.log('Blog posts processed successfully')
   } catch (error) {
     console.log('Could not fetch blog posts:', error.message)
+    console.log('Error details:', error)
   }
 
   Object.entries(routes).forEach(([route, seo]) => {
@@ -70,7 +92,10 @@ async function generatePages() {
   }
   })
 
-  console.log('Pre-rendered pages with SEO!')
+  console.log(`\nPre-rendered ${Object.keys(routes).length} pages with SEO!`)
+  Object.keys(routes).forEach(route => {
+    console.log(`  ${route}`)
+  })
 }
 
 generatePages()
