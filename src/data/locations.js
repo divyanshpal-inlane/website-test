@@ -1,0 +1,21 @@
+export const locations = [
+  "HSR Layout",
+  "KR Puram", 
+  "Mahadevapura",
+  "Whitefield",
+  "Marathahalli",
+  "Kudlu Gate",
+  "Kudlu",
+  "Begur",
+  "Indiranagar",
+  "Benniganhalli",
+  "Baiyappanahalli",
+  "Swami Vivekananda Road",
+  "TC Palya",
+  "Horamavu",
+  "Ramamurthy Nagar",
+  "Kasturi Nagar",
+  "Hoodi",
+  "ITPL",
+  "Avalahalli"
+];

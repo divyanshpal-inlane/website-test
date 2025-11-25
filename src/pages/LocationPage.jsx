@@ -16,7 +16,7 @@ import FAQ from "../components/Courses/FAQ";
 
 const Locations = () => {
   const { location } = useParams();
-
+  
   const [expandedHour, setExpandedHour] = useState(null);
   const [scrollPosition, setScrollPosition] = useState(0);
  
