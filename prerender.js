@@ -59,10 +59,11 @@ async function generatePages() {
       console.log(`${index + 1}. Processing: "${post.fields.title}" -> /blog/${slug}`)
       
       routes[`/blog/${slug}`] = {
-        title: post.fields.title,
-        description: post.fields.description || post.fields.blogSummary?.content?.[0]?.content?.[0]?.value || post.fields.title,
+        title: post.fields.seoTitle || post.fields.title,
+        description: post.fields.seoDescription || post.fields.blogSummary?.content?.[0]?.content?.[0]?.value || post.fields.title,
         keywords: post.fields.keywords || 'driving school, bangalore, blog',
-        canonical: `https://inlane.in/blog/${slug}`
+        canonical: `https://inlane.in/blog/${slug}`,
+        schema: post.fields.schemaSeo || null
       }
     })
     console.log('Blog posts processed successfully')
@@ -79,9 +80,13 @@ async function generatePages() {
     .replace(/<meta\s+property="og:title"\s+content="[^"]*"/, `<meta property="og:title" content="${seo.title}"`)
     .replace(/<meta\s+property="og:description"\s+content="[^"]*"/, `<meta property="og:description" content="${seo.description}"`)
   
-  // Only update canonical if it exists in seoData
+  // Only update canonical if it exists 
   if (seo.canonical) {
     html = html.replace(/<link\s+rel="canonical"\s+href="[^"]*"/, `<link rel="canonical" href="${seo.canonical}"`)
+  }
+  // Add schema markup 
+  if (seo.schema) {
+    html = html.replace('</head>', `<script type="application/ld+json">${JSON.stringify(seo.schema)}</script></head>`)
   }
   const dir = route === '/' ? './dist' : `./dist${route}`
   if (route !== '/') {
