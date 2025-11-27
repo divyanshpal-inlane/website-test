@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { seoData, getLocationSEO } from './src/utils/seoData.js'
+import { getContentfulSeoData, getLocationSEO } from './src/utils/contentfulSeoData.js'
 import { locations } from './src/data/locations.js'
 import { createClient } from 'contentful'
 
@@ -11,18 +11,13 @@ const contentfulClient = createClient({
 
 async function generatePages() {
   const template = fs.readFileSync('./dist/index.html', 'utf-8')
-  const routes = {
-    '/': seoData['/'],
-    '/about-us': seoData['/about-us'],
-    '/courses': seoData['/courses'],
-    '/faqs': seoData['/faqs'],
-    '/blog': {
-      title: 'Lane Journal - Driving Tips & Road Safety Blog',
-      description: 'Expert driving tips, road safety guides, and latest updates from Lane Driving School. Learn everything about driving in Bangalore.',
-      keywords: 'driving tips, road safety, driving blog, bangalore driving, lane journal',
-      canonical: 'https://inlane.in/blog'
-    }
-  }
+  let routes = {}
+  // console.log('Fetching SEO data from Contentful...')
+  const contentfulSeoData = await getContentfulSeoData()
+  // console.log('Contentful SEO data received:', JSON.stringify(contentfulSeoData, null, 2))
+  // console.log('Available SEO routes:', Object.keys(contentfulSeoData))
+  Object.assign(routes, contentfulSeoData)
+  // console.log('SEO data loaded from Contentful')
 
   locations.forEach(location => {
     const slug = location.toLowerCase().replace(/\s+/g, '-')
@@ -31,17 +26,14 @@ async function generatePages() {
 
   // Fetch blog posts from Contentful
   try {
-    console.log('Fetching blog posts from Contentful...')
     const blogResponse = await contentfulClient.getEntries({
       content_type: 'blog',
       limit: 100
     })
-    
+
     console.log(`Found ${blogResponse.items.length} blog posts`)
-    
     blogResponse.items.forEach((post, index) => {
       let slug = post.fields.slug
-      
       // If slug is a full URL, extract just the slug part
       if (slug && slug.includes('/')) {
         slug = slug.split('/').pop()
