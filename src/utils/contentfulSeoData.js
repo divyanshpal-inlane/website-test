@@ -29,14 +29,37 @@ export const getContentfulSeoData = async () => {
   }
 }
 
-export const getLocationSEO = (location) => ({
-  title: `Best Driving School in ${location} | Lane Driving Lessons`,
-  description: `Learn driving in ${location} with Lane. Professional instructors, flexible schedule, 10-hour comprehensive course. Book your driving lessons in ${location} today!`,
-  keywords: `driving school ${location}, driving lessons ${location}, learn driving ${location}, driving instructor ${location}`,
-  ogImage: '/LANE_LOGO.svg',
-  canonical: `https://inlane.in/driving-school-in/${location.toLowerCase().replace(/\s+/g, '-')}`,
-  ogTitle: `Best Driving School in ${location} | Lane Driving Lessons`
-})
+export const getLocationSEO = (location, contentfulSeoData = {}) => {
+  const locationSlug = `/driving-school-in/${location.toLowerCase().replace(/\s+/g, '-')}`
+  
+  if (contentfulSeoData[locationSlug]) {
+    return contentfulSeoData[locationSlug]
+  }
+  
+  // Fallback to current logic
+  return {
+    title: `Best Driving School in ${location} | Lane Driving Lessons`,
+    description: `Learn driving in ${location} with Lane. Professional instructors, flexible schedule, 10-hour comprehensive course. Book your driving lessons in ${location} today!`,
+    keywords: `driving school ${location}, driving lessons ${location}, learn driving ${location}, driving instructor ${location}`,
+    ogImage: '/LANE_LOGO.svg',
+    canonical: `https://inlane.in/driving-school-in/${location.toLowerCase().replace(/\s+/g, '-')}`,
+    ogTitle: `Best Driving School in ${location} | Lane Driving Lessons`,
+    ogDescription: `Learn driving in ${location} with Lane. Professional instructors, flexible schedule, 10-hour comprehensive course. Book your driving lessons in ${location} today!`,
+    ogURL: `https://inlane.in/driving-school-in/${location.toLowerCase().replace(/\s+/g, '-')}`,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": `Lane Driving School - ${location}`,
+      "description": `Professional driving lessons in ${location}`,
+      "url": `https://inlane.in/driving-school-in/${location.toLowerCase().replace(/\s+/g, '-')}`,
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": location,
+        "addressCountry": "IN"
+      }
+    }
+  }
+}
 
 export const getBlogSEO = (slug, title, description) => ({
   title: `${title} | Lane Driving Blog`,
