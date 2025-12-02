@@ -157,7 +157,7 @@ const PrivacyPolicy = () => {
         Depending on your jurisdiction, you may have rights regarding your
         personal data, including the right to access, correct, delete, or
         restrict its use. To exercise these rights, please contact us at +91
-        7338098798.<br></br>
+        8076097357.<br></br>
         <br></br>
         Changes to This Policy<br></br>
         <br></br>
@@ -172,7 +172,7 @@ const PrivacyPolicy = () => {
         InLane Technologies Private Limited<br></br>
         8/1 Hardut Rai Chamaria Road, Howrah - 711101<br></br>
         Email: discover.laneschool@inlane.in<br></br>
-        Phone: +91 7338098798<br></br>
+        Phone: +91 8076097357<br></br>
         <br></br>
         By using our platform, you acknowledge that you have read and understood
         this Privacy Policy and agree to the terms and conditions as well - https://inlane.in/terms-and-conditions
