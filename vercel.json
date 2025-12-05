@@ -51,6 +51,32 @@
       "source": "/blog/4APjGm3XegfKrFFfna0Eqw",
       "destination": "/404",
       "statusCode": 410
+    },
+    {
+      "source": "/blog/how-to-apply-for-a-learners-licence-online-in-bangalore-step-by-step-process-2024-update",
+      "destination": "/blog/how-to-apply-for-a-learners-licence-online-in-bangalore-step-by-step-process-2025-update",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/4apjgm3xegfkrfffnaoeqw",
+      "destination": "/blog/",
+      "statusCode":301
+    },
+  {
+      "source": "/blog/1i7uorqatz2bpziqprv9x9",
+      "destination": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/2rnx10501LYudd07PE0mSe",
+      "destination": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/2rnx10501LYudd07PE0mSe",
+      "destination": "/blog/",
+      "statusCode": 301
     }
+
   ]
 }
