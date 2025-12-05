@@ -19,38 +19,38 @@
   "redirects": [
     {
       "source": "/blog/ZLh99p8JPxhCjgZc3cPHf",
-      "destination": "/404",
-      "statusCode": 410
+      "destination": "/blog/",
+      "statusCode": 301
     },
     {
       "source": "/blog/about-us",
-      "destination": "/404",
-      "statusCode": 410
+      "destination": "/blog/",
+      "statusCode": 301
     },
     {
       "source": "/blog/2rnx10501LYudd07PE0mSe",
-      "destination": "/404",
-      "statusCode": 410
+      "destination": "/blog/",
+      "statusCode": 301
     },
     {
       "source": "/blog/7F4ivuvFv2XejD7fsXzREv",
-      "destination": "/404",
-      "statusCode": 410
+      "destination": "/blog/",
+      "statusCode": 301
     },
     {
       "source": "/blog/1htUmvvAXyQS085qoG0yvw",
-      "destination": "/404",
-      "statusCode": 410
+      "destination": "/blog/",
+      "statusCode": 301
     },
     {
       "source": "/blog/1i7u0RQatz2BPZIQprV9X9",
-      "destination": "/404",
-      "statusCode": 410
+      "destination": "/blog/",
+      "statusCode": 301
     },
     {
       "source": "/blog/4APjGm3XegfKrFFfna0Eqw",
-      "destination": "/404",
-      "statusCode": 410
+      "destination": "/blog/",
+      "statusCode": 301
     },
     {
       "source": "/blog/how-to-apply-for-a-learners-licence-online-in-bangalore-step-by-step-process-2024-update",
@@ -64,16 +64,6 @@
     },
   {
       "source": "/blog/1i7uorqatz2bpziqprv9x9",
-      "destination": "/blog/",
-      "statusCode": 301
-    },
-    {
-      "source": "/blog/2rnx10501LYudd07PE0mSe",
-      "destination": "/blog/",
-      "statusCode": 301
-    },
-    {
-      "source": "/blog/2rnx10501LYudd07PE0mSe",
       "destination": "/blog/",
       "statusCode": 301
     }
