@@ -67,7 +67,7 @@ const ReschedulePolicy = () => {
         policy at any time. Updates will be communicated to learners via email
         or posted on our website.<br></br>
         <br></br>
-        For questions, please contact our customer support team at +91 8076097357.<br></br>
+        For questions, please contact our customer support team at +91 9036214225.<br></br>
         <br></br>
       </Typography>
     </PageTemplate>
