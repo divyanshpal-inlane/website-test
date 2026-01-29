@@ -15,6 +15,7 @@ import {
   Phone as PhoneIcon,
   Email as EmailIcon,
   WhatsApp as WhatsAppIcon,
+  LocationOn as LocationIcon,
 } from "@mui/icons-material";
 
 const Footer = () => {
@@ -65,8 +66,8 @@ const Footer = () => {
   const contactInfo = [
     {
       Icon: PhoneIcon,
-      text: "+91 9611687011",
-      href: "tel:+919611687011",
+      text: "+91 8076097357",
+      href: "tel:+918076097357",
     },
     {
       Icon: EmailIcon,
@@ -76,7 +77,12 @@ const Footer = () => {
     {
       Icon: WhatsAppIcon,
       text: "WhatsApp ",
-      href: "https://wa.me/919611687011",
+      href: "https://wa.me/918076097357",
+    },
+    {
+      Icon: LocationIcon,
+      text: "8/1, HARDUT RAI, CHAMARIA ROAD, Howrah, Domjur, Howrah- 711101, West Bengal",
+      href: "https://maps.google.com/?q=8/1,+HARDUT+RAI,+CHAMARIA+ROAD,+Howrah,+Domjur,+Howrah-+711101,+West+Bengal",
     },
   ];
   const quickLinks = [
