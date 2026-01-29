@@ -42,7 +42,7 @@ const faqData = [
   },
   {
     question: "Can I customize my driving lessons based on my skill level and schedule?",
-    answer: "Yes, Inlane offers fully customizable driving lessons tailored to your skill level, learning pace, and schedule. Whether you’re a beginner or need advanced training, our flexible sessions ensure convenient, personalized coaching that fits your needs.For any suggestions or support, you can contact us at <a href='mailto:team@inlane.in' style='color: #2563eb; text-decoration: underline; font-weight: 500;'>team@inlane.in</a> or call <a href='tel:+919611687011' style='color: #2563eb; text-decoration: underline; font-weight: 500;'>+91 9611687011</a>.",
+    answer: "Yes, Inlane offers fully customizable driving lessons tailored to your skill level, learning pace, and schedule. Whether you’re a beginner or need advanced training, our flexible sessions ensure convenient, personalized coaching that fits your needs.For any suggestions or support, you can contact us at <a href='mailto:team@inlane.in' style='color: #2563eb; text-decoration: underline; font-weight: 500;'>team@inlane.in</a> or call <a href='tel:+918076097357' style='color: #2563eb; text-decoration: underline; font-weight: 500;'>+91 8076097357</a>.",
     category: "Course & Training Details",
   },
   {
@@ -52,7 +52,7 @@ const faqData = [
   },
   {
     question: "What is the pricing structure for car driving lessons at Lane Bangalore?",
-    answer: "The beginner car driving course at Lane, including driving license assistance, is priced at ₹10,000. Refresher course fees vary based on the learner’s specific requirements and the number of hours needed. For personalized pricing details, you can contact us at <a href='mailto:team@inlane.in' style='color: #2563eb; text-decoration: underline; font-weight: 500;'>team@inlane.in</a> or call <a href='tel:+919611687011' style='color: #2563eb; text-decoration: underline; font-weight: 500;'>+91 9611687011</a>.",
+    answer: "The beginner car driving course at Lane, including driving license assistance, is priced at ₹10,000. Refresher course fees vary based on the learner’s specific requirements and the number of hours needed. For personalized pricing details, you can contact us at <a href='mailto:team@inlane.in' style='color: #2563eb; text-decoration: underline; font-weight: 500;'>team@inlane.in</a> or call <a href='tel:+918076097357' style='color: #2563eb; text-decoration: underline; font-weight: 500;'>+91 8076097357</a>.",
     category: "Pricing, Payments & Refunds",
   },
   {
@@ -72,7 +72,7 @@ const faqData = [
   },
   {
     question: "How do I book a driving lesson online with Lane Driving School Bangalore?",
-    answer: "To book a driving lesson with Lane School, simply sign up using our online form or contact us via call or WhatsApp at +91 9611687011. If you have a valid learner’s or driving license, you can directly schedule a demo session. After payment, we confirm your availability and provide your driving instructor details along with a personalized lesson plan aligned with our structured curriculum.",
+    answer: "To book a driving lesson with Lane School, simply sign up using our online form or contact us via call or WhatsApp at +91 8076097357. If you have a valid learner’s or driving license, you can directly schedule a demo session. After payment, we confirm your availability and provide your driving instructor details along with a personalized lesson plan aligned with our structured curriculum.",
     category: "Booking & Scheduling",
   },
   {
@@ -127,7 +127,7 @@ const faqData = [
   },
   {
     question: "Do I need any prior experience to join Inlane's beginner driving course?",
-    answer: "No, you don't need any prior driving experience. Inlane's courses are designed for both first-time learners and those looking to restart their driving journey. Based on your current skill level, you can enroll in either the Beginner or Refresher course. We also assist new learners with the Learner's License (LL) and Driving License (DL) process from start to finish. Stuck choosing? Contact <a href='mailto:team@inlane.in' style='color: #2563eb; text-decoration: underline; font-weight: 500;'>team@inlane.in</a> or call <a href='tel:+919611687011' style='color: #2563eb; text-decoration: underline; font-weight: 500;'>+91 9611687011</a>.",
+    answer: "No, you don't need any prior driving experience. Inlane's courses are designed for both first-time learners and those looking to restart their driving journey. Based on your current skill level, you can enroll in either the Beginner or Refresher course. We also assist new learners with the Learner's License (LL) and Driving License (DL) process from start to finish. Stuck choosing? Contact <a href='mailto:team@inlane.in' style='color: #2563eb; text-decoration: underline; font-weight: 500;'>team@inlane.in</a> or call <a href='tel:+918076097357' style='color: #2563eb; text-decoration: underline; font-weight: 500;'>+91 8076097357</a>.",
     category: "Eligibility & Requirements",
   },
   {
@@ -191,7 +191,7 @@ const faqData = [
   },
   {
     question: "How do I contact Lane's customer support team for help or queries?",
-answer: `You can reach Lane's customer support by phone or WhatsApp at <a href="tel:+919611687011" style="color: #2563eb; text-decoration: underline; font-weight: 500;">+91 9611687011</a> or email us at <a href="mailto:team@inlane.in" style="color: #2563eb; text-decoration: underline; font-weight: 500;">team@inlane.in</a>. We're here to assist you with any questions or support you need.`,
+answer: `You can reach Lane's customer support by phone or WhatsApp at <a href="tel:+918076097357" style="color: #2563eb; text-decoration: underline; font-weight: 500;">+91 8076097357</a> or email us at <a href="mailto:team@inlane.in" style="color: #2563eb; text-decoration: underline; font-weight: 500;">team@inlane.in</a>. We're here to assist you with any questions or support you need.`,
     category: "Legal, Policies & Support",
   },
   
