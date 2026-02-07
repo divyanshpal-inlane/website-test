@@ -590,7 +590,7 @@ const TermsAndConditions = () => {
         query or complaint is unresolved or if you did not receive a
         satisfactory response from the 24*7 support, you can escalate the matter
         to our Grievance Oﬃce by sharing the details of the complaint ticket
-        created: Details of the Grievance Office (+91 8076097357)<br></br>
+        created: Details of the Grievance Office (+91 9036214225)<br></br>
         <br></br> 20. ASSIGNMENT<br></br> 20.1. You shall not assign Your rights
         under these User Terms without prior written approval of InLane. InLane
         can assign its rights under the User Terms to any affiliate.<br></br>
