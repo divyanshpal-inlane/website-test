@@ -32,10 +32,10 @@ const fetchCountryCodes = async () => {
 // Search locations
 const searchLocations = async (query, type, selectedCity = '') => {
   if (!query || query.length < 2) return [];
-  
+
   try {
     const timestamp = new Date().getTime();
-    const searchQuery = type === 'area' && selectedCity 
+    const searchQuery = type === 'area' && selectedCity
       ? `${query}, ${selectedCity}, india`
       : `${query}, india`;
 
@@ -55,7 +55,7 @@ const searchLocations = async (query, type, selectedCity = '') => {
     });
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    
+
     const data = await response.json();
 
     if (type === 'city') {
@@ -80,7 +80,7 @@ const searchLocations = async (query, type, selectedCity = '') => {
           state: item.address?.state || '',
           value: item.place_id
         }))
-        .filter((item, index, self) => 
+        .filter((item, index, self) =>
           index === self.findIndex((t) => t.label === item.label)
         );
     } else {
@@ -104,7 +104,7 @@ const searchLocations = async (query, type, selectedCity = '') => {
           ).trim(),
           value: item.place_id
         }))
-        .filter((item, index, self) => 
+        .filter((item, index, self) =>
           index === self.findIndex((t) => t.label === item.label)
         );
     }
@@ -163,7 +163,7 @@ const Signup = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const isMediumScreen = useMediaQuery(theme.breakpoints.between("sm", "md"));
-  
+
   // Memoize icon styles to prevent object recreation on every render
   const iconStyles = useMemo(() => ({
     small: { color: "#FFFFFF", width: 16, height: 16 },
@@ -175,11 +175,11 @@ const Signup = () => {
     return isSmallScreen
       ? iconStyles.small
       : isMediumScreen
-      ? iconStyles.medium
-      : iconStyles.large;
+        ? iconStyles.medium
+        : iconStyles.large;
   }, [isSmallScreen, isMediumScreen, iconStyles]);
 
-  // Extract UTM source from URL params
+  // Extract UTM source from URL params or detect from referrer
   const [queryParams, setQueryParams] = useState({});
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -189,14 +189,79 @@ const Signup = () => {
       result[key] = value;
     }
 
+    // If no UTM parameters in URL, try to detect from referrer
+    if (!result.utm_source && !result.utm_medium && !result.utm_campaign) {
+      const referrer = document.referrer;
+
+      if (referrer) {
+        try {
+          const referrerUrl = new URL(referrer);
+          const referrerHostname = referrerUrl.hostname.toLowerCase();
+
+          // Detect Google
+          if (referrerHostname.includes('google')) {
+            result.utm_source = 'google';
+            result.utm_medium = 'organic';
+            result.utm_campaign = 'seo';
+          }
+          // Detect Facebook
+          else if (referrerHostname.includes('facebook') || referrerHostname.includes('fb.com')) {
+            result.utm_source = 'facebook';
+            result.utm_medium = 'social';
+            result.utm_campaign = 'organic';
+          }
+          // Detect Instagram
+          else if (referrerHostname.includes('instagram')) {
+            result.utm_source = 'instagram';
+            result.utm_medium = 'social';
+            result.utm_campaign = 'organic';
+          }
+          // Detect LinkedIn
+          else if (referrerHostname.includes('linkedin')) {
+            result.utm_source = 'linkedin';
+            result.utm_medium = 'social';
+            result.utm_campaign = 'organic';
+          }
+          // Detect Twitter/X
+          else if (referrerHostname.includes('twitter') || referrerHostname.includes('t.co')) {
+            result.utm_source = 'twitter';
+            result.utm_medium = 'social';
+            result.utm_campaign = 'organic';
+          }
+          // Other referrers
+          else {
+            result.utm_source = referrerHostname;
+            result.utm_medium = 'referral';
+            result.utm_campaign = 'organic';
+          }
+        } catch (error) {
+          console.warn('Error parsing referrer:', error);
+        }
+      } else {
+        // No referrer = direct traffic
+        result.utm_source = 'direct';
+        result.utm_medium = 'none';
+        result.utm_campaign = 'direct';
+      }
+    }
+
     setQueryParams(result);
+
+    // Console log for debugging UTM parameters
+    console.log('=== UTM Tracking Debug ===');
+    console.log('All Query Parameters:', result);
+    console.log('UTM Source:', result.utm_source || 'Not provided');
+    console.log('UTM Medium:', result.utm_medium || 'Not provided');
+    console.log('UTM Campaign:', result.utm_campaign || 'Not provided');
+    console.log('Referrer:', document.referrer || 'No referrer');
+    console.log('========================');
 
   }, [location.search]);
 
   // Load country codes on component mount
   useEffect(() => {
     let isMounted = true;
-    
+
     const loadCountryCodes = async () => {
       try {
         const codes = await fetchCountryCodes();
@@ -207,9 +272,9 @@ const Signup = () => {
         console.error('Failed to load country codes:', error);
       }
     };
-    
+
     loadCountryCodes();
-    
+
     return () => {
       isMounted = false;
     };
@@ -243,7 +308,7 @@ const Signup = () => {
         setAreaOptions([]);
         return;
       }
-      
+
       setLoading(prev => ({ ...prev, area: true }));
       try {
         const results = await searchLocations(query, 'area', formData.city.label);
@@ -269,7 +334,7 @@ const Signup = () => {
   // Optimized form input handler
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
-    
+
     if (name === 'phone') {
       // Only allow numbers and limit to 10 digits
       const numericValue = value.replace(/[^0-9]/g, '');
@@ -290,7 +355,11 @@ const Signup = () => {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
-    
+
+    // Debug: Log queryParams at submission time
+    console.log('🔍 DEBUG: queryParams at form submission:', queryParams);
+    console.log('🔍 DEBUG: location.search:', location.search);
+
     // Validation
     if (!formData.email || !formData.name || !formData.phone) {
       alert('Please fill in all required fields');
@@ -307,11 +376,11 @@ const Signup = () => {
     try {
       await submitToGoogleSheets(formData);
       await sendEventToGA('landing_page_signup', formData.phone ?? "");
-      navigate('/thank-you', { 
-        state: { 
+      navigate('/thank-you', {
+        state: {
           name: formData.name,
-          email: formData.email 
-        } 
+          email: formData.email
+        }
       });
     } catch (error) {
       alert('Submission might have failed. Please try again.');
@@ -319,7 +388,7 @@ const Signup = () => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [formData, isSubmitting, isPhoneValid, navigate]);
+  }, [formData, isSubmitting, isPhoneValid, navigate, queryParams]);
 
   function getOrCreateClientId() {
     const key = 'custom_client_id';
@@ -336,17 +405,21 @@ const Signup = () => {
   // Optimized form submission function
   const submitToGoogleSheets = useCallback(async (formData) => {
     try {
+      console.log('📤 Submitting form with UTM parameters:', queryParams);
+
       const googleSheetsUrl = 'https://script.google.com/macros/s/AKfycbz45poihO1GSt_f-UxHHWltKWHh8mDNyaXPcFzbIURMvTVKj1qPn9STBILUaMiGme7r/exec';
       const payload = {
         email: formData.email,
         name: formData.name,
         phone: `${formData.countryCode}${formData.phone}`,
         license: formData.license === 'yes' ? 'yes' : 'no',
-        locality: `${formData?.city || '' }, ${formData?.area || ''}`,
+        locality: `${formData?.city || ''}, ${formData?.area || ''}`,
         adName: 'Signup Form',
-        leadSource: `Website-${new URLSearchParams(queryParams).get("utm_source") || "Direct"}`,
+        leadSource: `Website-${queryParams.utm_source || "Direct"}`,
       };
-      
+
+      console.log('📊 Google Sheets Payload:', payload);
+
       // Submit to Google Sheets
       const googleSheetsPromise = fetch(googleSheetsUrl, {
         method: 'POST',
@@ -360,10 +433,12 @@ const Signup = () => {
 
       // Submit to Cratio webhook
       const cratioPayload = {
+        ...queryParams, // Spread query params first so they don't overwrite payload
         ...payload,
-        ...queryParams,
         timestamp: new Date().toISOString()
       };
+
+      console.log('🎯 Cratio Webhook Payload (includes all UTM params):', cratioPayload);
 
       const cratioPromise = fetch(import.meta.env.VITE_CRATIO_WEBHOOK_URL, {
         method: 'POST',
@@ -381,19 +456,20 @@ const Signup = () => {
         googleSheetsPromise,
         cratioPromise
       ]);
-      
+
       if (cratioResponse.type === 'opaque') {
-        console.log('Cratio webhook request sent successfully');
+        console.log('✅ Cratio webhook request sent successfully');
       }
 
+      console.log('✅ Form submission completed successfully');
       return { status: 'success' };
     } catch (error) {
-      console.error('Form submission error:', error);
+      console.error('❌ Form submission error:', error);
       throw error;
     }
   }, [queryParams]);
 
-  // Send GA event
+  // Send GA event - non-blocking, errors won't prevent form submission
   async function sendEventToGA(_eventName, _phone) {
     try {
       const { data, error } = await supabase.functions.invoke(
@@ -401,7 +477,7 @@ const Signup = () => {
         {
           body: {
             eventSource: _eventName,
-            clientId: getOrCreateClientId()??'',
+            clientId: getOrCreateClientId() ?? '',
             leadData: {
               phone: _phone
             },
@@ -410,8 +486,8 @@ const Signup = () => {
       );
 
       if (error) {
-        console.error("Error sending event to GA:", error);
-        return error.message;
+        console.warn("GA event tracking failed (non-critical):", error.message);
+        return null;
       }
 
       if (data) {
@@ -419,8 +495,8 @@ const Signup = () => {
         return data;
       }
     } catch (error) {
-      console.error("Unexpected error while sending event to GA:", error);
-      return "Unexpected error occurred";
+      console.warn("GA event tracking error (non-critical):", error);
+      return null;
     }
   }
 
@@ -451,8 +527,8 @@ const Signup = () => {
         <div className="inline-flex whitespace-nowrap">
           <div className="flex gap-10 animate-scroll sm:gap-16">
             {[...Array(7)].map((_, index) => (
-              <span 
-                key={index} 
+              <span
+                key={index}
                 className="text-7xl md:text-7xl lg:text-8xl xl:text-9xl font-semibold text-[#00CE84]"
               >
                 By Your Side, Every Ride 🚗
@@ -481,7 +557,7 @@ const Signup = () => {
         <div className="font-['Bricolage_Grotesque'] max-w-2xl mx-auto text-left font-bold">
           <p className="text-2xl md:text-3xl lg:text-4xl font mb-4">
 
-            We offer 
+            We offer
             <span className="inline-block relative mx-2 font">
               <img
                 src={pitCrewTag}
@@ -490,13 +566,18 @@ const Signup = () => {
               />
               <span className="relative z-20">fun lessons</span>
             </span>
-             with cool cars & instructors that match your vibe 🚗
+            with cool cars & instructors that match your vibe 🚗
           </p>
         </div>
-        <form 
+        <form
           className="w-full max-w-2xl mx-auto font-['Bricolage_Grotesque']"
           onSubmit={handleSubmit}
         >
+          {/* Hidden UTM Fields */}
+          <input type="hidden" name="utm_source" value={queryParams.utm_source || ''} />
+          <input type="hidden" name="utm_medium" value={queryParams.utm_medium || ''} />
+          <input type="hidden" name="utm_campaign" value={queryParams.utm_campaign || ''} />
+
           <div className="my-8 space-y-4 md:space-y-6 md:my-16">
             {/* Email Field */}
             <FormField label="Your Email Id" bgColor="bg-[#D1B3FF]">
@@ -529,9 +610,9 @@ const Signup = () => {
                 required
                 className="bg-transparent"
                 placeholder='Enter your name'
-                inputProps={{ 
+                inputProps={{
                   'aria-label': 'Name',
-                  style: { fontFamily: "Bricolage Grotesque" } 
+                  style: { fontFamily: "Bricolage Grotesque" }
                 }}
                 InputLabelProps={{ style: { fontFamily: "Bricolage Grotesque" } }}
               />
@@ -587,7 +668,7 @@ const Signup = () => {
               </div>
             </FormField>
 
-         
+
             <div className="h-6"></div>
             {/* License Radio Group */}
             <FormField label="Do You Have A Four Wheeler (4W) Driver's License?" bgColor="bg-[#D1B3FF]">
@@ -598,15 +679,15 @@ const Signup = () => {
                 onChange={handleChange}
                 aria-label="License"
               >
-                <FormControlLabel 
-                  value="yes" 
-                  control={<Radio className="text-[#00CE84]" />} 
-                  label={<Typography className="font-['Bricolage_Grotesque']">Yes</Typography>} 
+                <FormControlLabel
+                  value="yes"
+                  control={<Radio className="text-[#00CE84]" />}
+                  label={<Typography className="font-['Bricolage_Grotesque']">Yes</Typography>}
                 />
-                <FormControlLabel 
-                  value="no" 
-                  control={<Radio className="text-[#00CE84]" />} 
-                  label={<Typography className="font-['Bricolage_Grotesque']">No</Typography>}  
+                <FormControlLabel
+                  value="no"
+                  control={<Radio className="text-[#00CE84]" />}
+                  label={<Typography className="font-['Bricolage_Grotesque']">No</Typography>}
                 />
               </RadioGroup>
             </FormField>
@@ -618,27 +699,27 @@ const Signup = () => {
               </APIProvider>
             </FormField>
             <div className="h-6"></div>
-                <div>
-                By continuing, you agree to our
-                <nav className="flex flex-row justify-center gap-4">
-                  <a
-                    target="_blank"
-                    href="https://inlane.in/terms-and-conditions"
-                    className="text-muted-foreground text-gray-500 underline"
-                    rel="noreferrer"
-                  >
-                    Terms of Service
-                  </a>
-                  <a
-                    target="_blank"
-                    href="https://inlane.in/privacy-policy"
-                    className="text-muted-foreground text-gray-500 underline"
-                    rel="noreferrer"
-                  >
-                    Privacy Policies
-                  </a>
-                </nav>
-              </div>
+            <div>
+              By continuing, you agree to our
+              <nav className="flex flex-row justify-center gap-4">
+                <a
+                  target="_blank"
+                  href="https://inlane.in/terms-and-conditions"
+                  className="text-muted-foreground text-gray-500 underline"
+                  rel="noreferrer"
+                >
+                  Terms of Service
+                </a>
+                <a
+                  target="_blank"
+                  href="https://inlane.in/privacy-policy"
+                  className="text-muted-foreground text-gray-500 underline"
+                  rel="noreferrer"
+                >
+                  Privacy Policies
+                </a>
+              </nav>
+            </div>
             {/* Submit Button */}
             <div className="flex justify-center">
               <Button
@@ -653,8 +734,8 @@ const Signup = () => {
                   )
                 }
                 sx={{
-                  background: isSubmitting 
-                    ? "rgba(0, 206, 132, 0.7)" 
+                  background: isSubmitting
+                    ? "rgba(0, 206, 132, 0.7)"
                     : "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
                   color: "white",
                   fontWeight: "bold",
@@ -662,8 +743,8 @@ const Signup = () => {
                   textDecoration: "none",
                   textTransform: "none",
                   "&:hover": {
-                    background: isSubmitting 
-                      ? "rgba(0, 206, 132, 0.7)" 
+                    background: isSubmitting
+                      ? "rgba(0, 206, 132, 0.7)"
                       : "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
                   },
                   "&:disabled": {
@@ -687,7 +768,7 @@ const Signup = () => {
           </div>
         </form>
       </Box>
-      
+
       <div className="flex justify-center items-center mt-52">
       </div>
       <Footer />
