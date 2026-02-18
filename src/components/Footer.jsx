@@ -66,8 +66,8 @@ const Footer = () => {
   const contactInfo = [
     {
       Icon: PhoneIcon,
-      text: "+91 9036214225",
-      href: "tel:+919036214225",
+      text: "+91 73380 98798",
+      href: "tel:+917338098798",
     },
     {
       Icon: EmailIcon,
@@ -77,12 +77,12 @@ const Footer = () => {
     {
       Icon: WhatsAppIcon,
       text: "WhatsApp ",
-      href: "https://wa.me/919036214225",
+      href: "https://wa.me/917338098798",
     },
     {
       Icon: LocationIcon,
-      text: "8/1, HARDUT RAI, CHAMARIA ROAD, Howrah, Domjur, Howrah- 711101, West Bengal",
-      href: "https://maps.google.com/?q=8/1,+HARDUT+RAI,+CHAMARIA+ROAD,+Howrah,+Domjur,+Howrah-+711101,+West+Bengal",
+      text: "3rd floor, Akruti Chambers, Stage 2, Hoysala Nagar, Indiranagar, Bengaluru, Karnataka 560038",
+      href: "https://maps.google.com/?q=3rd+floor,+Akruti+Chambers,+Stage+2,+Hoysala+Nagar,+Indiranagar,+Bengaluru,+Karnataka+560038",
     },
   ];
   const quickLinks = [
