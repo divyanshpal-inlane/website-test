@@ -291,7 +291,7 @@ export default function BlogPost() {
     const fetchBlogPost = async () => {
       try {
         setLoading(true);
-        
+
         // First, try to use the ID passed in location state
         let postId = location.state?.id;
 
@@ -321,7 +321,7 @@ export default function BlogPost() {
         });
 
         setPost(entry);
-        
+
         // Load SEO data
         const blogSEO = getBlogSEO(slug, entry.fields.title, entry.fields.excerpt);
         blogSEO.canonical = `https://inlane.in/blog/${slug}`;
@@ -453,11 +453,6 @@ export default function BlogPost() {
             {/* Title */}
             <h1 className="text-4xl font-bold mb-4">{fields.title}</h1>
 
-            {/* Summary */}
-            {/* <div className="text-lg mb-8">
-              {documentToReactComponents(fields.blogSummary)}
-            </div> */}
-
             {/* Blog Content */}
             <div className="blog-content">
               {fields.blogContent?.content?.map((node, index) => (
@@ -469,12 +464,39 @@ export default function BlogPost() {
                     }
                     links={fields.blogContent.links}
                   />
+                  {/* Mid-Content CTA — appears after every 5th content block */}
+                  {index > 0 && (index + 1) % 5 === 0 && (
+                    <div className="my-8 rounded-2xl bg-[#D9FF7A] p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
+                      <div>
+                        <p className="text-lg font-bold text-gray-800 font-blog">Ready to start driving?</p>
+                        <p className="text-sm text-gray-600 mt-1">Join 1000+ learners already on the road with InLane.</p>
+                      </div>
+                      <button
+                        className="shrink-0 px-6 py-3 font-extrabold text-white rounded-full bg-gradient-to-r from-[#00CE84] to-[#00BC78] hover:from-[#00BC78] hover:to-[#00CE84] transition-all duration-200 shadow-md text-base"
+                        onClick={() => window.open('https://inlane.in/signup?utm_source=website&utm_medium=blog&utm_campaign=blog_post&utm_content=cta_blog', '_blank')}
+                      >
+                        🚗 Sign Up Now
+                      </button>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
 
+            {/* End of Article CTA */}
+            <div className="mt-12 mb-6 rounded-2xl bg-[#00CE84] p-8 flex flex-col items-center text-center shadow-lg">
+              <p className="text-2xl font-bold text-white font-blog">Ready to Learn Driving?</p>
+              <p className="text-white/90 mt-2 text-base">Start your driving journey with expert instructors today!</p>
+              <button
+                className="mt-5 px-8 py-3 font-extrabold text-[#00CE84] bg-white rounded-full hover:bg-[#D9FF7A] hover:text-black transition-all duration-200 shadow-md text-lg"
+                onClick={() => window.open('https://inlane.in/signup?utm_source=website&utm_medium=blog&utm_campaign=blog_post&utm_content=cta_blog', '_blank')}
+              >
+                Sign Up for Free
+              </button>
+            </div>
+
             {/* Categories */}
-            <div className="flex flex-wrap gap-2 mt-12">
+            <div className="flex flex-wrap gap-2 mt-6">
               {fields.miniBlog && (
                 <span className="inline-block bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-sm font-semibold">
                   Mini Blog
@@ -505,26 +527,56 @@ export default function BlogPost() {
                   RTO Queries❓
                 </span>
               )}
-
-              
             </div>
-            {/* Signup Btn */}
+
+            {/* Original Signup Btn */}
             <div className="flex justify-center mt-12">
               <MyButton />
             </div>
           </div>
 
-          {/* Right Space */}
-          <div className="hidden md:block md:w-1/6 ml-4 mt-32">
-            <div className="sticky top-4 h-full flex flex-col justify-end">
-              <div className="w-full h-32 rounded-lg">
+          {/* Right Space — Sticky CTA (desktop only) */}
+          <div className="hidden md:block md:w-1/6 ml-4">
+            <div className="sticky top-24 flex flex-col items-center gap-4">
+              {/* Sticky CTA Card */}
+              <div className="w-full rounded-2xl bg-[#D1B3FF] p-4 shadow-lg flex flex-col items-center text-center">
+                <p className="text-sm font-bold text-gray-800 font-blog leading-tight">
+                  Learn Driving with InLane
+                </p>
+                <p className="text-xs text-gray-600 mt-1 mb-3">
+                  Expert instructors, flexible schedule
+                </p>
+                <button
+                  className="w-full py-2.5 font-extrabold text-white text-sm rounded-full bg-gradient-to-r from-[#00CE84] to-[#00BC78] hover:from-[#00BC78] hover:to-[#00CE84] transition-all duration-200 shadow"
+                  onClick={() => window.open('https://inlane.in/signup?utm_source=website&utm_medium=blog&utm_campaign=blog_post&utm_content=cta_blog', '_blank')}
+                >
+                  Sign Up
+                </button>
+              </div>
+              {/* Road blocks decoration */}
+              <div className="w-full">
                 <img src="/RoadBlocks.svg" alt="Road Blocks" />
               </div>
             </div>
           </div>
-          
+
         </div>
       </div>
+
+      {/* Mobile Sticky Bottom CTA */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white border-t border-gray-200 shadow-2xl px-4 py-3 flex items-center justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-bold text-gray-800 truncate font-blog">Ready to drive? 🚗</p>
+          <p className="text-xs text-gray-500 truncate">Join InLane — learn in just 10 days!</p>
+        </div>
+        <button
+          className="shrink-0 px-5 py-2.5 font-extrabold text-white rounded-full bg-gradient-to-r from-[#00CE84] to-[#00BC78] hover:from-[#00BC78] hover:to-[#00CE84] transition-all duration-200 text-sm shadow-md"
+          onClick={() => window.open('https://inlane.in/signup?utm_source=website&utm_medium=blog&utm_campaign=blog_post&utm_content=cta_blog', '_blank')}
+        >
+          Sign Up Now
+        </button>
+      </div>
+
     </div>
   );
 }
