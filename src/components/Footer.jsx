@@ -494,6 +494,43 @@ const Footer = () => {
             </Box>
           </Box>
         )}
+        {/* Company Legal Information */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            mt: 4,
+            pt: 3,
+            borderTop: "1px solid rgba(0, 0, 0, 0.1)",
+            mx: { xs: 2, sm: 4, md: 12 },
+          }}
+        >
+          <Typography
+            variant="body2"
+            sx={{
+              fontFamily: "Bricolage Grotesque",
+              fontSize: { xs: "12px", sm: "14px", md: "14px" },
+              color: "#000000",
+              textAlign: "center",
+              mb: 0.5,
+            }}
+          >
+            Inlane Technologies Private Limited
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              fontFamily: "Bricolage Grotesque",
+              fontSize: { xs: "11px", sm: "12px", md: "12px" },
+              color: "#666666",
+              textAlign: "center",
+            }}
+          >
+            CIN: U62099WB2024PTC269670
+          </Typography>
+        </Box>
       </Box>
     </>
   );
