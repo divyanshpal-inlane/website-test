@@ -17,17 +17,22 @@ import { supabase } from '../supabaseClient'
 const fetchCountryCodes = async () => {
   try {
     const response = await fetch('https://restcountries.com/v3.1/all');
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     const data = await response.json();
-    return data.map(country => ({
-      code: `${country.idd.root}${country.idd.suffixes ? country.idd.suffixes[0] : ''}`,
-      name: country.name.common,
-      flag: country.flags?.svg || ''
-    }));
+    if (!Array.isArray(data)) throw new Error('Unexpected response format');
+    return data
+      .filter(country => country.idd?.root)
+      .map(country => ({
+        code: `${country.idd.root}${country.idd.suffixes ? country.idd.suffixes[0] : ''}`,
+        name: country.name.common,
+        flag: country.flags?.svg || ''
+      }));
   } catch (error) {
     console.error('Error fetching country codes:', error);
     return [];
   }
 };
+
 
 // Search locations
 const searchLocations = async (query, type, selectedCity = '') => {
