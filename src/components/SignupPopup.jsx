@@ -217,23 +217,23 @@ const SignupPopup = () => {
             />
 
             {/* Modal */}
-            <div className="fixed inset-0 z-[1000] flex items-center justify-center px-4 py-6 overflow-y-auto">
-                <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg my-auto">
+            <div className="fixed inset-0 z-[1000] flex items-center justify-center px-4 py-4 overflow-y-auto">
+                <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm my-auto">
 
                     {/* Green Header */}
-                    <div className="bg-[#00CE84] px-6 pt-8 pb-6 flex flex-col items-center text-center relative rounded-t-3xl">
+                    <div className="bg-[#00CE84] px-5 pt-5 pb-4 flex flex-col items-center text-center relative rounded-t-3xl">
                         <button
                             onClick={handleClose}
-                            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 transition-colors text-white font-bold text-lg"
+                            className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 transition-colors text-white font-bold text-sm"
                             aria-label="Close"
                         >
                             ✕
                         </button>
-                        <img src="/LANE_LOGO.svg" alt="InLane" className="h-10 mb-3" />
-                        <h2 className="text-xl font-extrabold text-white">
+                        <img src="/LANE_LOGO.svg" alt="InLane" className="h-7 mb-2" />
+                        <h2 className="text-base font-extrabold text-white">
                             Start Your Driving Journey! 🚗
                         </h2>
-                        <p className="text-white/90 mt-1 text-sm">
+                        <p className="text-white/90 mt-0.5 text-xs">
                             Fill in your details and we'll get you started.
                         </p>
                     </div>
@@ -246,11 +246,11 @@ const SignupPopup = () => {
                     {/* Form */}
                     <form
                         onSubmit={handleSubmit}
-                        className="bg-white px-5 pb-6 rounded-b-3xl space-y-4 font-['Bricolage_Grotesque']"
+                        className="bg-white px-4 pb-4 rounded-b-3xl space-y-2.5 font-['Bricolage_Grotesque']"
                     >
                         {/* Email */}
-                        <div className="rounded-2xl p-4 bg-[#D1B3FF]">
-                            <label className="block text-sm font-bold mb-2">Your Email ID</label>
+                        <div className="rounded-xl p-3 bg-[#D1B3FF]">
+                            <label className="block text-xs font-bold mb-1">Your Email ID</label>
                             <TextField
                                 fullWidth
                                 variant="outlined"
@@ -261,13 +261,13 @@ const SignupPopup = () => {
                                 required
                                 placeholder="Enter your email"
                                 size="small"
-                                inputProps={{ style: { fontFamily: "Bricolage Grotesque" } }}
+                                inputProps={{ style: { fontFamily: "Bricolage Grotesque", fontSize: "13px" } }}
                             />
                         </div>
 
                         {/* Name */}
-                        <div className="rounded-2xl p-4 bg-[#D9FF7A]">
-                            <label className="block text-sm font-bold mb-2">Your Name</label>
+                        <div className="rounded-xl p-3 bg-[#D9FF7A]">
+                            <label className="block text-xs font-bold mb-1">Your Name</label>
                             <TextField
                                 fullWidth
                                 variant="outlined"
@@ -277,13 +277,13 @@ const SignupPopup = () => {
                                 required
                                 placeholder="Enter your name"
                                 size="small"
-                                inputProps={{ style: { fontFamily: "Bricolage Grotesque" } }}
+                                inputProps={{ style: { fontFamily: "Bricolage Grotesque", fontSize: "13px" } }}
                             />
                         </div>
 
                         {/* Phone */}
-                        <div className="rounded-2xl p-4 bg-[#00CE84]">
-                            <label className="block text-sm font-bold mb-2">Your Phone Number</label>
+                        <div className="rounded-xl p-3 bg-[#00CE84]">
+                            <label className="block text-xs font-bold mb-1">Your Phone Number</label>
                             <div className="flex gap-2">
                                 <FormControl className="w-28">
                                     <Select
@@ -337,8 +337,8 @@ const SignupPopup = () => {
                         </div>
 
                         {/* License */}
-                        <div className="rounded-2xl p-4 bg-[#D1B3FF]">
-                            <label className="block text-sm font-bold mb-2">
+                        <div className="rounded-xl p-3 bg-[#D1B3FF]">
+                            <label className="block text-xs font-bold mb-1">
                                 Do You Have A 4W Driver's License?
                             </label>
                             <RadioGroup
@@ -361,8 +361,8 @@ const SignupPopup = () => {
                         </div>
 
                         {/* Locality */}
-                        <div className="rounded-2xl p-4 bg-[#D9FF7A]">
-                            <label className="block text-sm font-bold mb-2">
+                        <div className="rounded-xl p-3 bg-[#D9FF7A]">
+                            <label className="block text-xs font-bold mb-1">
                                 Which Locality Are You Based Out Of?
                             </label>
                             <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY} libraries={["places"]}>
@@ -422,30 +422,7 @@ const SignupPopup = () => {
                             </button>
                         </div>
 
-                        {/* USP Bullets */}
-                        <div className="border-t border-gray-100 pt-4 mt-2">
-                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 text-center">
-                                Why InLane?
-                            </p>
-                            <ul className="space-y-2">
-                                <li className="flex items-center gap-2 text-sm text-gray-700">
-                                    <span className="w-5 h-5 rounded-full bg-[#00CE84]/20 text-[#00CE84] font-bold text-xs flex items-center justify-center flex-shrink-0">✓</span>
-                                    Professional certified instructors
-                                </li>
-                                <li className="flex items-center gap-2 text-sm text-gray-700">
-                                    <span className="w-5 h-5 rounded-full bg-[#00CE84]/20 text-[#00CE84] font-bold text-xs flex items-center justify-center flex-shrink-0">✓</span>
-                                    Flexible schedule — morning &amp; evening slots
-                                </li>
-                                <li className="flex items-center gap-2 text-sm text-gray-700">
-                                    <span className="w-5 h-5 rounded-full bg-[#00CE84]/20 text-[#00CE84] font-bold text-xs flex items-center justify-center flex-shrink-0">✓</span>
-                                    10+ locations across Bangalore
-                                </li>
-                                <li className="flex items-center gap-2 text-sm text-gray-700">
-                                    <span className="w-5 h-5 rounded-full bg-[#00CE84]/20 text-[#00CE84] font-bold text-xs flex items-center justify-center flex-shrink-0">✓</span>
-                                    Get your driving license faster
-                                </li>
-                            </ul>
-                        </div>
+
                     </form>
 
                 </div>
