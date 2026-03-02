@@ -23,6 +23,7 @@ import Blog from "./blog/Blog";
 import BlogPage from "./blog/BlogPage";
 import NewCoursePage from "./components/Courses/NewCoursePage";
 import { HelmetProvider } from 'react-helmet-async';
+import SignupPopup from "./components/SignupPopup";
 
 import FAQPage from "./components/FAQ/FAQPage"; // Fixed casing to match actual file
 
@@ -154,6 +155,7 @@ const router = createBrowserRouter([
 function App() {
   return (
     <HelmetProvider>
+      <SignupPopup />
       <RouterProvider router={router} />
     </HelmetProvider>
   );

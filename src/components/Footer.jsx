@@ -3,8 +3,6 @@ import {
   Box,
   Typography,
   Link,
-  IconButton,
-  Tooltip,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -20,7 +18,7 @@ import {
 
 const Footer = () => {
   const [isVisible, setIsVisible] = useState(false);
-  
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -31,7 +29,7 @@ const Footer = () => {
       { threshold: 0.1 }
     );
 
-    const footerElement = document.getElementById('animated-footer');
+    const footerElement = document.getElementById("animated-footer");
     if (footerElement) {
       observer.observe(footerElement);
     }
@@ -43,27 +41,19 @@ const Footer = () => {
     };
   }, []);
 
-  // USED USETHEME AND USEMEDIAQUERY HOOK FROM MUI TO CREATE A BREAKPOINTS FOR RESPONSIVENESS.
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const isTablet = useMediaQuery(theme.breakpoints.down("md"));
-  // DATA OF ICONS TO BE RENDER ARE USED AS AN ARRAY
+
   const socialIcons = [
-    {
-      Icon: InstagramIcon,
-      href: "https://www.instagram.com/inlane.in/",
-    },
-    {
-      Icon: XIcon,
-      href: "https://x.com/inlane_in/",
-    },
-    {
-      Icon: LinkedInIcon,
-      href: "https://www.linkedin.com/company/in-lane/",
-    },
+    { Icon: InstagramIcon, href: "https://www.instagram.com/inlane.in/" },
+    { Icon: XIcon, href: "https://x.com/inlane_in/" },
+    { Icon: LinkedInIcon, href: "https://www.linkedin.com/company/in-lane/" },
   ];
 
   const contactInfo = [
+    { Icon: PhoneIcon, text: "+91 9036214225", href: "tel:+919036214225" },
+    { Icon: EmailIcon, text: "team@inlane.in", href: "mailto:team@inlane.in" },
+    { Icon: WhatsAppIcon, text: "WhatsApp", href: "https://wa.me/919036214225" },
     {
       Icon: PhoneIcon,
       text: "+91 73380 98798",
@@ -85,77 +75,70 @@ const Footer = () => {
       href: "https://maps.google.com/?q=3rd+floor,+Akruti+Chambers,+Stage+2,+Hoysala+Nagar,+Indiranagar,+Bengaluru,+Karnataka+560038",
     },
   ];
-  const quickLinks = [
-    {
-      text: "Privacy Policy",
-      href: "/privacy-policy",
-    },
-    {
-      text: "Terms & Conditions",
-      href: "/terms-and-conditions",
-    },
-    {
-      text: "Disclaimer",
-      href: "/disclaimer",
-    },
-    {
-      text: "Payment Policy",
-      href: "/payment-policy",
-    },
-  ];
-  const infoLinks = [
-    {
-      text: "About us",
-      href: "about-us",
-    },
-    {
-      text: "Courses",
-      href: "/courses",
-    },
-    {
-      text: "FAQs",
-      href: "/faqs",
-    },
-    {
-      text: "Lane Journal",
-      href: "/blog",
-    },
-  ];
-  // CUSTOM STYLES
-  const styles = {
-    footerSecondContainer: {
-      display: "flex",
-      flexDirection: { xs: "column", md: "row" },
-      justifyContent: "space-between",
-      px: { xs: 2, sm: 4, md: 12 },
-    },
-    footerSmallScreenContainer: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "center",
-      gap: "12px",
 
-      px: { xs: 2, sm: 4, md: 12 },
-      paddingTop: { xs: 2, sm: 3, md: 4 },
-      scale: isMobile ? "0.85" : "1",
-    },
-    footerSmallScreenContainerTwo: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "center",
-      gap: "12px",
-      px: { xs: 2, sm: 4, md: 12 },
-      scale: isMobile ? "0.85" : "1",
-    },
+  const companyLinks = [
+    { text: "About us", href: "/about-us" },
+    { text: "Courses", href: "/courses" },
+    { text: "FAQs", href: "/faqs" },
+    { text: "Lane Journal", href: "/blog" },
+    { text: "Privacy Policy", href: "/privacy-policy" },
+    { text: "Terms & Conditions", href: "/terms-and-conditions" },
+    { text: "Disclaimer", href: "/disclaimer" },
+    { text: "Payment Policy", href: "/payment-policy" },
+  ];
+
+  const drivingSchoolLinks = [
+    { text: "HSR Layout", href: "/driving-school-in/hsr-layout" },
+    { text: "KR Puram Near Me", href: "/driving-school-in/kr-puram" },
+    { text: "Mahadevapura Near Me", href: "/driving-school-in/mahadevapura" },
+    { text: "Whitefield Near Me", href: "/driving-school-in/whitefield" },
+    { text: "Marathahalli Near Me", href: "/driving-school-in/marathahalli" },
+    { text: "Kudlu Gate Near Me", href: "/driving-school-in/kudlu-gate" },
+    { text: "Kudlu Near Me", href: "/driving-school-in/kudlu" },
+    { text: "Bagur Near Me", href: "/driving-school-in/bagur" },
+    { text: "Indiranagar Near Me", href: "/driving-school-in/indiranagar" },
+    { text: "Benniganahalli Near Me", href: "/driving-school-in/benniganahalli" },
+    { text: "Banaswadi Near Me", href: "/driving-school-in/banaswadi" },
+    { text: "Swami Vivekananda Road Near Me", href: "/driving-school-in/swami-vivekananda-road" },
+    { text: "TC Palya Near Me", href: "/driving-school-in/tc-palya" },
+    { text: "Ramamurthy Nagar Near Me", href: "/driving-school-in/ramamurthy-nagar" },
+    { text: "Kasturi Nagar Near Me", href: "/driving-school-in/kasturi-nagar" },
+    { text: "Hoodi Near Me", href: "/driving-school-in/hoodi" },
+    { text: "ITPL Near Me", href: "/driving-school-in/itpl" },
+  ];
+
+  const latestPostsLinks = [
+    { text: "Driving License Address Change", href: "/blog/how-to-change-address-in-your-driving-license-online-in-india" },
+    { text: "Upload DL & RC in DigiLocker", href: "/blog/how-to-upload-a-driving-license-and-rc-in-the-digilocker-and-mparivahan-apps" },
+    { text: "Name Change on Driving License", href: "/blog/how-to-change-your-name-on-an-indian-driving-license-complete-guide-2024" },
+    { text: "Check Your Driving License Status", href: "/blog/check-driving-license-status-online-via-parivahan-driving-school-guide" },
+    { text: "Apply for a Learners License Online in Bangalore", href: "/blog/how-to-apply-for-a-learners-license-online-in-bangalore-step-by-step-process-2025-update" },
+    { text: "Required Documents for every stage of Driving License Application in Bangalore", href: "/blog/documents-required-for-every-stage-of-driving-license-application-in-bangalore-2024-guide" },
+    { text: "Bangalore DL Test Slot Booking", href: "/blog/how-to-book-a-driving-test-slot-in-bangalore-step-by-step-guide" },
+    { text: "Driving Test Bangalore", href: "/blog/driving-test-in-bangalore-complete-guide-2020" },
+    { text: "What to Do When You Misplace Your DL", href: "/blog/what-to-do-if-you-lose-your-driving-licence-card-in-india" },
+    { text: "Beginner Driving Mistakes & Tips", href: "/blog/10-common-driving-mistakes-beginners-make-and-how-to-avoid-them-driving-lessons-tips" },
+    { text: "Manual vs Automatic: Find Your Fit", href: "/blog/manual-vs-automatic-driving-lessons-which-one-suits-you-best" },
+  ];
+
+  const styles = {
     footerContainer: {
       bgcolor: "background.paper",
       paddingTop: { xs: 3, sm: 4, md: 6 },
       backgroundImage: `url(${isMobile ? "/img.png" : "/Road1.png"})`,
       backgroundRepeat: "no-repeat",
-      minHeight: isMobile ? "100%" : "470px",
       backgroundSize: "100% 100%",
       backgroundPosition: "center",
+      minHeight: isMobile ? "100%" : "470px",
       paddingBottom: { xs: 3, sm: 4, md: 6 },
+    },
+    footerSecondContainer: {
+      display: "flex",
+      flexDirection: { xs: "column", md: "row" },
+      justifyContent: "space-between",
+      alignItems: "flex-start",
+      px: { xs: 2, sm: 4, md: 6 },
+      gap: { xs: 0, md: 3 },
     },
     footerHeadingImage: {
       display: "inline-block",
@@ -177,11 +160,12 @@ const Footer = () => {
       textDecoration: "none",
       color: "#000000",
       fontWeight: "500",
-      fontSize: { xs: "18px", sm: "22px", md: "20px" },
+      fontSize: { xs: "14px", sm: "15px", md: "15px" },
       fontFamily: "Bricolage Grotesque",
-      mb: 1,
-      flexBasis: isMobile ? "45%" : "auto",
-      lineHeight: { xs: "32px", sm: "28px", md: "32px" },
+      mb: 0.5,
+      display: "block",
+      lineHeight: { xs: "26px", sm: "26px", md: "26px" },
+      "&:hover": { color: "#00CE84" },
     },
     footerIcons: {
       backgroundColor: "black",
@@ -196,295 +180,196 @@ const Footer = () => {
     },
     footerContact: {
       display: "flex",
-      alignItems: "center",
+      alignItems: "flex-start",
       mb: 1,
-      // fontWeight: "bold",
-      fontSize: { xs: "18px", sm: "20px", md: "22px" },
+      fontSize: { xs: "14px", sm: "15px", md: "15px" },
       fontFamily: "Bricolage Grotesque",
-      lineHeight: { xs: "32px", sm: "28px", md: "32px" },
+      lineHeight: { xs: "26px", sm: "26px", md: "26px" },
     },
     carAnimation: {
-      position: 'absolute',
-      // top: '-50px',
-      // right: '-100px',
-      // width: { xs: '30px', sm: '30px', md: '60px' },
-      // height: { xs: '30px', sm: '30px', md: '60px' },
-      animation: isVisible ? 'carMove 4s linear infinite' : 'none',
-      transform: 'scaleX(-1)',
+      position: "absolute",
+      animation: isVisible ? "carMove 4s linear infinite" : "none",
+      transform: "scaleX(-1)",
     },
   };
 
   const keyframes = `
     @keyframes carMove {
-      0% {
-        transform: translateX(0);
-      }
-      100% {
-        transform: translateX(${isMobile ? 'calc(-100vw - 100px)' : 'calc(-110vw - 100px)'});
-      }
+      0% { transform: translateX(0); }
+      100% { transform: translateX(${isMobile ? "calc(-100vw - 100px)" : "calc(-110vw - 100px)"}); }
     }
   `;
+
+  // Reusable link column renderer
+  const LinkColumn = ({ title, links, flex = 1 }) => (
+    <Box flex={flex} mb={4} mt={6}>
+      <Box sx={styles.footerHeadingImage}>
+        <Typography variant="h4" sx={styles.footerHeading}>
+          {title}
+        </Typography>
+      </Box>
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
+        {links.map(({ text, href }, i) => (
+          <Link key={i} href={href} sx={styles.footerLinks}>
+            {text}
+          </Link>
+        ))}
+      </Box>
+    </Box>
+  );
 
   return (
     <>
       <style>{keyframes}</style>
-      <Box id="animated-footer" sx={{ ...styles.footerContainer, position: 'relative' }}>
+      <Box id="animated-footer" sx={{ ...styles.footerContainer, position: "relative" }}>
         {isVisible && (
-          <>
-            <img 
-              src="/svg/car.png" 
-              alt="Moving car"
-              className="w-[30px] h-[30px] md:w-[60px] md:h-[60px] top-[-25px] right-[-100px] md:top-[-50px] md:right-[-100px]"
-              style={{ ...styles.carAnimation, animationDelay: '0s' }}
-            />
-            
-          </>
+          <img
+            src="/svg/car.png"
+            alt="Moving car"
+            className="w-[30px] h-[30px] md:w-[60px] md:h-[60px] top-[-25px] right-[-100px] md:top-[-50px] md:right-[-100px]"
+            style={{ ...styles.carAnimation, animationDelay: "0s" }}
+          />
         )}
+
         {isMobile ? (
-          <Box>
-            <Box sx={styles.footerSmallScreenContainer}>
-              {/* LANE LOGO  */}
-              <Box mb={4}>
-                <Box
-                sx={{
-                  width: "100%",
-                  maxWidth: isMobile ? "187px" : "173px",
-                  height: "auto",
-                }}
-                >
-                  <img
-                    src="/Lane_Footer_Logo.svg"
-                   
-                    alt="Logo"
-                  />
-                </Box>
-                <Box>
-                  <Box mt={2} display="flex" flexDirection="row">
-                    {socialIcons.map(({ Icon, href }, index) => (
-                      <Link
-                        key={index}
-                        href={href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        sx={{ mr: 1 }}
-                      >
-                        <Icon sx={styles.footerIcons} />
-                      </Link>
-                    ))}
-                  </Box>
-                  <Typography
-                    variant="h5"
-                    fontWeight={600}
-                    fontSize={{ xs: "18px", sm: "24px", md: "26px" }}
-                    color="#000000"
-                    fontFamily="Bricolage Grotesque"
-                    sx={{ mt: 2 }}
-                  >
-                    We do cool things here!
-                  </Typography>
-                </Box>
+          /* ── MOBILE LAYOUT ── */
+          <Box sx={{ px: 2, pt: 2 }}>
+            {/* Logo + Social */}
+            <Box mb={3}>
+              <Box sx={{ maxWidth: "187px" }}>
+                <img src="/Lane_Footer_Logo.svg" alt="Logo" style={{ width: "100%", height: "auto" }} />
               </Box>
-              {/* Contact Information */}
-              <Box>
-                <Box sx={styles.footerHeadingImage}>
-                  <Typography variant="h4" sx={styles.footerHeading}>
-                    Contact Us
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: isMobile ? "column" : "column",
-                    justifyContent: isMobile ? "space-around" : "flex-start",
-                  }}
-                >
-                  {contactInfo.map(({ Icon, text, href }, index) => (
-                    <Typography
-                      key={index}
-                      variant="body2"
-                      sx={styles.footerContact}
-                    >
-                      <Icon sx={{ mr: 1, color: "#00CE84" }} />
-                      <Link
-                        sx={{ textDecoration: "none", color: "#000000" }}
-                        href={href}
-                        target={text === "WhatsApp " ? "_blank" : "_self"}
-                        rel={text === "WhatsApp " ? "noopener noreferrer" : ""}
-                      >
-                        {text}
-                      </Link>
-                    </Typography>
-                  ))}
-                </Box>
+              <Box mt={2} display="flex" flexDirection="row">
+                {socialIcons.map(({ Icon, href }, i) => (
+                  <Link key={i} href={href} target="_blank" rel="noopener noreferrer" sx={{ mr: 1 }}>
+                    <Icon sx={styles.footerIcons} />
+                  </Link>
+                ))}
+              </Box>
+              <Typography
+                variant="h5"
+                fontWeight={600}
+                fontSize="18px"
+                color="#000000"
+                fontFamily="Bricolage Grotesque"
+                sx={{ mt: 2 }}
+              >
+                We do cool things here!
+              </Typography>
+            </Box>
+
+            {/* Company */}
+            <Box mb={3}>
+              <Box sx={styles.footerHeadingImage}>
+                <Typography variant="h4" sx={styles.footerHeading}>Company</Typography>
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
+                {companyLinks.map(({ text, href }, i) => (
+                  <Link key={i} href={href} sx={styles.footerLinks}>{text}</Link>
+                ))}
               </Box>
             </Box>
-            <Box sx={styles.footerSmallScreenContainerTwo}>
-              {/* Information section */}
-              <Box flex={{ xs: "1 1 100%" }} mb={4}>
-                <Box sx={styles.footerHeadingImage}>
-                  <Typography variant="h4" sx={styles.footerHeading}>
-                    Information
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    flexWrap: "wrap",
-                    justifyContent: isMobile ? "space-around" : "flex-start",
-                  }}
-                >
-                  {infoLinks.map(({ text, href }, i) => (
-                    <Link key={i} href={href} sx={styles.footerLinks}>
-                      {text}
-                    </Link>
-                  ))}
-                </Box>
+
+            {/* Driving School In */}
+            <Box mb={3}>
+              <Box sx={styles.footerHeadingImage}>
+                <Typography variant="h4" sx={styles.footerHeading}>Driving School in</Typography>
               </Box>
-              {/* Quick links section */}
-              <Box flex={{ xs: "1 1 100%" }} mb={4}>
-                <Box sx={styles.footerHeadingImage}>
-                  <Typography variant="h4" sx={styles.footerHeading}>
-                    Quick Links
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    flexWrap: "wrap",
-                    justifyContent: isMobile ? "space-around" : "flex-start",
-                  }}
-                >
-                  {quickLinks.map(({ text, href }, i) => (
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
+                {drivingSchoolLinks.map(({ text, href }, i) => (
+                  <Link key={i} href={href} sx={styles.footerLinks}>{text}</Link>
+                ))}
+              </Box>
+            </Box>
+
+            {/* Latest Posts */}
+            <Box mb={3}>
+              <Box sx={styles.footerHeadingImage}>
+                <Typography variant="h4" sx={styles.footerHeading}>Latest Posts</Typography>
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
+                {latestPostsLinks.map(({ text, href }, i) => (
+                  <Link key={i} href={href} sx={styles.footerLinks}>{text}</Link>
+                ))}
+              </Box>
+            </Box>
+
+            {/* Contact Us */}
+            <Box mb={3}>
+              <Box sx={styles.footerHeadingImage}>
+                <Typography variant="h4" sx={styles.footerHeading}>Contact Us</Typography>
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
+                {contactInfo.map(({ Icon, text, href }, i) => (
+                  <Typography key={i} variant="body2" sx={styles.footerContact}>
+                    <Icon sx={{ mr: 1, color: "#00CE84", mt: "4px", flexShrink: 0 }} />
                     <Link
-                      key={i}
+                      sx={{ textDecoration: "none", color: "#000000" }}
                       href={href}
-                      sx={styles.footerLinks}
-                      paddingLeft={{ xs: 1.2 }}
+                      target={text === "WhatsApp" ? "_blank" : "_self"}
+                      rel={text === "WhatsApp" ? "noopener noreferrer" : ""}
                     >
                       {text}
                     </Link>
-                  ))}
-                </Box>
+                  </Typography>
+                ))}
               </Box>
             </Box>
           </Box>
         ) : (
+          /* ── DESKTOP LAYOUT ── */
           <Box sx={styles.footerSecondContainer}>
-            <Box flex={2} mb={4} mt={6}>
+            {/* Logo + Social */}
+            <Box flex={1.5} mb={4} mt={6}>
               <Box>
                 <img
                   src="/Lane_Footer_Logo.svg"
-                  style={{
-                    // width: "100%",
-                    maxWidth: isMobile ? "187px" : "173px",
-                    height: "auto",
-                  }}
+                  style={{ maxWidth: "173px", height: "auto" }}
                   alt="Logo"
                 />
               </Box>
-              <Box>
-                <Box mt={2} display="flex" flexDirection="row">
-                  {socialIcons.map(({ Icon, href }, i) => (
-                    <Link
-                      key={i}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      sx={{ mr: 1 }}
-                    >
-                      <Icon sx={styles.footerIcons} />
-                    </Link>
-                  ))}
-                </Box>
-                <Typography
-                  variant="h5"
-                  fontWeight={600}
-                  fontSize={{ xs: "20px", sm: "24px", md: "26px" }}
-                  color="#000000"
-                  fontFamily="Bricolage Grotesque"
-                  sx={{ mt: 2 }}
-                >
-                  We do cool things here!
-                </Typography>
-              </Box>
-            </Box>
-            {/* Information section */}
-            <Box flex={1} mb={4} mt={6}>
-              <Box sx={styles.footerHeadingImage}>
-                <Typography variant="h4" sx={styles.footerHeading}>
-                  Information
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: isMobile ? "row" : "column",
-                  flexWrap: "wrap",
-                  justifyContent: isMobile ? "space-around" : "flex-start",
-                }}
-              >
-                {infoLinks.map(({ text, href }, i) => (
-                  <Link key={i} href={href} sx={styles.footerLinks}>
-                    {text}
+              <Box mt={2} display="flex" flexDirection="row">
+                {socialIcons.map(({ Icon, href }, i) => (
+                  <Link key={i} href={href} target="_blank" rel="noopener noreferrer" sx={{ mr: 1 }}>
+                    <Icon sx={styles.footerIcons} />
                   </Link>
                 ))}
               </Box>
-            </Box>
-            {/* Quick links section */}
-            <Box flex={1} mb={4} mt={6}>
-              <Box sx={styles.footerHeadingImage}>
-                <Typography variant="h4" sx={styles.footerHeading}>
-                  Quick Links
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: isMobile ? "column" : "column",
-                  flexWrap: "wrap",
-                  justifyContent: isMobile ? "space-around" : "flex-start",
-                }}
+              <Typography
+                variant="h5"
+                fontWeight={600}
+                fontSize={{ xs: "20px", sm: "24px", md: "22px" }}
+                color="#000000"
+                fontFamily="Bricolage Grotesque"
+                sx={{ mt: 2 }}
               >
-                {quickLinks.map(({ text, href }, i) => (
-                  <Link
-                    key={i}
-                    href={href}
-                    sx={styles.footerLinks}
-                    paddingLeft={{ xs: 1.2 }}
-                  >
-                    {text}
-                  </Link>
-                ))}
-              </Box>
+                We do cool things here!
+              </Typography>
             </Box>
-            {/* Contact us section */}
-            <Box flex={1} mt={6}>
+
+            {/* Company */}
+            <LinkColumn title="Company" links={companyLinks} flex={1} />
+
+            {/* Driving School In */}
+            <LinkColumn title="Driving School in" links={drivingSchoolLinks} flex={1.3} />
+
+            {/* Latest Posts */}
+            <LinkColumn title="Latest Posts" links={latestPostsLinks} flex={1.5} />
+
+            {/* Contact Us */}
+            <Box flex={1.2} mt={6} mb={4}>
               <Box sx={styles.footerHeadingImage}>
-                <Typography variant="h4" sx={styles.footerHeading}>
-                  Contact Us
-                </Typography>
+                <Typography variant="h4" sx={styles.footerHeading}>Contact Us</Typography>
               </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: isMobile ? "column" : "column",
-                  justifyContent: isMobile ? "space-around" : "flex-start",
-                }}
-              >
-                {contactInfo.map(({ Icon, text, href }, index) => (
-                  <Typography
-                    key={index}
-                    variant="body2"
-                    sx={styles.footerContact}
-                  >
-                    <Icon sx={{ mr: 1, color: "#00CE84" }} />
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
+                {contactInfo.map(({ Icon, text, href }, i) => (
+                  <Typography key={i} variant="body2" sx={styles.footerContact}>
+                    <Icon sx={{ mr: 1, color: "#00CE84", mt: "4px", flexShrink: 0 }} />
                     <Link
                       sx={{ textDecoration: "none", color: "#000000" }}
                       href={href}
-                      target={text === "WhatsApp " ? "_blank" : "_self"}
-                      rel={text === "WhatsApp " ? "noopener noreferrer" : ""}
+                      target={text === "WhatsApp" ? "_blank" : "_self"}
+                      rel={text === "WhatsApp" ? "noopener noreferrer" : ""}
                     >
                       {text}
                     </Link>
