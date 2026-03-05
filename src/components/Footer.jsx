@@ -51,24 +51,9 @@ const Footer = () => {
   ];
 
   const contactInfo = [
-    { Icon: PhoneIcon, text: "+91 9036214225", href: "tel:+919036214225" },
+    { Icon: PhoneIcon, text: "+91 73380 98798", href: "tel:+917338098798" },
     { Icon: EmailIcon, text: "team@inlane.in", href: "mailto:team@inlane.in" },
-    { Icon: WhatsAppIcon, text: "WhatsApp", href: "https://wa.me/919036214225" },
-    {
-      Icon: PhoneIcon,
-      text: "+91 73380 98798",
-      href: "tel:+917338098798",
-    },
-    {
-      Icon: EmailIcon,
-      text: "team@inlane.in",
-      href: "mailto:team@inlane.in",
-    },
-    {
-      Icon: WhatsAppIcon,
-      text: "WhatsApp ",
-      href: "https://wa.me/917338098798",
-    },
+    { Icon: WhatsAppIcon, text: "WhatsApp", href: "https://wa.me/917338098798" },
     {
       Icon: LocationIcon,
       text: "3rd floor, Akruti Chambers, Stage 2, Hoysala Nagar, Indiranagar, Bengaluru, Karnataka 560038",
