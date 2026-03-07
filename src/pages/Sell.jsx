@@ -37,11 +37,11 @@ const years = Array.from({ length: currentYear - 1999 }, (_, i) => currentYear -
 // Feature Card Component
 const FeatureCard = memo(({ icon, title, description, bgColor }) => (
   <div className={`${bgColor} rounded-2xl p-4 md:p-6 flex flex-col h-full`}>
-    <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-xl flex items-center justify-center mb-3">
+    <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm">
       {icon}
     </div>
-    <h3 className="font-['Bricolage_Grotesque'] font-bold text-lg md:text-xl mb-2">{title}</h3>
-    <p className="font-['Bricolage_Grotesque'] text-sm text-gray-700 leading-relaxed">{description}</p>
+    <h3 className="font-['glancyr'] font-bold text-xl md:text-2xl mb-2">{title}</h3>
+    <p className="font-['Bricolage_Grotesque'] text-xs md:text-sm text-gray-800 leading-relaxed">{description}</p>
   </div>
 ));
 
@@ -192,13 +192,13 @@ const Sell = () => {
       <Navbar2 backgroundColor='#00CE84' logo='/LANE_LOGO_White.svg' burgerMenu='/svg/burger_menu_white.svg' />
 
       {/* Hero Section */}
-      <section className="bg-[#00CE84] pt-8 pb-16 md:pb-24 relative overflow-hidden">
+      <section className="bg-[#00CE84] pt-6 md:pt-8 pb-32 md:pb-48 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="flex flex-col lg:flex-row items-center gap-8">
+          <div className="flex flex-col lg:flex-row items-start gap-6 md:gap-8">
             {/* Form */}
-            <div className="w-full lg:w-1/2 z-10">
-              <div className="bg-white rounded-3xl p-6 md:p-8 shadow-xl">
-                <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="w-full lg:w-[45%] z-10">
+              <div className="bg-white rounded-[2rem] p-5 md:p-8 shadow-xl">
+                <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
                   <TextField
                     fullWidth
                     variant="outlined"
@@ -211,11 +211,12 @@ const Sell = () => {
                       '& .MuiOutlinedInput-root': {
                         borderRadius: '50px',
                         fontFamily: 'Bricolage Grotesque',
+                        backgroundColor: '#fff',
                       }
                     }}
                   />
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2 md:gap-3">
                     <FormControl fullWidth size="small">
                       <Select
                         name="make"
@@ -234,24 +235,23 @@ const Sell = () => {
                       </Select>
                     </FormControl>
 
-                    <TextField
-                      fullWidth
-                      variant="outlined"
-                      name="model"
-                      value={formData.model}
-                      onChange={handleChange}
-                      placeholder="Model"
-                      size="small"
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
+                    <FormControl fullWidth size="small">
+                      <Select
+                        name="model"
+                        value={formData.model}
+                        onChange={handleChange}
+                        displayEmpty
+                        sx={{
                           borderRadius: '50px',
                           fontFamily: 'Bricolage Grotesque',
-                        }
-                      }}
-                    />
+                        }}
+                      >
+                        <MenuItem value="" disabled>Model</MenuItem>
+                      </Select>
+                    </FormControl>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2 md:gap-3">
                     <FormControl fullWidth size="small">
                       <Select
                         name="year"
@@ -289,7 +289,7 @@ const Sell = () => {
                     </FormControl>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2 md:gap-3">
                     <FormControl fullWidth size="small">
                       <Select
                         name="transmission"
@@ -329,18 +329,19 @@ const Sell = () => {
 
                   <Button
                     type="submit"
-                    fullWidth
                     sx={{
-                      background: 'linear-gradient(90deg, #D9FF7A 0%, #C4FF4D 100%)',
+                      background: 'linear-gradient(90deg, #D9FF7A 0%, #BFFF4D 100%)',
                       color: 'black',
                       fontWeight: 'bold',
                       fontFamily: 'Bricolage Grotesque',
                       borderRadius: '50px',
-                      padding: '12px',
+                      padding: '10px 32px',
                       textTransform: 'none',
-                      fontSize: '16px',
+                      fontSize: '14px',
+                      boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
                       '&:hover': {
-                        background: 'linear-gradient(90deg, #C4FF4D 0%, #D9FF7A 100%)',
+                        background: 'linear-gradient(90deg, #BFFF4D 0%, #D9FF7A 100%)',
+                        boxShadow: '0 6px 8px rgba(0,0,0,0.15)',
                       }
                     }}
                   >
@@ -351,31 +352,39 @@ const Sell = () => {
             </div>
 
             {/* Hero Content */}
-            <div className="w-full lg:w-1/2 text-center lg:text-left">
-              <div className="mb-4">
-                <span className="inline-flex items-center text-2xl md:text-3xl">
-                  <span className="bg-[#FFD700] rounded-lg px-2 py-1 mr-2">⚡</span>
-                </span>
-                <h1 className="font-['Bricolage_Grotesque'] text-3xl md:text-5xl font-bold text-white leading-tight">
-                  SELL YOUR CAR
-                </h1>
-                <h2 className="font-['glancyr'] text-4xl md:text-6xl font-bold text-white italic mt-2">
-                  Fast, Fair &
-                </h2>
-                <div className="flex items-center justify-center lg:justify-start gap-2 mt-2">
-                  <span className="bg-[#D1B3FF] rounded-full p-2">💰</span>
-                  <h2 className="font-['glancyr'] text-4xl md:text-6xl font-bold text-white italic">
+            <div className="w-full lg:w-[55%] text-center lg:text-left relative">
+              <div className="mb-4 relative">
+                {/* SELL YOUR CAR with lightning bolt */}
+                <div className="flex items-center justify-center lg:justify-start gap-2 mb-1">
+                  <img src="/seller/img3.svg" alt="" className="w-10 h-10 md:w-14 md:h-14" />
+                  <h1 className="font-['Bricolage_Grotesque'] text-2xl md:text-4xl lg:text-5xl font-bold text-white tracking-wide">
+                    SELL YOUR CAR
+                  </h1>
+                </div>
+
+                {/* Fast, Fair & with coin icon */}
+                <div className="flex items-center justify-center lg:justify-start relative">
+                  <h2 className="font-['glancyr'] text-4xl md:text-5xl lg:text-7xl font-bold text-[#D9FF7A] italic">
+                    Fast, Fair &
+                  </h2>
+                  <img src="/seller/img.svg" alt="" className="w-12 h-12 md:w-16 md:h-16 ml-2 -mt-4" />
+                </div>
+
+                {/* Hassle Free! with scale icon */}
+                <div className="flex items-center justify-center lg:justify-start gap-2">
+                  <img src="/seller/img2.svg" alt="" className="w-10 h-10 md:w-14 md:h-14" />
+                  <h2 className="font-['glancyr'] text-4xl md:text-5xl lg:text-7xl font-bold text-[#D9FF7A] italic">
                     Hassle Free!
                   </h2>
                 </div>
               </div>
 
-              {/* Car Image */}
-              <div className="relative mt-8 hidden lg:block">
+              {/* Car Image - positioned to overlap sections */}
+              <div className="absolute -bottom-32 md:-bottom-48 right-0 lg:right-[-5%] w-full lg:w-[120%] z-0">
                 <img
-                  src="/svg/course_car.svg"
+                  src="/seller/car.png"
                   alt="Car"
-                  className="w-full max-w-lg mx-auto transform scale-x-[-1]"
+                  className="w-full max-w-2xl ml-auto"
                 />
               </div>
             </div>
@@ -384,30 +393,50 @@ const Sell = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-12 md:py-16 px-4 md:px-8 bg-white -mt-8 relative z-10">
+      <section className="pt-8 pb-12 md:pt-12 md:pb-16 px-4 md:px-8 bg-white relative z-10">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
+            {/* Free Valuation - Yellow-Green */}
             <FeatureCard
-              bgColor="bg-[#FFD700]"
-              icon={<span className="text-2xl">🏷️</span>}
+              bgColor="bg-[#D9FF7A]"
+              icon={
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              }
               title="Free Valuation"
-              description="See your car's value instantly, then profile your vehicle. Quick, easy to follow and vehicle is listed in few steps"
+              description="See your car's value instantly, then profile your vehicle. Quick easy to follow and vehicle is listed in few steps"
             />
+            {/* Door Step Inspection - Orange */}
             <FeatureCard
-              bgColor="bg-[#FFB347]"
-              icon={<span className="text-2xl">🏠</span>}
+              bgColor="bg-[#FFC229]"
+              icon={
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+              }
               title="Door Step Inspection"
               description="Our expert inspects the car and prepare a detailed report for final valuation"
             />
+            {/* Best Offer - Magenta/Pink */}
             <FeatureCard
-              bgColor="bg-[#00CE84]"
-              icon={<span className="text-2xl">💵</span>}
+              bgColor="bg-[#FF69B4]"
+              icon={
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              }
               title="Best Offer"
               description="Get offers from our buyer or learners who have learned driving with us. Speedy close of transaction"
             />
+            {/* Secure Deal - Cyan/Blue */}
             <FeatureCard
               bgColor="bg-[#87CEEB]"
-              icon={<span className="text-2xl">🔒</span>}
+              icon={
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+              }
               title="Secure Deal"
               description="Accept the offer, handover the car to the buyer and we'll securely handle the payment and ownership transfer"
             />
