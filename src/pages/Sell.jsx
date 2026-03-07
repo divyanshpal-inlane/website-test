@@ -192,208 +192,204 @@ const Sell = () => {
       <Navbar2 backgroundColor='#00CE84' logo='/LANE_LOGO_White.svg' burgerMenu='/svg/burger_menu_white.svg' />
 
       {/* Hero Section */}
-      <section className="bg-[#00CE84] pt-6 md:pt-8 pb-32 md:pb-48 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="flex flex-col lg:flex-row items-start gap-6 md:gap-8">
-            {/* Form */}
-            <div className="w-full lg:w-[45%] z-10">
-              <div className="bg-white rounded-[2rem] p-5 md:p-8 shadow-xl">
-                <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
-                  <TextField
-                    fullWidth
-                    variant="outlined"
-                    name="registrationNumber"
-                    value={formData.registrationNumber}
+      <section className="bg-[#00CE84] min-h-[500px] md:min-h-[600px] relative overflow-visible">
+        {/* Car Image - Positioned in center-right, behind form */}
+        <div className="absolute bottom-0 left-1/2 md:left-[30%] transform -translate-x-1/4 w-[90%] md:w-[70%] z-0">
+          <img
+            src="/seller/car.png"
+            alt="Car"
+            className="w-full max-w-4xl"
+          />
+        </div>
+
+        {/* Headlines - Top Right */}
+        <div className="absolute top-8 md:top-12 right-4 md:right-12 lg:right-20 z-10 text-right">
+          {/* SELL YOUR CAR with lightning bolt */}
+          <div className="flex items-center justify-end gap-2 mb-0">
+            <img src="/seller/img3.svg" alt="" className="w-8 h-8 md:w-12 md:h-12" />
+            <h1 className="font-['Bricolage_Grotesque'] text-xl md:text-3xl lg:text-4xl font-bold text-white tracking-wide">
+              SELL YOUR CAR
+            </h1>
+          </div>
+
+          {/* Fast, Fair & with coin icon floating top-right */}
+          <div className="relative inline-block">
+            <h2 className="font-['glancyr'] text-3xl md:text-5xl lg:text-6xl font-bold text-[#D9FF7A] italic">
+              Fast, Fair &
+            </h2>
+            <img src="/seller/img.svg" alt="" className="absolute -top-2 -right-10 md:-right-14 w-10 h-10 md:w-14 md:h-14" />
+          </div>
+
+          {/* Hassle Free! with scale icon */}
+          <div className="flex items-center justify-end gap-2">
+            <img src="/seller/img2.svg" alt="" className="w-8 h-8 md:w-12 md:h-12" />
+            <h2 className="font-['glancyr'] text-3xl md:text-5xl lg:text-6xl font-bold text-[#D9FF7A] italic">
+              Hassle Free!
+            </h2>
+          </div>
+        </div>
+
+        {/* Form - Left side, extending off-screen */}
+        <div className="absolute top-1/2 -translate-y-1/2 left-0 z-20 w-[90%] md:w-[45%] lg:w-[40%] max-w-lg">
+          <div className="bg-white rounded-r-[2rem] md:rounded-[2rem] p-5 md:p-8 shadow-xl ml-0 md:-ml-4">
+            <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
+              <TextField
+                fullWidth
+                variant="outlined"
+                name="registrationNumber"
+                value={formData.registrationNumber}
+                onChange={handleChange}
+                placeholder="Car Registration Number"
+                size="small"
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '50px',
+                    fontFamily: 'Bricolage Grotesque',
+                    backgroundColor: '#fff',
+                  }
+                }}
+              />
+
+              <div className="grid grid-cols-2 gap-2 md:gap-3">
+                <FormControl fullWidth size="small">
+                  <Select
+                    name="make"
+                    value={formData.make}
                     onChange={handleChange}
-                    placeholder="Car Registration Number"
-                    size="small"
+                    displayEmpty
                     sx={{
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: '50px',
-                        fontFamily: 'Bricolage Grotesque',
-                        backgroundColor: '#fff',
-                      }
-                    }}
-                  />
-
-                  <div className="grid grid-cols-2 gap-2 md:gap-3">
-                    <FormControl fullWidth size="small">
-                      <Select
-                        name="make"
-                        value={formData.make}
-                        onChange={handleChange}
-                        displayEmpty
-                        sx={{
-                          borderRadius: '50px',
-                          fontFamily: 'Bricolage Grotesque',
-                        }}
-                      >
-                        <MenuItem value="" disabled>Make</MenuItem>
-                        {carMakes.map(make => (
-                          <MenuItem key={make} value={make}>{make}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-
-                    <FormControl fullWidth size="small">
-                      <Select
-                        name="model"
-                        value={formData.model}
-                        onChange={handleChange}
-                        displayEmpty
-                        sx={{
-                          borderRadius: '50px',
-                          fontFamily: 'Bricolage Grotesque',
-                        }}
-                      >
-                        <MenuItem value="" disabled>Model</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 md:gap-3">
-                    <FormControl fullWidth size="small">
-                      <Select
-                        name="year"
-                        value={formData.year}
-                        onChange={handleChange}
-                        displayEmpty
-                        sx={{
-                          borderRadius: '50px',
-                          fontFamily: 'Bricolage Grotesque',
-                        }}
-                      >
-                        <MenuItem value="" disabled>Year</MenuItem>
-                        {years.map(year => (
-                          <MenuItem key={year} value={year}>{year}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-
-                    <FormControl fullWidth size="small">
-                      <Select
-                        name="fuelType"
-                        value={formData.fuelType}
-                        onChange={handleChange}
-                        displayEmpty
-                        sx={{
-                          borderRadius: '50px',
-                          fontFamily: 'Bricolage Grotesque',
-                        }}
-                      >
-                        <MenuItem value="" disabled>Fuel Type</MenuItem>
-                        {fuelTypes.map(fuel => (
-                          <MenuItem key={fuel} value={fuel}>{fuel}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 md:gap-3">
-                    <FormControl fullWidth size="small">
-                      <Select
-                        name="transmission"
-                        value={formData.transmission}
-                        onChange={handleChange}
-                        displayEmpty
-                        sx={{
-                          borderRadius: '50px',
-                          fontFamily: 'Bricolage Grotesque',
-                        }}
-                      >
-                        <MenuItem value="" disabled>Transmission</MenuItem>
-                        {transmissionTypes.map(trans => (
-                          <MenuItem key={trans} value={trans}>{trans}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-
-                    <FormControl fullWidth size="small">
-                      <Select
-                        name="ownership"
-                        value={formData.ownership}
-                        onChange={handleChange}
-                        displayEmpty
-                        sx={{
-                          borderRadius: '50px',
-                          fontFamily: 'Bricolage Grotesque',
-                        }}
-                      >
-                        <MenuItem value="" disabled>Ownership</MenuItem>
-                        {ownershipTypes.map(owner => (
-                          <MenuItem key={owner} value={owner}>{owner}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </div>
-
-                  <Button
-                    type="submit"
-                    sx={{
-                      background: 'linear-gradient(90deg, #D9FF7A 0%, #BFFF4D 100%)',
-                      color: 'black',
-                      fontWeight: 'bold',
-                      fontFamily: 'Bricolage Grotesque',
                       borderRadius: '50px',
-                      padding: '10px 32px',
-                      textTransform: 'none',
-                      fontSize: '14px',
-                      boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                      '&:hover': {
-                        background: 'linear-gradient(90deg, #BFFF4D 0%, #D9FF7A 100%)',
-                        boxShadow: '0 6px 8px rgba(0,0,0,0.15)',
-                      }
+                      fontFamily: 'Bricolage Grotesque',
                     }}
                   >
-                    <span className="mr-2">✨</span> Get My Offer
-                  </Button>
-                </form>
-              </div>
-            </div>
+                    <MenuItem value="" disabled>Make</MenuItem>
+                    {carMakes.map(make => (
+                      <MenuItem key={make} value={make}>{make}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
 
-            {/* Hero Content */}
-            <div className="w-full lg:w-[55%] text-center lg:text-left relative">
-              <div className="mb-4 relative">
-                {/* SELL YOUR CAR with lightning bolt */}
-                <div className="flex items-center justify-center lg:justify-start gap-2 mb-1">
-                  <img src="/seller/img3.svg" alt="" className="w-10 h-10 md:w-14 md:h-14" />
-                  <h1 className="font-['Bricolage_Grotesque'] text-2xl md:text-4xl lg:text-5xl font-bold text-white tracking-wide">
-                    SELL YOUR CAR
-                  </h1>
-                </div>
-
-                {/* Fast, Fair & with coin icon */}
-                <div className="flex items-center justify-center lg:justify-start relative">
-                  <h2 className="font-['glancyr'] text-4xl md:text-5xl lg:text-7xl font-bold text-[#D9FF7A] italic">
-                    Fast, Fair &
-                  </h2>
-                  <img src="/seller/img.svg" alt="" className="w-12 h-12 md:w-16 md:h-16 ml-2 -mt-4" />
-                </div>
-
-                {/* Hassle Free! with scale icon */}
-                <div className="flex items-center justify-center lg:justify-start gap-2">
-                  <img src="/seller/img2.svg" alt="" className="w-10 h-10 md:w-14 md:h-14" />
-                  <h2 className="font-['glancyr'] text-4xl md:text-5xl lg:text-7xl font-bold text-[#D9FF7A] italic">
-                    Hassle Free!
-                  </h2>
-                </div>
+                <FormControl fullWidth size="small">
+                  <Select
+                    name="model"
+                    value={formData.model}
+                    onChange={handleChange}
+                    displayEmpty
+                    sx={{
+                      borderRadius: '50px',
+                      fontFamily: 'Bricolage Grotesque',
+                    }}
+                  >
+                    <MenuItem value="" disabled>Model</MenuItem>
+                  </Select>
+                </FormControl>
               </div>
 
-              {/* Car Image - positioned to overlap sections */}
-              <div className="absolute -bottom-32 md:-bottom-48 right-0 lg:right-[-5%] w-full lg:w-[120%] z-0">
-                <img
-                  src="/seller/car.png"
-                  alt="Car"
-                  className="w-full max-w-2xl ml-auto"
-                />
+              <div className="grid grid-cols-2 gap-2 md:gap-3">
+                <FormControl fullWidth size="small">
+                  <Select
+                    name="year"
+                    value={formData.year}
+                    onChange={handleChange}
+                    displayEmpty
+                    sx={{
+                      borderRadius: '50px',
+                      fontFamily: 'Bricolage Grotesque',
+                    }}
+                  >
+                    <MenuItem value="" disabled>Year</MenuItem>
+                    {years.map(year => (
+                      <MenuItem key={year} value={year}>{year}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <FormControl fullWidth size="small">
+                  <Select
+                    name="fuelType"
+                    value={formData.fuelType}
+                    onChange={handleChange}
+                    displayEmpty
+                    sx={{
+                      borderRadius: '50px',
+                      fontFamily: 'Bricolage Grotesque',
+                    }}
+                  >
+                    <MenuItem value="" disabled>Fuel Type</MenuItem>
+                    {fuelTypes.map(fuel => (
+                      <MenuItem key={fuel} value={fuel}>{fuel}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </div>
-            </div>
+
+              <div className="grid grid-cols-2 gap-2 md:gap-3">
+                <FormControl fullWidth size="small">
+                  <Select
+                    name="transmission"
+                    value={formData.transmission}
+                    onChange={handleChange}
+                    displayEmpty
+                    sx={{
+                      borderRadius: '50px',
+                      fontFamily: 'Bricolage Grotesque',
+                    }}
+                  >
+                    <MenuItem value="" disabled>Transmission</MenuItem>
+                    {transmissionTypes.map(trans => (
+                      <MenuItem key={trans} value={trans}>{trans}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <FormControl fullWidth size="small">
+                  <Select
+                    name="ownership"
+                    value={formData.ownership}
+                    onChange={handleChange}
+                    displayEmpty
+                    sx={{
+                      borderRadius: '50px',
+                      fontFamily: 'Bricolage Grotesque',
+                    }}
+                  >
+                    <MenuItem value="" disabled>Ownership</MenuItem>
+                    {ownershipTypes.map(owner => (
+                      <MenuItem key={owner} value={owner}>{owner}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+
+              <div className="flex justify-center pt-2">
+                <Button
+                  type="submit"
+                  sx={{
+                    background: 'linear-gradient(90deg, #00CE84 0%, #00B876 100%)',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    fontFamily: 'Bricolage Grotesque',
+                    borderRadius: '50px',
+                    padding: '10px 40px',
+                    textTransform: 'none',
+                    fontSize: '14px',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                    '&:hover': {
+                      background: 'linear-gradient(90deg, #00B876 0%, #00CE84 100%)',
+                      boxShadow: '0 6px 8px rgba(0,0,0,0.15)',
+                    }
+                  }}
+                >
+                  <span className="mr-2">✨</span> Get My Offer
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="pt-8 pb-12 md:pt-12 md:pb-16 px-4 md:px-8 bg-white relative z-10">
+      <section className="pt-16 md:pt-24 pb-12 md:pb-16 px-4 md:px-8 bg-white relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
             {/* Free Valuation - Yellow-Green */}
