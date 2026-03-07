@@ -32,6 +32,7 @@ import FAQPage from "./components/FAQ/FAQPage"; // Fixed casing to match actual 
 import ThankYou from "./pages/ThankYouPage";
 import LocationPage from "./pages/LocationPage";
 import Page from "./pages/SignupForm";
+import Sell from "./pages/Sell";
 
 const Layout = () => {
   return (
@@ -140,6 +141,10 @@ const router = createBrowserRouter([
   {
     path: "/signup-form",
     element: <Page />,
+  },
+  {
+    path: "/sell",
+    element: <Sell />,
   }
 ], {
   future: {
