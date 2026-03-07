@@ -145,7 +145,7 @@ const SignupPopup = () => {
                 name: formData.name,
                 phone: `${formData.countryCode}${formData.phone}`,
                 license: formData.license === "yes" ? "yes" : "no",
-                locality: `${formData?.city?.label || ""}, ${formData?.area?.label || ""}`,
+                locality: `${formData?.city || ""}, ${formData?.area || ""}`,
                 adName: "Popup Signup Form",
                 leadSource: `Website-${utmParams.utm_source}`,
             };
