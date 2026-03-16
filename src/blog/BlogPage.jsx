@@ -416,6 +416,10 @@ export default function BlogPost() {
 
   const { fields } = post;
 
+  const totalBlocks = fields.blogContent?.content?.length || 0;
+  // Calculate spacing to limit CTA to max 4 times, but ensure at least 5 blocks apart
+  const ctaSpacing = Math.max(5, Math.floor(totalBlocks / 4));
+
   return (
     <div className="min-h-screen bg-transparent flex flex-col justify-center items-center mb-24 font-blog">
       {/* Banner Image */}
@@ -464,12 +468,12 @@ export default function BlogPost() {
                     }
                     links={fields.blogContent.links}
                   />
-                  {/* Mid-Content CTA — appears after every 5th content block */}
-                  {index > 0 && (index + 1) % 5 === 0 && (
+                  {/* Mid-Content CTA — appears dynamically based on content size */}
+                  {index > 0 && (index + 1) % ctaSpacing === 0 && (index + 1) / ctaSpacing <= 4 && (
                     <div className="my-8 rounded-2xl bg-[#D9FF7A] p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
                       <div>
                         <p className="text-lg font-bold text-gray-800 font-blog">Ready to start driving?</p>
-                        <p className="text-sm text-gray-600 mt-1">Join 1000+ learners already on the road with InLane.</p>
+                        <p className="text-sm text-gray-600 mt-1">Join 35,000+ registrations and 2,000+ active learners — start your journey today! 🚀</p>
                       </div>
                       <button
                         className="shrink-0 px-6 py-3 font-extrabold text-white rounded-full bg-gradient-to-r from-[#00CE84] to-[#00BC78] hover:from-[#00BC78] hover:to-[#00CE84] transition-all duration-200 shadow-md text-base"
