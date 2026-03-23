@@ -64,6 +64,7 @@ const Footer = () => {
   const companyLinks = [
     { text: "About us", href: "/about-us" },
     { text: "Courses", href: "/courses" },
+    { text: "Reviews & Ratings", href: "/reviews" },
     { text: "FAQs", href: "/faqs" },
     { text: "Lane Journal", href: "/blog" },
     { text: "Privacy Policy", href: "/privacy-policy" },
@@ -110,10 +111,10 @@ const Footer = () => {
     footerContainer: {
       bgcolor: "background.paper",
       paddingTop: { xs: 3, sm: 4, md: 6 },
-      backgroundImage: `url(${isMobile ? "/img.png" : "/Road1.png"})`,
+      backgroundImage: `url("/NavbarRoad.svg")`,
       backgroundRepeat: "no-repeat",
-      backgroundSize: "100% 100%",
-      backgroundPosition: "center",
+      backgroundSize: "100% auto",
+      backgroundPosition: "top center",
       minHeight: isMobile ? "100%" : "470px",
       paddingBottom: { xs: 3, sm: 4, md: 6 },
     },
@@ -127,18 +128,14 @@ const Footer = () => {
     },
     footerHeadingImage: {
       display: "inline-block",
-      backgroundImage: "url('/Tag.svg')",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      width: { xs: "180px", sm: "200px", md: "212.25px" },
+      borderBottom: "3px solid #00CE84",
       mb: 2,
-      textAlign: "center",
+      pb: 0.5,
     },
     footerHeading: {
       fontWeight: "bold",
-      fontSize: { xs: "24px", sm: "28px", md: "32px" },
+      fontSize: { xs: "18px", sm: "20px", md: "20px" },
       color: "#000000",
-      marginRight: { xs: "0px", sm: "0px", md: "30px" },
       fontFamily: "Bricolage Grotesque",
     },
     footerLinks: {
