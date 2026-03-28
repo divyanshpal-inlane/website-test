@@ -6,6 +6,7 @@ export default {
     extend: {
       fontFamily: {
         'grotesque': ['Bricolage Grotesque', 'sans-serif'],
+        'glancyr': ['glancyr', 'sans-serif'],
       },
       aspectRatio: {
         '1': '1',

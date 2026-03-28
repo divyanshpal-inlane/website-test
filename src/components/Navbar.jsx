@@ -29,7 +29,7 @@ import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { locations } from "../data/locations";
 
 
-const Navbar2 = ({ backgroundColor  = "#FAF9E6", logo = "./LANE_LOGO.svg", burgerMenu = "/PurpleHamburger.png" }) => {
+const Navbar2 = ({ backgroundColor = "#FAF9E6", logo = "./LANE_LOGO.svg", burgerMenu = "/PurpleHamburger.png" }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -77,29 +77,29 @@ const Navbar2 = ({ backgroundColor  = "#FAF9E6", logo = "./LANE_LOGO.svg", burge
           alignItems="center"
           margin="20px"
           mt={6}
-          
+
         >
-         <Typography
-  variant="h4"
-  component={Link}
-  to="/"
-  onClick={handleClose} // Add this line to close the drawer when clicking the logo
-  sx={{
-    color: "green",
-    fontWeight: "bold",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    textDecoration: "none",
-  }}
->
-  <img
-    src="/LANE_LOGO.svg"
-    alt="Lane logo"
-    width={isMobile ? 70 : 80}
-    style={{ marginRight: theme.spacing(1), zIndex: 2 }}
-  />
-</Typography>
+          <Typography
+            variant="h4"
+            component={Link}
+            to="/"
+            onClick={handleClose} // Add this line to close the drawer when clicking the logo
+            sx={{
+              color: "green",
+              fontWeight: "bold",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textDecoration: "none",
+            }}
+          >
+            <img
+              src="/LANE_LOGO.svg"
+              alt="Lane logo"
+              width={isMobile ? 70 : 80}
+              style={{ marginRight: theme.spacing(1), zIndex: 2 }}
+            />
+          </Typography>
         </Box>
         <List>
           <ListItem button component={Link} to="/" onClick={handleClose}>
@@ -167,47 +167,47 @@ const Navbar2 = ({ backgroundColor  = "#FAF9E6", logo = "./LANE_LOGO.svg", burge
             />
           </ListItem>
           <ListItem button onClick={handleMenuOpen} >
-  <ListItemText
-    primary={
-      <Typography
-        variant="h5"
-        sx={{
-          fontFamily: "Bricolage Grotesque",
-          textAlign: "center",
-        }}
-      >
-        Locations {anchorEl ? <ExpandLess /> : <ExpandMore />}
-      </Typography>
-    }
-  />
-</ListItem>
-<Menu
-  anchorEl={anchorEl}
-  open={Boolean(anchorEl)}
-  onClose={handleMenuClose}
-  
-  transformOrigin={{ horizontal: 'center', vertical: 'top' }}
-  anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
->
-  {locations.map((location, index) => (
-    <MenuItem
-      key={index}
-      component={Link}
-      to={`/driving-school-in/${location.toLowerCase().replace(/\s+/g, "-")}`}
-      onClick={handleMenuClose}
-      sx={{
-        fontFamily: "Bricolage Grotesque",
-        fontSize: '1rem',
-        '&:hover': {
-          backgroundColor: '#f0f0f0',
-        },
-      }}
-    >
-      {location}
-    </MenuItem>
-  ))}
-</Menu>
-          
+            <ListItemText
+              primary={
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontFamily: "Bricolage Grotesque",
+                    textAlign: "center",
+                  }}
+                >
+                  Locations {anchorEl ? <ExpandLess /> : <ExpandMore />}
+                </Typography>
+              }
+            />
+          </ListItem>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+
+            transformOrigin={{ horizontal: 'center', vertical: 'top' }}
+            anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+          >
+            {locations.map((location, index) => (
+              <MenuItem
+                key={index}
+                component={Link}
+                to={`/driving-school-in/${location.toLowerCase().replace(/\s+/g, "-")}`}
+                onClick={handleMenuClose}
+                sx={{
+                  fontFamily: "Bricolage Grotesque",
+                  fontSize: '1rem',
+                  '&:hover': {
+                    backgroundColor: '#f0f0f0',
+                  },
+                }}
+              >
+                {location}
+              </MenuItem>
+            ))}
+          </Menu>
+
           {/* Social Icons */}
           <Box
             sx={{
@@ -321,7 +321,7 @@ const Navbar2 = ({ backgroundColor  = "#FAF9E6", logo = "./LANE_LOGO.svg", burge
                 width: 80,
                 height: 73,
                 fontWeight: "bold",
-                zIndex:2
+                zIndex: 2
               }}
             >
               <img
