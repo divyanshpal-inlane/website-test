@@ -212,219 +212,215 @@ const SignupPopup = () => {
         <>
             {/* Backdrop */}
             <div
-                className="fixed inset-0 bg-black/50 z-[999] backdrop-blur-sm"
+                className="fixed inset-0 bg-black/60 z-[999] backdrop-blur-sm"
                 onClick={handleClose}
             />
 
             {/* Modal */}
-            <div className="fixed inset-0 z-[1000] flex items-center justify-center px-4 py-4 overflow-y-auto">
-                <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm my-auto">
-
-                    {/* Green Header */}
-                    <div className="bg-[#00CE84] px-5 pt-5 pb-4 flex flex-col items-center text-center relative rounded-t-3xl">
-                        <button
-                            onClick={handleClose}
-                            className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 transition-colors text-white font-bold text-sm"
-                            aria-label="Close"
-                        >
-                            ✕
-                        </button>
-                        <img src="/LANE_LOGO.svg" alt="InLane" className="h-7 mb-2" />
-                        <h2 className="text-base font-extrabold text-white">
-                            Start Your Driving Journey! 🚗
-                        </h2>
-                        <p className="text-white/90 mt-0.5 text-xs">
-                            Fill in your details and we'll get you started.
-                        </p>
-                    </div>
-
-                    {/* Curve divider */}
-                    <div className="bg-[#00CE84]">
-                        <div className="bg-white rounded-t-[2rem] h-4" />
-                    </div>
-
-                    {/* Form */}
-                    <form
-                        onSubmit={handleSubmit}
-                        className="bg-white px-4 pb-4 rounded-b-3xl space-y-2.5 font-['Bricolage_Grotesque']"
+            <div className="fixed inset-0 z-[1000] flex flex-col items-center justify-center p-4 overflow-y-auto w-full h-full font-['Bricolage_Grotesque']">
+                <div className="relative bg-white shadow-2xl w-full max-w-md mx-auto rounded-3xl overflow-hidden flex flex-col max-h-[90vh]">
+                    
+                    {/* Close button  */}
+                    <button
+                        onClick={handleClose}
+                        className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 transition-colors text-white font-bold text-sm"
+                        aria-label="Close"
                     >
-                        {/* Email */}
-                        <div className="rounded-xl p-3 bg-[#D1B3FF]">
-                            <label className="block text-xs font-bold mb-1">Your Email ID</label>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                name="email"
-                                type="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required
-                                placeholder="Enter your email"
-                                size="small"
-                                inputProps={{ style: { fontFamily: "Bricolage Grotesque", fontSize: "13px" } }}
-                            />
+                        ✕
+                    </button>
+
+                    {/* Header Image Area */}
+                    <div className="w-full h-40 sm:h-52 shrink-0 relative flex items-center justify-center overflow-hidden bg-gray-100">
+                        {/* Trying TestimonialBG.webp or MainCar.png */}
+                        <img 
+                            src="/MainCar.png" 
+                            alt="Start Your Journey" 
+                            className="w-full h-full object-cover"
+                        />
+                    </div>
+
+                    {/* Scrollable Form Content */}
+                    <div className="flex-1 overflow-y-auto px-6 py-5">
+                        {/* Title Section */}
+                        <div className="text-center mb-5">
+                            <h2 className="text-2xl font-extrabold text-[#00CE84]">
+                                Start Your Driving Journey!
+                            </h2>
+                            <p className="text-gray-600 mt-1 text-sm">
+                                Fill in your details and we'll get you started.
+                            </p>
                         </div>
 
-                        {/* Name */}
-                        <div className="rounded-xl p-3 bg-[#D9FF7A]">
-                            <label className="block text-xs font-bold mb-1">Your Name</label>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                required
-                                placeholder="Enter your name"
-                                size="small"
-                                inputProps={{ style: { fontFamily: "Bricolage Grotesque", fontSize: "13px" } }}
-                            />
-                        </div>
-
-                        {/* Phone */}
-                        <div className="rounded-xl p-3 bg-[#00CE84]">
-                            <label className="block text-xs font-bold mb-1">Your Phone Number</label>
-                            <div className="flex gap-2">
-                                <FormControl className="w-28">
-                                    <Select
-                                        value={formData.countryCode}
-                                        name="countryCode"
-                                        onChange={handleChange}
-                                        size="small"
-                                        className="w-28"
-                                        renderValue={(selected) => {
-                                            const country = countryCodes.find((c) => c.code === selected);
-                                            return (
-                                                <div className="flex items-center">
-                                                    {country?.flag && (
-                                                        <img src={country.flag} alt={country.name} className="w-5 h-3 mr-1" />
-                                                    )}
-                                                    {country ? country.code : selected}
-                                                </div>
-                                            );
-                                        }}
-                                    >
-                                        {countryCodes.map((country) => (
-                                            <MenuItem key={country.code} value={country.code}>
-                                                <div className="flex items-center">
-                                                    {country.flag && (
-                                                        <img src={country.flag} alt={country.name} className="w-5 h-3 mr-2" />
-                                                    )}
-                                                    {country.code} - {country.name}
-                                                </div>
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
+                        {/* Form */}
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            {/* Email */}
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-800 mb-1">Your Email ID</label>
                                 <TextField
-                                    name="phone"
-                                    type="tel"
-                                    className="flex-1"
-                                    value={formData.phone}
+                                    fullWidth
+                                    variant="outlined"
+                                    name="email"
+                                    type="email"
+                                    value={formData.email}
                                     onChange={handleChange}
                                     required
+                                    placeholder="Your mail id"
                                     size="small"
-                                    error={formData.phone.length > 0 && !isPhoneValid(formData.phone)}
-                                    helperText={
-                                        formData.phone.length > 0 && !isPhoneValid(formData.phone)
-                                            ? "Please enter a valid 10-digit number"
-                                            : ""
-                                    }
-                                    placeholder="Enter phone number"
-                                    inputProps={{ maxLength: 10, style: { fontFamily: "Bricolage Grotesque" } }}
+                                    inputProps={{ style: { fontFamily: "Bricolage Grotesque", fontSize: "14px", padding: "10px 14px" } }}
+                                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
                                 />
                             </div>
-                        </div>
 
-                        {/* License */}
-                        <div className="rounded-xl p-3 bg-[#D1B3FF]">
-                            <label className="block text-xs font-bold mb-1">
-                                Do You Have A 4W Driver's License?
-                            </label>
-                            <RadioGroup
-                                row
-                                name="license"
-                                value={formData.license}
-                                onChange={handleChange}
-                            >
-                                <FormControlLabel
-                                    value="yes"
-                                    control={<Radio size="small" />}
-                                    label={<Typography style={{ fontFamily: "Bricolage Grotesque", fontSize: "14px" }}>Yes</Typography>}
+                            {/* Name */}
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-800 mb-1">Your Name</label>
+                                <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Enter your name"
+                                    size="small"
+                                    inputProps={{ style: { fontFamily: "Bricolage Grotesque", fontSize: "14px", padding: "10px 14px" } }}
+                                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
                                 />
-                                <FormControlLabel
-                                    value="no"
-                                    control={<Radio size="small" />}
-                                    label={<Typography style={{ fontFamily: "Bricolage Grotesque", fontSize: "14px" }}>No</Typography>}
-                                />
-                            </RadioGroup>
-                        </div>
+                            </div>
 
-                        {/* Locality */}
-                        <div className="rounded-xl p-3 bg-[#D9FF7A]">
-                            <label className="block text-xs font-bold mb-1">
-                                Which Locality Are You Based Out Of?
-                            </label>
-                            <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY} libraries={["places"]}>
-                                <LocationSelector formData={formData} setFormData={setFormData} />
-                            </APIProvider>
-                        </div>
+                            {/* Phone */}
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-800 mb-1">Your Phone Number</label>
+                                <div className="flex gap-2">
+                                    <FormControl sx={{ minWidth: "110px", '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}>
+                                        <Select
+                                            value={formData.countryCode}
+                                            name="countryCode"
+                                            onChange={handleChange}
+                                            size="small"
+                                            renderValue={(selected) => {
+                                                const country = countryCodes.find((c) => c.code === selected);
+                                                return (
+                                                    <div className="flex items-center text-sm font-['Bricolage_Grotesque']">
+                                                        {country?.flag && (
+                                                            <img src={country.flag} alt={country.name} className="w-5 h-3 mr-1" />
+                                                        )}
+                                                        <span className="text-gray-600">{country ? country.code : selected}</span>
+                                                    </div>
+                                                );
+                                            }}
+                                            sx={{ '& .MuiSelect-select': { padding: "10px 14px" } }}
+                                        >
+                                            {countryCodes.map((country) => (
+                                                <MenuItem key={country.code} value={country.code} style={{ fontFamily: "Bricolage Grotesque", fontSize: "14px" }}>
+                                                    <div className="flex items-center">
+                                                        {country.flag && (
+                                                            <img src={country.flag} alt={country.name} className="w-5 h-3 mr-2" />
+                                                        )}
+                                                        {country.code} - {country.name}
+                                                    </div>
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                    <TextField
+                                        name="phone"
+                                        type="tel"
+                                        className="flex-1"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                        required
+                                        size="small"
+                                        error={formData.phone.length > 0 && !isPhoneValid(formData.phone)}
+                                        helperText={
+                                            formData.phone.length > 0 && !isPhoneValid(formData.phone)
+                                                ? "Please enter a valid 10-digit number"
+                                                : ""
+                                        }
+                                        placeholder="Enter your name"
+                                        inputProps={{ maxLength: 10, style: { fontFamily: "Bricolage Grotesque", fontSize: "14px", padding: "10px 14px" } }}
+                                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
+                                    />
+                                </div>
+                            </div>
 
-                        {/* Terms */}
-                        <p className="text-xs text-gray-500 text-center">
-                            By continuing, you agree to our{" "}
-                            <a href="https://inlane.in/terms-and-conditions" target="_blank" rel="noreferrer" className="underline">
-                                Terms of Service
-                            </a>{" "}
-                            &{" "}
-                            <a href="https://inlane.in/privacy-policy" target="_blank" rel="noreferrer" className="underline">
-                                Privacy Policy
-                            </a>
-                        </p>
+                            {/* License */}
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-800 mb-1">
+                                    Do You Have A 4W Driver's License?
+                                </label>
+                                <RadioGroup
+                                    row
+                                    name="license"
+                                    value={formData.license}
+                                    onChange={handleChange}
+                                >
+                                    <FormControlLabel
+                                        value="yes"
+                                        control={<Radio size="small" sx={{ color: '#00CE84', '&.Mui-checked': { color: '#00CE84' } }} />}
+                                        label={<Typography style={{ fontFamily: "Bricolage Grotesque", fontSize: "14px", color: '#4B5563' }}>Yes</Typography>}
+                                    />
+                                    <FormControlLabel
+                                        value="no"
+                                        control={<Radio size="small" sx={{ color: '#00CE84', '&.Mui-checked': { color: '#00CE84' } }} />}
+                                        label={<Typography style={{ fontFamily: "Bricolage Grotesque", fontSize: "14px", color: '#4B5563' }}>No</Typography>}
+                                    />
+                                </RadioGroup>
+                            </div>
 
-                        {/* Submit */}
-                        <div className="flex justify-center">
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                disabled={isSubmitting}
-                                startIcon={isSubmitting ? <CircularProgress size={18} color="inherit" /> : null}
-                                sx={{
-                                    background: isSubmitting
-                                        ? "rgba(0,206,132,0.7)"
-                                        : "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
-                                    color: "white",
-                                    fontWeight: "bold",
-                                    fontFamily: "Bricolage Grotesque",
-                                    textTransform: "none",
-                                    "&:hover": { background: "linear-gradient(90deg, #00BC78 0%, #00CE84 100%)" },
-                                    "&:disabled": { color: "white", cursor: "not-allowed" },
-                                    border: "2px solid #FFFFFF",
-                                    borderRadius: "50px",
-                                    padding: "10px 40px",
-                                    fontSize: "1rem",
-                                    boxShadow: "2px 4px 4px rgba(0,0,0,0.2)",
-                                    width: "100%",
-                                }}
-                            >
-                                {isSubmitting ? "Submitting..." : "Sign Up 🚀"}
-                            </Button>
-                        </div>
+                            {/* Locality */}
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-800 mb-1">
+                                    Which Locality Are You Based Out Of?
+                                </label>
+                                <div className="bg-white">
+                                    <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY} libraries={["places"]}>
+                                        <LocationSelector formData={formData} setFormData={setFormData} />
+                                    </APIProvider>
+                                </div>
+                            </div>
 
-                        {/* Dismiss */}
-                        <div className="flex justify-center">
-                            <button
-                                type="button"
-                                onClick={handleClose}
-                                className="text-xs text-gray-400 hover:text-gray-600 underline transition-colors"
-                            >
-                                No thanks, I'll explore first
-                            </button>
-                        </div>
+                            {/* Terms */}
+                            <p className="text-xs text-gray-500 text-center leading-relaxed mt-2">
+                                By continuing, you agree to our{" "}
+                                <a href="https://inlane.in/terms-and-conditions" target="_blank" rel="noreferrer" className="underline hover:text-gray-800">
+                                    Terms of Service
+                                </a>{" "}
+                                &{" "}
+                                <a href="https://inlane.in/privacy-policy" target="_blank" rel="noreferrer" className="underline hover:text-gray-800">
+                                    Privacy Policy
+                                </a>
+                            </p>
 
-
-                    </form>
-
+                            {/* Submit */}
+                            <div className="flex justify-center mt-2 pb-2">
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    disabled={isSubmitting}
+                                    startIcon={isSubmitting ? <CircularProgress size={18} color="inherit" /> : null}
+                                    sx={{
+                                        background: isSubmitting
+                                            ? "rgba(0,206,132,0.7)"
+                                            : "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
+                                        color: "white",
+                                        fontWeight: "700",
+                                        fontFamily: "Bricolage Grotesque",
+                                        textTransform: "none",
+                                        "&:hover": { background: "linear-gradient(90deg, #00BC78 0%, #00CE84 100%)" },
+                                        "&:disabled": { color: "white", cursor: "not-allowed" },
+                                        borderRadius: "50px",
+                                        padding: "10px 32px",
+                                        fontSize: "1rem",
+                                        boxShadow: "0 4px 10px rgba(0,206,132,0.3)",
+                                        minWidth: "150px",
+                                    }}
+                                >
+                                    {isSubmitting ? "Submitting" : "Sign Up 🚀"}
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </>
