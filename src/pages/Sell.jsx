@@ -13,6 +13,7 @@ import {
 import Navbar2 from "../components/Navbar";
 import Footer from "../components/Footer";
 import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
+import { supabase } from "../supabaseClient";
 
 // Car makes data
 const carMakes = [
@@ -146,16 +147,34 @@ const Sell = () => {
     setIsModalOpen(true);
   };
 
-  const handleFinalSubmit = (e) => {
+  const handleFinalSubmit = async (e) => {
     e.preventDefault();
     if (!userName || !userPhone) {
       alert('Please fill in both Name and Phone Number.');
       return;
     }
-    
-    // Dummy backend submission
-    console.log('Sending to backend:', { ...formData, name: userName, phone: userPhone });
-    
+
+    // Store lead in Supabase
+    const { error } = await supabase.from('sell_leads').insert([
+      {
+        registration_number: formData.registrationNumber,
+        make: formData.make,
+        model: formData.model,
+        year: formData.year,
+        fuel_type: formData.fuelType,
+        transmission: formData.transmission,
+        ownership: formData.ownership,
+        name: userName,
+        phone: userPhone,
+      },
+    ]);
+
+    if (error) {
+      console.error('Error saving lead:', error);
+      alert('Something went wrong. Please try again.');
+      return;
+    }
+
     // Generate dummy price calculation based on inputs
     const basePrice = 300000;
     const yearMod = (formData.year ? parseInt(formData.year) - 2010 : 5) * 40000;
