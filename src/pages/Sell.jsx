@@ -95,18 +95,45 @@ const SellerCard = memo(({ image, title, carName, quote, soldIn, whyLane, isMain
 ));
 
 // FAQ Item Component
-const FAQItem = memo(({ question, isOpen, onClick }) => (
-  <button
-    onClick={onClick}
-    className="w-full flex items-center justify-between gap-3 sm:gap-4 md:gap-6 bg-white border border-black rounded-[30px] md:rounded-[50px] px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-[12px] text-left hover:shadow-sm transition-all shadow-[0_2px_10px_rgba(0,0,0,0.02)]"
-  >
-    <div className="flex-1 pr-2 sm:pr-4">
-      <h3 className="font-['Bricolage_Grotesque'] font-semibold text-[16px] sm:text-[18px] md:text-[20px] text-black leading-snug tracking-tight">{question}</h3>
-    </div>
-    <div className={`flex-shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
-      <ChevronDown className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-[#525252]" strokeWidth={2.5} />
-    </div>
-  </button>
+const FAQItem = memo(({ question, answer = "Answer coming soon...", isOpen, onClick }) => (
+  <div className="relative w-full">
+    <button
+      onClick={onClick}
+      title={question}
+      className={`w-full flex items-center justify-between border border-black px-4 md:px-6 py-2 transition-colors
+        ${isOpen 
+          ? 'bg-white rounded-t-[1rem] border-b-0' 
+          : 'bg-white rounded-[1rem]'
+        }`}
+    >
+      <span className={`font-['Bricolage_Grotesque'] font-semibold text-[14px] md:text-[16px] text-left pr-2 ${isOpen ? 'line-clamp-4' : 'line-clamp-1'}`}>
+        {question}
+      </span>
+      <svg
+        className={`w-5 h-5 transition-transform text-[#525252] ${
+          isOpen ? "rotate-180" : ""
+        }`}
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    </button>
+
+    {isOpen && (
+      <div className="bg-white px-4 md:px-6 py-2 md:py-3 rounded-b-[1rem] border border-t-0 border-black">
+        <p className="font-['Bricolage_Grotesque'] font-medium text-[14px] md:text-[16px] text-gray-700 text-left leading-relaxed">
+          {answer}
+        </p>
+      </div>
+    )}
+  </div>
 ));
 
 const Sell = () => {
@@ -219,20 +246,20 @@ const Sell = () => {
   ];
 
   const faqsLeft = [
-    "What is Lane marketplace?",
-    "How is this different from market place platforms?",
-    "How is my car's price decided?",
-    "Do you help with RC transfer and documentation?",
-    "Can I sell a car with a loan or minor issues?",
-    "Why should I trust this platform?",
+    { question: "What is Lane marketplace?", answer: "Lane marketplace is a transparent platform designed to help you sell your car seamlessly, ensuring you get the best market value through our vast network." },
+    { question: "How is this different from market place platforms?", answer: "Unlike traditional classifieds, we handle everything from inspection to paperwork and RC transfer, guaranteeing a genuine buyer without constant phone calls." },
+    { question: "How is my car's price decided?", answer: "Pricing is backed by real-time market data, the physical condition of the car, and immediate demand from our extensive dealer and buyer network." },
+    { question: "Do you help with RC transfer and documentation?", answer: "Yes, we provide completely free end-to-end documentation and RC transfer support to ensure you face absolutely zero hassle." },
+    { question: "Can I sell a car with a loan or minor issues?", answer: "Absolutely. We clear your pending loan with the bank on your behalf and purchase cars as-is, resolving any issues post-sale." },
+    { question: "Why should I trust this platform?", answer: "We are an experienced team managing a transparent process where you are paid directly and securely before handing over the keys." },
   ];
 
   const faqsRight = [
-    "Who are the buyers on this platform?",
-    "Will I receive multiple calls or face bargaining?",
-    "How long does it usually take to sell a car?",
-    "Is the payment process safe?",
-    "Do you purchase the car yourself?",
+    { question: "Who are the buyers on this platform?", answer: "Our network exclusively comprises verified dealerships and premium direct buyers looking for high-quality certified pre-owned cars." },
+    { question: "Will I receive multiple calls or face bargaining?", answer: "No. You will only receive a single, fair offer from us based on inspection, eliminating any awkward haggling or endless calls." },
+    { question: "How long does it usually take to sell a car?", answer: "Typically, most cars are inspected, approved, and fully paid for within 24 to 48 hours of your initial request." },
+    { question: "Is the payment process safe?", answer: "Yes, 100% secure. The full payment is transferred to your bank account immediately before the car is even picked up from your doorstep." },
+    { question: "Do you purchase the car yourself?", answer: "We act as the marketplace facilitator connecting you to our verified network effortlessly, ensuring you receive the absolute best value." },
   ];
 
   const nextTestimonial = () => {
@@ -648,21 +675,23 @@ const Sell = () => {
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 md:gap-x-[40px] gap-y-3 md:gap-y-[10px]">
-              <div className="flex flex-col items-start space-y-3 md:space-y-[10px]">
+              <div className="flex flex-col items-start space-y-3 md:space-y-[12px] w-full">
                 {faqsLeft.map((faq, index) => (
                   <FAQItem
                     key={index}
-                    question={faq}
+                    question={faq.question}
+                    answer={faq.answer}
                     isOpen={openFAQ === `left-${index}`}
                     onClick={() => setOpenFAQ(openFAQ === `left-${index}` ? null : `left-${index}`)}
                   />
                 ))}
               </div>
-              <div className="flex flex-col items-start space-y-3 md:space-y-[10px]">
+              <div className="flex flex-col items-start space-y-3 md:space-y-[12px] w-full">
                 {faqsRight.map((faq, index) => (
                   <FAQItem
                     key={index}
-                    question={faq}
+                    question={faq.question}
+                    answer={faq.answer}
                     isOpen={openFAQ === `right-${index}`}
                     onClick={() => setOpenFAQ(openFAQ === `right-${index}` ? null : `right-${index}`)}
                   />
