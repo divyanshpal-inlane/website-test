@@ -32,6 +32,8 @@ import FAQPage from "./components/FAQ/FAQPage"; // Fixed casing to match actual 
 import ThankYou from "./pages/ThankYouPage";
 import LocationPage from "./pages/LocationPage";
 import Page from "./pages/SignupForm";
+import Sell from "./pages/Sell";
+import Reviews from "./pages/Reviews";
 
 const Layout = () => {
   return (
@@ -95,6 +97,16 @@ const router = createBrowserRouter([
     ],
   },
   {
+    path: "/reviews",
+    element: <Layout2 />,
+    children: [
+      {
+        path: "/reviews",
+        element: <Reviews />,
+      },
+    ],
+  },
+  {
     path: "/blog/:slug",
     element: <Layout3 />,
   },
@@ -140,6 +152,10 @@ const router = createBrowserRouter([
   {
     path: "/signup-form",
     element: <Page />,
+  },
+  {
+    path: "/sell",
+    element: <Sell />,
   }
 ], {
   future: {

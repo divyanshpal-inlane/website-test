@@ -64,6 +64,7 @@ const Footer = () => {
   const companyLinks = [
     { text: "About us", href: "/about-us" },
     { text: "Courses", href: "/courses" },
+    { text: "Reviews & Ratings", href: "/reviews" },
     { text: "FAQs", href: "/faqs" },
     { text: "Lane Journal", href: "/blog" },
     { text: "Privacy Policy", href: "/privacy-policy" },
