@@ -210,6 +210,21 @@ const SignupPopup = () => {
 
     return (
         <>
+            <style>{`
+                .custom-scrollbar::-webkit-scrollbar {
+                    width: 6px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb {
+                    background-color: rgba(0, 0, 0, 0.15);
+                    border-radius: 10px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                    background-color: rgba(0, 0, 0, 0.3);
+                }
+            `}</style>
             {/* Backdrop */}
             <div
                 className="fixed inset-0 bg-black/60 z-[999] backdrop-blur-sm"
@@ -230,29 +245,34 @@ const SignupPopup = () => {
                     </button>
 
                     {/* Header Image Area */}
-                    <div className="w-full h-40 sm:h-52 shrink-0 relative flex items-center justify-center overflow-hidden bg-gray-100">
-                        {/* Trying TestimonialBG.webp or MainCar.png */}
+                    <div className="w-full shrink-0 relative flex flex-col items-center justify-start overflow-hidden bg-transparent">
                         <img 
-                            src="/MainCar.png" 
+                            src="/popup_image.png" 
                             alt="Start Your Journey" 
-                            className="w-full h-full object-cover"
+                            className="w-full h-32 sm:h-40 object-cover object-center"
+                        />
+                        <img 
+                            src="/NavbarRoad.svg" 
+                            alt="Road Sep" 
+                            className="w-full block aspect-[100/1] object-cover"
+                            style={{ minHeight: '8px' }}
                         />
                     </div>
 
                     {/* Scrollable Form Content */}
-                    <div className="flex-1 overflow-y-auto px-6 py-5">
+                    <div className="flex-1 overflow-y-auto px-6 py-3 sm:py-4 custom-scrollbar">
                         {/* Title Section */}
-                        <div className="text-center mb-5">
-                            <h2 className="text-2xl font-extrabold text-[#00CE84]">
+                        <div className="text-center mb-3">
+                            <h2 className="text-xl sm:text-2xl font-extrabold text-[#00CE84]">
                                 Start Your Driving Journey!
                             </h2>
-                            <p className="text-gray-600 mt-1 text-sm">
+                            <p className="text-gray-600 mt-0.5 text-xs sm:text-sm">
                                 Fill in your details and we'll get you started.
                             </p>
                         </div>
 
                         {/* Form */}
-                        <form onSubmit={handleSubmit} className="space-y-4">
+                        <form onSubmit={handleSubmit} className="space-y-3">
                             {/* Email */}
                             <div>
                                 <label className="block text-sm font-semibold text-gray-800 mb-1">Your Email ID</label>
@@ -266,7 +286,7 @@ const SignupPopup = () => {
                                     required
                                     placeholder="Your mail id"
                                     size="small"
-                                    inputProps={{ style: { fontFamily: "Bricolage Grotesque", fontSize: "14px", padding: "10px 14px" } }}
+                                    inputProps={{ style: { fontFamily: "Bricolage Grotesque", fontSize: "14px", padding: "8px 12px" } }}
                                     sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
                                 />
                             </div>
@@ -283,7 +303,7 @@ const SignupPopup = () => {
                                     required
                                     placeholder="Enter your name"
                                     size="small"
-                                    inputProps={{ style: { fontFamily: "Bricolage Grotesque", fontSize: "14px", padding: "10px 14px" } }}
+                                    inputProps={{ style: { fontFamily: "Bricolage Grotesque", fontSize: "14px", padding: "8px 12px" } }}
                                     sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
                                 />
                             </div>
@@ -309,7 +329,7 @@ const SignupPopup = () => {
                                                     </div>
                                                 );
                                             }}
-                                            sx={{ '& .MuiSelect-select': { padding: "10px 14px" } }}
+                                            sx={{ '& .MuiSelect-select': { padding: "8px 12px" } }}
                                         >
                                             {countryCodes.map((country) => (
                                                 <MenuItem key={country.code} value={country.code} style={{ fontFamily: "Bricolage Grotesque", fontSize: "14px" }}>

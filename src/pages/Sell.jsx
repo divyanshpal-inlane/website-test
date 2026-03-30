@@ -22,6 +22,30 @@ const carMakes = [
   "Jeep", "BMW", "Mercedes-Benz", "Audi", "Other"
 ];
 
+// Car models mapping
+const carModels = {
+  "Maruti Suzuki": ["Swift", "Baleno", "Wagon R", "Alto", "Dzire", "Ertiga", "Brezza", "Fronx", "Grand Vitara", "Jimny", "Celerio", "Ignis", "Ciaz", "Other"],
+  "Hyundai": ["Creta", "Venue", "i20", "Grand i10 Nios", "Verna", "Aura", "Tucson", "Alcazar", "Exter", "Santro", "Other"],
+  "Tata": ["Nexon", "Punch", "Harrier", "Safari", "Altroz", "Tiago", "Tigor", "Other"],
+  "Mahindra": ["Scorpio", "Scorpio-N", "XUV700", "XUV300", "Thar", "Bolero", "Marazzo", "Other"],
+  "Honda": ["City", "Amaze", "Elevate", "Jazz", "WR-V", "Other"],
+  "Toyota": ["Innova Crysta", "Innova Hycross", "Fortuner", "Glanza", "Urban Cruiser Hyryder", "Hilux", "Etios", "Other"],
+  "Kia": ["Seltos", "Sonet", "Carens", "EV6", "Carnival", "Other"],
+  "MG": ["Hector", "Astor", "Gloster", "Comet EV", "ZSEV", "Other"],
+  "Volkswagen": ["Polo", "Vento", "Taigun", "Virtus", "Tiguan", "Other"],
+  "Skoda": ["Slavia", "Kushaq", "Rapid", "Octavia", "Superb", "Kodiaq", "Other"],
+  "Renault": ["Kwid", "Triber", "Kiger", "Duster", "Other"],
+  "Nissan": ["Magnite", "Sunny", "Micra", "Kicks", "Other"],
+  "Ford": ["EcoSport", "Endeavour", "Figo", "Aspire", "Freestyle", "Other"],
+  "Jeep": ["Compass", "Meridian", "Wrangler", "Other"],
+  "BMW": ["3 Series", "5 Series", "X1", "X3", "X5", "X7", "Other"],
+  "Mercedes-Benz": ["C-Class", "E-Class", "GLC", "GLE", "S-Class", "Other"],
+  "Audi": ["A4", "A6", "Q3", "Q5", "Q7", "Other"],
+  "Other": ["Other"]
+};
+
+
+
 // Fuel types
 const fuelTypes = ["Petrol", "Diesel", "CNG", "Electric", "Hybrid"];
 
@@ -38,11 +62,11 @@ const years = Array.from({ length: currentYear - 1999 }, (_, i) => currentYear -
 // Feature Card Component
 const FeatureCard = memo(({ icon, title, description, bgColor }) => (
   <div className={`${bgColor} rounded-[20px] md:rounded-[24px] p-5 md:p-8 flex flex-col h-full min-h-[280px] border border-black shadow-[0px_4px_10px_rgba(0,0,0,0.25)]`}>
-    <div className="w-8 h-8 md:w-12 md:h-12 bg-white rounded-full flex items-center justify-center mb-4 md:mb-6 shadow-sm text-black">
+    <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-20 md:h-20 bg-white rounded-full flex items-center justify-center mb-4 md:mb-6 shadow-sm text-black flex-shrink-0">
       {icon}
     </div>
-    <h3 className="w-full text-left font-glancyr font-semibold text-[22px] sm:text-[28px] md:text-[42px] mb-2 md:mb-4 text-black leading-none tracking-normal">{title}</h3>
-    <p className="font-['Bricolage_Grotesque'] font-medium text-[13px] sm:text-[14px] md:text-[20px] text-black leading-snug tracking-normal">{description}</p>
+    <h3 className="w-full text-left font-['Bricolage_Grotesque'] font-bold text-[22px] sm:text-[28px] md:text-[42px] mb-2 md:mb-4 text-black leading-tight">{title}</h3>
+    <p className="font-['Bricolage_Grotesque'] font-medium text-[13px] sm:text-[14px] md:text-[20px] text-black leading-snug tracking-tight sm:tracking-normal">{description}</p>
   </div>
 ));
 
@@ -56,8 +80,8 @@ const StepCard = memo(({ number, icon, title, description, bgColor }) => (
       </div>
     </div>
     <div className={`${bgColor} flex-1 rounded-[12px] md:rounded-[20px] p-3 sm:p-4 md:p-6 mt-1 flex flex-col justify-start`}>
-      <h4 className="font-['Bricolage_Grotesque'] font-bold text-[14px] sm:text-[16px] md:text-[22px] text-black mb-1 md:mb-2 leading-tight">{title}</h4>
-      <p className="font-['Bricolage_Grotesque'] font-medium text-[11px] sm:text-[13px] md:text-[17px] text-black leading-snug">{description}</p>
+      <h4 className="font-['Bricolage_Grotesque'] font-bold text-[14px] sm:text-[16px] md:text-[22px] text-black mb-1 md:mb-3 leading-tight min-h-[36px] sm:min-h-[44px] md:min-h-[60px] flex items-start">{title}</h4>
+      <p className="font-['Bricolage_Grotesque'] font-medium text-[11px] sm:text-[13px] md:text-[17px] text-black leading-snug tracking-tight sm:tracking-normal">{description}</p>
     </div>
   </div>
 ));
@@ -101,8 +125,8 @@ const FAQItem = memo(({ question, answer = "Answer coming soon...", isOpen, onCl
       onClick={onClick}
       title={question}
       className={`w-full flex items-center justify-between border border-black px-4 md:px-6 py-2 transition-colors
-        ${isOpen 
-          ? 'bg-white rounded-t-[1rem] border-b-0' 
+        ${isOpen
+          ? 'bg-white rounded-t-[1rem] border-b-0'
           : 'bg-white rounded-[1rem]'
         }`}
     >
@@ -110,9 +134,8 @@ const FAQItem = memo(({ question, answer = "Answer coming soon...", isOpen, onCl
         {question}
       </span>
       <svg
-        className={`w-5 h-5 transition-transform text-[#525252] ${
-          isOpen ? "rotate-180" : ""
-        }`}
+        className={`w-5 h-5 transition-transform text-[#525252] ${isOpen ? "rotate-180" : ""
+          }`}
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -161,7 +184,12 @@ const Sell = () => {
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => {
+      if (name === 'make') {
+        return { ...prev, [name]: value, model: '' }; // Reset model if make changes
+      }
+      return { ...prev, [name]: value };
+    });
   }, []);
 
   const handleSubmit = (e) => {
@@ -363,10 +391,13 @@ const Sell = () => {
                       name="model"
                       value={formData.model}
                       onChange={handleChange}
-                      className={`w-full appearance-none rounded-full border border-black bg-white px-5 sm:px-6 py-2.5 md:py-2.5 font-['Bricolage_Grotesque'] font-medium text-[14px] md:text-[15px] transition-all focus:outline-none focus:border-[#00CE84] focus:ring-1 focus:ring-[#00CE84] ${!formData.model ? 'text-black/40' : 'text-gray-800'}`}
+                      disabled={!formData.make}
+                      className={`w-full appearance-none rounded-full border border-black bg-white px-5 sm:px-6 py-2.5 md:py-2.5 font-['Bricolage_Grotesque'] font-medium text-[14px] md:text-[15px] transition-all focus:outline-none focus:border-[#00CE84] focus:ring-1 focus:ring-[#00CE84] ${!formData.model ? 'text-black/40' : 'text-gray-800'} ${!formData.make ? 'opacity-70 cursor-not-allowed bg-gray-50' : ''}`}
                     >
                       <option value="" disabled>Model</option>
-                      {/* Usually models are populated here, assuming empty since no var provided */}
+                      {formData.make && carModels[formData.make] && carModels[formData.make].map(model => (
+                        <option key={model} value={model} className="text-gray-800">{model}</option>
+                      ))}
                     </select>
                     <div className="pointer-events-none absolute right-4 md:right-5 top-1/2 -translate-y-1/2">
                       <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-gray-400" strokeWidth={2.5} />
@@ -446,9 +477,9 @@ const Sell = () => {
                     type="submit"
                     className="hover:-translate-y-0.5 transition-transform duration-200"
                   >
-                    <img 
-                      src="/button.png" 
-                      alt="Get My Offer" 
+                    <img
+                      src="/button.png"
+                      alt="Get My Offer"
                       className="h-[46px] md:h-[52px] xl:h-[56px] w-auto object-contain drop-shadow-sm hover:drop-shadow-md transition-all"
                     />
                   </button>
@@ -589,7 +620,7 @@ const Sell = () => {
             <div className="relative w-full mx-auto px-0 md:px-4 overflow-x-hidden md:overflow-visible py-8 md:py-0">
 
               {/* Desktop Infinite Carousel */}
-              <div className="hidden md:grid grid-cols-[26%_48%_26%] gap-8 w-full items-start relative z-10 transition-all duration-300">
+              <div className="hidden md:grid grid-cols-[26fr_48fr_26fr] gap-8 w-full items-start relative z-10 transition-all duration-300">
                 {[
                   testimonials[(currentTestimonial - 1 + testimonials.length) % testimonials.length],
                   testimonials[currentTestimonial],
@@ -665,13 +696,13 @@ const Sell = () => {
       <section className="py-16 md:py-24 px-4 md:px-8 bg-[#D1B3FF] relative z-0 overflow-hidden">
         {/* Background Watermark Pattern */}
         <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: "url('/White BG Pattern.svg')", backgroundSize: '1000px', backgroundPosition: 'center', backgroundRepeat: 'repeat' }}></div>
-        
+
         <div className="max-w-[1305px] mx-auto relative z-10 w-full flex justify-center">
           <div className="bg-white rounded-[24px] md:rounded-[40px] p-6 md:px-[60px] md:py-[50px] shadow-[0_4px_24px_rgba(0,0,0,0.06)] h-auto w-full max-w-[1050px]">
-            <img 
-              src="/faq_tag.png" 
-              alt="Frequently Asked Questions" 
-              className="w-[85%] sm:w-[70%] md:w-[60%] max-w-[500px] h-auto object-contain mb-6 md:mb-[32px] block" 
+            <img
+              src="/faq_tag.png"
+              alt="Frequently Asked Questions"
+              className="w-[85%] sm:w-[70%] md:w-[60%] max-w-[500px] h-auto object-contain mb-6 md:mb-[32px] block"
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 md:gap-x-[40px] gap-y-3 md:gap-y-[10px]">
