@@ -234,11 +234,36 @@ const Sell = () => {
       return;
     }
 
-    // Generate dummy price calculation based on inputs
-    const basePrice = 300000;
-    const yearMod = (formData.year ? parseInt(formData.year) - 2010 : 5) * 40000;
-    const finalMin = ((basePrice + yearMod) / 100000).toFixed(2);
-    const finalMax = ((basePrice + yearMod + 50000) / 100000).toFixed(2);
+    // Generate estimated price based on inputs
+    const currentYear = new Date().getFullYear();
+    const carAge = currentYear - (formData.year ? parseInt(formData.year) : currentYear - 5);
+
+    // Base price varies by fuel type
+    let basePrice = 500000;
+    if (formData.fuelType === 'Diesel') basePrice = 600000;
+    else if (formData.fuelType === 'CNG') basePrice = 520000;
+    else if (formData.fuelType === 'Electric') basePrice = 700000;
+
+    // Depreciation: ~15% per year (compounding)
+    const depreciationRate = 0.85;
+    let price = basePrice * Math.pow(depreciationRate, carAge);
+
+    // Transmission affects price
+    if (formData.transmission === 'Automatic' || formData.transmission === 'DCT') {
+      price *= 1.10;
+    } else if (formData.transmission === 'CVT' || formData.transmission === 'AMT') {
+      price *= 1.05;
+    } else if (formData.transmission === 'Manual') {
+      price *= 0.92;
+    }
+
+    // Ownership: each additional owner reduces value
+    if (formData.ownership === '2nd Owner') price *= 0.88;
+    else if (formData.ownership === '3rd Owner') price *= 0.78;
+    else if (formData.ownership === '4th+ Owner') price *= 0.68;
+
+    const finalMin = (price / 100000).toFixed(2);
+    const finalMax = ((price + 50000) / 100000).toFixed(2);
     setEstimatedOffer(`₹${finalMin} Lakhs - ₹${finalMax} Lakhs`);
 
     // Close modal, load Result view
