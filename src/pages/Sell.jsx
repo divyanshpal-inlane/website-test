@@ -366,9 +366,22 @@ const Sell = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const { registrationNumber, make, model, year, fuelType, transmission, ownership, kmDriven } = formData;
-    if (!registrationNumber || !make || !year || !fuelType || !transmission || !ownership || !kmDriven) {
-      alert('Please fill out all car details before proceeding.');
+    const { registrationNumber, make, model, year, fuelType, transmission, ownership, kmDriven, condition, accidentType } = formData;
+
+    const missingFields = [];
+    if (!registrationNumber) missingFields.push('Registration Number');
+    if (!make) missingFields.push('Make');
+    if (!model) missingFields.push('Model');
+    if (!year) missingFields.push('Year');
+    if (!fuelType) missingFields.push('Fuel Type');
+    if (!transmission) missingFields.push('Transmission');
+    if (!ownership) missingFields.push('Ownership');
+    if (!kmDriven) missingFields.push('KM Driven');
+    if (!condition) missingFields.push('Condition');
+    if (!accidentType) missingFields.push('Accident History');
+
+    if (missingFields.length > 0) {
+      alert(`Please fill in: ${missingFields.join(', ')}`);
       return;
     }
 
@@ -382,7 +395,7 @@ const Sell = () => {
       return;
     }
 
-    // Store lead in Supabase
+    // Store lead in Supabase - all fields required
     const { error } = await supabase.from('sell_leads').insert([
       {
         registration_number: formData.registrationNumber,
@@ -403,7 +416,7 @@ const Sell = () => {
 
     if (error) {
       console.error('Error saving lead:', error);
-      alert('Something went wrong. Please try again.');
+      alert('Please fill in all the required details before submitting.');
       return;
     }
 
