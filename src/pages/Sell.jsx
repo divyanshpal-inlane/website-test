@@ -19,32 +19,142 @@ import { supabase } from "../supabaseClient";
 const carMakes = [
   "Maruti Suzuki", "Hyundai", "Tata", "Mahindra", "Honda", "Toyota",
   "Kia", "MG", "Volkswagen", "Skoda", "Renault", "Nissan", "Ford",
-  "Jeep", "BMW", "Mercedes-Benz", "Audi", "Other"
+  "Jeep", "BMW", "Mercedes-Benz", "Audi", "Volvo", "Land Rover",
+  "Jaguar", "Mini", "Porsche", "Lexus", "Isuzu", "Citroen",
+  "BYD", "Datsun", "Fiat", "Mitsubishi", "Chevrolet", "Other"
 ];
 
-// Car models mapping
+// Car models mapping - expanded with more market-available models
 const carModels = {
-  "Maruti Suzuki": ["Swift", "Baleno", "Wagon R", "Alto", "Dzire", "Ertiga", "Brezza", "Fronx", "Grand Vitara", "Jimny", "Celerio", "Ignis", "Ciaz", "Other"],
-  "Hyundai": ["Creta", "Venue", "i20", "Grand i10 Nios", "Verna", "Aura", "Tucson", "Alcazar", "Exter", "Santro", "Other"],
-  "Tata": ["Nexon", "Punch", "Harrier", "Safari", "Altroz", "Tiago", "Tigor", "Other"],
-  "Mahindra": ["Scorpio", "Scorpio-N", "XUV700", "XUV300", "Thar", "Bolero", "Marazzo", "Other"],
-  "Honda": ["City", "Amaze", "Elevate", "Jazz", "WR-V", "Other"],
-  "Toyota": ["Innova Crysta", "Innova Hycross", "Fortuner", "Glanza", "Urban Cruiser Hyryder", "Hilux", "Etios", "Other"],
-  "Kia": ["Seltos", "Sonet", "Carens", "EV6", "Carnival", "Other"],
-  "MG": ["Hector", "Astor", "Gloster", "Comet EV", "ZSEV", "Other"],
-  "Volkswagen": ["Polo", "Vento", "Taigun", "Virtus", "Tiguan", "Other"],
-  "Skoda": ["Slavia", "Kushaq", "Rapid", "Octavia", "Superb", "Kodiaq", "Other"],
-  "Renault": ["Kwid", "Triber", "Kiger", "Duster", "Other"],
-  "Nissan": ["Magnite", "Sunny", "Micra", "Kicks", "Other"],
-  "Ford": ["EcoSport", "Endeavour", "Figo", "Aspire", "Freestyle", "Other"],
-  "Jeep": ["Compass", "Meridian", "Wrangler", "Other"],
-  "BMW": ["3 Series", "5 Series", "X1", "X3", "X5", "X7", "Other"],
-  "Mercedes-Benz": ["C-Class", "E-Class", "GLC", "GLE", "S-Class", "Other"],
-  "Audi": ["A4", "A6", "Q3", "Q5", "Q7", "Other"],
+  "Maruti Suzuki": ["Swift", "Baleno", "Wagon R", "Alto", "Alto K10", "Dzire", "Ertiga", "Brezza", "Fronx", "Grand Vitara", "Jimny", "Celerio", "Ignis", "Ciaz", "S-Presso", "XL6", "Eeco", "S-Cross", "Vitara Brezza", "Zen Estilo", "Ritz", "A-Star", "Other"],
+  "Hyundai": ["Creta", "Venue", "i20", "Grand i10 Nios", "Verna", "Aura", "Tucson", "Alcazar", "Exter", "Santro", "i10", "Elite i20", "Xcent", "Eon", "Grand i10", "Kona Electric", "ix25", "Other"],
+  "Tata": ["Nexon", "Punch", "Harrier", "Safari", "Altroz", "Tiago", "Tigor", "Nexon EV", "Tiago EV", "Curvv", "Hexa", "Bolt", "Zest", "Nano", "Indica", "Indigo", "Sumo", "Other"],
+  "Mahindra": ["Scorpio", "Scorpio-N", "XUV700", "XUV300", "Thar", "Bolero", "Marazzo", "XUV400", "Bolero Neo", "KUV100", "TUV300", "Xylo", "Verito", "XUV500", "Alturas G4", "Other"],
+  "Honda": ["City", "Amaze", "Elevate", "Jazz", "WR-V", "City Hybrid", "Civic", "BR-V", "Brio", "Mobilio", "CR-V", "Other"],
+  "Toyota": ["Innova Crysta", "Innova Hycross", "Fortuner", "Glanza", "Urban Cruiser Hyryder", "Hilux", "Etios", "Etios Liva", "Camry", "Yaris", "Corolla Altis", "Land Cruiser", "Vellfire", "Other"],
+  "Kia": ["Seltos", "Sonet", "Carens", "EV6", "Carnival", "EV9", "Other"],
+  "MG": ["Hector", "Hector Plus", "Astor", "Gloster", "Comet EV", "ZS EV", "Other"],
+  "Volkswagen": ["Polo", "Vento", "Taigun", "Virtus", "Tiguan", "Tiguan AllSpace", "Jetta", "Passat", "Ameo", "Other"],
+  "Skoda": ["Slavia", "Kushaq", "Rapid", "Octavia", "Superb", "Kodiaq", "Karoq", "Fabia", "Other"],
+  "Renault": ["Kwid", "Triber", "Kiger", "Duster", "Captur", "Lodgy", "Scala", "Other"],
+  "Nissan": ["Magnite", "Sunny", "Micra", "Kicks", "Terrano", "Other"],
+  "Ford": ["EcoSport", "Endeavour", "Figo", "Aspire", "Freestyle", "Fiesta", "Ikon", "Other"],
+  "Jeep": ["Compass", "Meridian", "Wrangler", "Grand Cherokee", "Other"],
+  "BMW": ["3 Series", "5 Series", "7 Series", "X1", "X3", "X5", "X7", "2 Series Gran Coupe", "6 Series GT", "M340i", "iX1", "i4", "Other"],
+  "Mercedes-Benz": ["C-Class", "E-Class", "GLC", "GLE", "S-Class", "A-Class Limousine", "GLA", "GLB", "GLS", "CLA", "EQS", "EQB", "Other"],
+  "Audi": ["A4", "A6", "A8", "Q3", "Q5", "Q7", "Q8", "A3", "e-tron", "RS5", "Other"],
+  "Volvo": ["XC40", "XC60", "XC90", "S60", "S90", "C40 Recharge", "Other"],
+  "Land Rover": ["Range Rover Evoque", "Range Rover Sport", "Range Rover Velar", "Defender", "Discovery Sport", "Range Rover", "Other"],
+  "Jaguar": ["F-Pace", "XE", "XF", "I-Pace", "Other"],
+  "Mini": ["Cooper", "Countryman", "Clubman", "Other"],
+  "Porsche": ["Cayenne", "Macan", "911", "Taycan", "Panamera", "Other"],
+  "Lexus": ["ES", "NX", "RX", "LS", "LX", "LC", "Other"],
+  "Isuzu": ["D-Max V-Cross", "mu-X", "Other"],
+  "Citroen": ["C3", "C3 Aircross", "C5 Aircross", "eC3", "Other"],
+  "BYD": ["Atto 3", "Seal", "e6", "Other"],
+  "Datsun": ["GO", "GO Plus", "redi-GO", "Other"],
+  "Fiat": ["Punto", "Linea", "Avventura", "Urban Cross", "Other"],
+  "Mitsubishi": ["Outlander", "Pajero Sport", "Other"],
+  "Chevrolet": ["Beat", "Cruze", "Enjoy", "Spark", "Tavera", "Sail", "Other"],
   "Other": ["Other"]
 };
 
-
+// Trim levels mapping - base prices in INR (ex-showroom approx) for valuation
+// Format: { trimName: basePrice }
+const carTrims = {
+  // Maruti Suzuki
+  "Swift": { "LXi": 599000, "VXi": 699000, "VXi (O)": 729000, "ZXi": 799000, "ZXi+": 899000, "ZXi+ Dual Tone": 919000, "Other": 749000 },
+  "Baleno": { "Sigma": 649000, "Delta": 749000, "Zeta": 849000, "Alpha": 949000, "Alpha Dual Tone": 969000, "Other": 799000 },
+  "Wagon R": { "LXi": 549000, "VXi": 599000, "ZXi": 649000, "ZXi+": 699000, "Other": 624000 },
+  "Alto": { "Std": 349000, "LXi": 399000, "VXi": 449000, "VXi+": 499000, "Other": 424000 },
+  "Alto K10": { "Std": 399000, "LXi": 449000, "VXi": 499000, "VXi+": 549000, "Other": 474000 },
+  "Dzire": { "LXi": 649000, "VXi": 749000, "ZXi": 849000, "ZXi+": 949000, "Other": 799000 },
+  "Ertiga": { "LXi": 849000, "VXi": 949000, "ZXi": 1049000, "ZXi+": 1149000, "Other": 999000 },
+  "Brezza": { "LXi": 849000, "VXi": 949000, "ZXi": 1099000, "ZXi+": 1249000, "Other": 1049000 },
+  "Fronx": { "Sigma": 749000, "Delta": 849000, "Delta+": 899000, "Zeta": 999000, "Alpha": 1099000, "Alpha Dual Tone": 1149000, "Other": 949000 },
+  "Grand Vitara": { "Sigma": 1099000, "Delta": 1249000, "Zeta": 1399000, "Alpha": 1549000, "Alpha+": 1699000, "Other": 1399000 },
+  "Jimny": { "Zeta": 1274000, "Alpha": 1399000, "Other": 1349000 },
+  "Celerio": { "LXi": 499000, "VXi": 549000, "ZXi": 599000, "ZXi+": 649000, "Other": 574000 },
+  "Ignis": { "Sigma": 549000, "Delta": 619000, "Zeta": 699000, "Alpha": 779000, "Other": 649000 },
+  "Ciaz": { "Sigma": 899000, "Delta": 999000, "Zeta": 1049000, "Alpha": 1099000, "Other": 999000 },
+  "S-Presso": { "Std": 399000, "LXi": 449000, "VXi": 499000, "VXi+": 549000, "Other": 474000 },
+  "XL6": { "Zeta": 1149000, "Alpha": 1249000, "Alpha+": 1349000, "Other": 1249000 },
+  // Hyundai
+  "Creta": { "E": 1099000, "EX": 1199000, "S": 1349000, "S (O)": 1449000, "SX": 1599000, "SX (O)": 1799000, "SX Tech": 1999000, "Other": 1449000 },
+  "Venue": { "E": 799000, "S": 899000, "S (O)": 949000, "S+": 999000, "SX": 1099000, "SX (O)": 1199000, "Other": 999000 },
+  "i20": { "Magna": 749000, "Sportz": 849000, "Asta": 999000, "Asta (O)": 1099000, "Other": 899000 },
+  "Grand i10 Nios": { "Era": 549000, "Magna": 649000, "Sportz": 699000, "Asta": 749000, "Other": 649000 },
+  "Verna": { "EX": 1099000, "S": 1199000, "SX": 1399000, "SX (O)": 1599000, "SX Tech": 1799000, "Other": 1399000 },
+  "Aura": { "E": 649000, "S": 749000, "SX": 849000, "SX+": 949000, "Other": 799000 },
+  "Tucson": { "GL": 2799000, "GLS": 3199000, "Signature": 3499000, "Other": 3199000 },
+  "Alcazar": { "Prestige": 1699000, "Platinum": 1899000, "Signature": 2099000, "Other": 1899000 },
+  "Exter": { "EX": 599000, "S": 699000, "SX": 799000, "SX (O)": 899000, "SX Connect": 999000, "Other": 799000 },
+  "Santro": { "Era": 449000, "Magna": 499000, "Sportz": 549000, "Asta": 599000, "Other": 524000 },
+  // Tata
+  "Nexon": { "Smart": 799000, "Smart+": 899000, "Pure": 999000, "Pure S": 1049000, "Creative": 1199000, "Creative+": 1349000, "Fearless": 1449000, "Fearless+": 1549000, "Other": 1149000 },
+  "Punch": { "Pure": 599000, "Adventure": 699000, "Accomplished": 799000, "Creative": 899000, "Other": 749000 },
+  "Harrier": { "Smart": 1499000, "Pure": 1699000, "Adventure": 1899000, "Fearless": 2099000, "Fearless+": 2499000, "Other": 1899000 },
+  "Safari": { "Smart": 1599000, "Pure": 1799000, "Adventure": 1999000, "Accomplished": 2199000, "Fearless": 2499000, "Other": 1999000 },
+  "Altroz": { "XE": 649000, "XM": 749000, "XM+": 849000, "XZ": 949000, "XZ+": 1049000, "Other": 849000 },
+  "Tiago": { "XE": 499000, "XM": 549000, "XT": 599000, "XZ": 649000, "XZ+": 699000, "Other": 599000 },
+  "Tigor": { "XE": 599000, "XM": 649000, "XZ": 699000, "XZ+": 749000, "Other": 674000 },
+  // Mahindra
+  "Scorpio": { "S3": 999000, "S5": 1099000, "S7": 1299000, "S9": 1449000, "S11": 1599000, "Other": 1299000 },
+  "Scorpio-N": { "Z4": 1399000, "Z6": 1599000, "Z8": 1899000, "Z8 L": 2199000, "Other": 1799000 },
+  "XUV700": { "MX": 1399000, "AX3": 1549000, "AX5": 1799000, "AX7": 1999000, "AX7 L": 2499000, "Other": 1849000 },
+  "XUV300": { "W4": 799000, "W6": 949000, "W8": 1099000, "W8 (O)": 1249000, "Other": 999000 },
+  "Thar": { "AX Std": 999000, "AX (O)": 1249000, "LX": 1399000, "LX Hard Top": 1549000, "Other": 1299000 },
+  "Bolero": { "B4": 899000, "B6": 999000, "B6 (O)": 1049000, "Other": 999000 },
+  // Honda
+  "City": { "V": 1199000, "VX": 1349000, "ZX": 1499000, "Other": 1349000 },
+  "Amaze": { "E": 749000, "S": 849000, "VX": 949000, "Other": 849000 },
+  "Elevate": { "SV": 1099000, "V": 1249000, "VX": 1399000, "ZX": 1549000, "Other": 1349000 },
+  // Toyota
+  "Innova Crysta": { "GX": 1999000, "VX": 2349000, "ZX": 2699000, "Other": 2349000 },
+  "Innova Hycross": { "G": 1999000, "GX": 2249000, "VX": 2649000, "ZX": 2899000, "ZX (O)": 3099000, "Other": 2549000 },
+  "Fortuner": { "4x2 MT": 3299000, "4x2 AT": 3599000, "4x4 MT": 3799000, "4x4 AT": 3999000, "Legender": 4199000, "Other": 3699000 },
+  "Glanza": { "E": 649000, "S": 749000, "G": 849000, "V": 949000, "Other": 799000 },
+  "Urban Cruiser Hyryder": { "E": 1099000, "S": 1249000, "G": 1399000, "V": 1549000, "Other": 1349000 },
+  // Kia
+  "Seltos": { "HTE": 1099000, "HTK": 1199000, "HTK+": 1399000, "HTX": 1549000, "HTX+": 1699000, "GTX": 1799000, "GTX+": 1949000, "X-Line": 1999000, "Other": 1499000 },
+  "Sonet": { "HTE": 799000, "HTK": 899000, "HTK+": 999000, "HTX": 1099000, "HTX+": 1199000, "GTX+": 1399000, "Other": 1049000 },
+  "Carens": { "Premium": 1099000, "Prestige": 1299000, "Prestige Plus": 1449000, "Luxury": 1599000, "Luxury Plus": 1799000, "Other": 1399000 },
+  // MG
+  "Hector": { "Style": 1449000, "Super": 1649000, "Smart": 1849000, "Sharp": 2049000, "Savvy": 2249000, "Other": 1849000 },
+  "Astor": { "Style": 1099000, "Super": 1249000, "Smart": 1399000, "Sharp": 1549000, "Other": 1349000 },
+  // Volkswagen
+  "Polo": { "Trendline": 649000, "Comfortline": 749000, "Highline": 849000, "Highline+": 949000, "GT TSI": 1049000, "Other": 849000 },
+  "Vento": { "Trendline": 949000, "Comfortline": 1049000, "Highline": 1149000, "Highline+": 1249000, "Other": 1099000 },
+  "Taigun": { "Comfortline": 1149000, "Highline": 1349000, "Topline": 1549000, "GT": 1749000, "GT Edge": 1849000, "Other": 1449000 },
+  "Virtus": { "Comfortline": 1149000, "Highline": 1349000, "Topline": 1549000, "GT": 1749000, "GT Edge": 1849000, "Other": 1449000 },
+  // Skoda
+  "Slavia": { "Active": 1099000, "Ambition": 1299000, "Style": 1549000, "Style AT": 1699000, "Other": 1399000 },
+  "Kushaq": { "Active": 1149000, "Ambition": 1349000, "Style": 1549000, "Style AT": 1699000, "Monte Carlo": 1799000, "Other": 1449000 },
+  "Rapid": { "Rider": 849000, "Ambition": 999000, "Onyx": 1049000, "Style": 1149000, "Monte Carlo": 1199000, "Other": 1049000 },
+  "Octavia": { "Style": 2599000, "L&K": 2899000, "RS": 3299000, "Other": 2799000 },
+  // Renault
+  "Kwid": { "RXE": 449000, "RXL": 499000, "RXT": 549000, "Climber": 599000, "Other": 524000 },
+  "Triber": { "RXE": 599000, "RXL": 649000, "RXT": 749000, "RXZ": 849000, "Other": 724000 },
+  "Kiger": { "RXE": 599000, "RXL": 699000, "RXT": 799000, "RXZ": 899000, "Other": 749000 },
+  // BMW
+  "3 Series": { "320d Sport": 4499000, "320d Luxury": 4999000, "330i Sport": 5199000, "330i M Sport": 5699000, "Other": 5099000 },
+  "5 Series": { "520d Luxury": 6499000, "530d M Sport": 7499000, "530i M Sport": 6999000, "Other": 6999000 },
+  "X1": { "sDrive18i": 3999000, "sDrive20d": 4299000, "xDrive20d": 4799000, "M Sport": 4999000, "Other": 4499000 },
+  "X3": { "xDrive20d Luxury": 6299000, "xDrive20d M Sport": 6899000, "xDrive30d M Sport": 7999000, "Other": 6999000 },
+  "X5": { "xDrive30d": 8299000, "xDrive40i M Sport": 9299000, "Other": 8799000 },
+  // Mercedes
+  "C-Class": { "C200": 5500000, "C220d": 5500000, "C300d": 5900000, "AMG C43": 8500000, "Other": 5700000 },
+  "E-Class": { "E200": 6800000, "E220d": 7200000, "E350d": 8500000, "Other": 7500000 },
+  "GLC": { "GLC 220d": 6500000, "GLC 300": 7000000, "AMG GLC 43": 8500000, "Other": 7000000 },
+  "GLE": { "GLE 300d": 8500000, "GLE 400d": 9500000, "AMG GLE 53": 12000000, "Other": 9500000 },
+  "S-Class": { "S350d": 16000000, "S400d": 18000000, "S500": 19000000, "Maybach S580": 25000000, "Other": 17000000 },
+  // Audi
+  "A4": { "Premium": 4299000, "Premium Plus": 4699000, "Technology": 5099000, "Other": 4699000 },
+  "A6": { "Premium Plus": 5999000, "Technology": 6799000, "Other": 6399000 },
+  "Q3": { "Premium Plus": 4399000, "Technology": 4899000, "Other": 4649000 },
+  "Q5": { "Premium Plus": 5999000, "Technology": 6599000, "Other": 6299000 },
+  "Q7": { "Premium Plus": 7999000, "Technology": 8799000, "Other": 8399000 },
+};
 
 // Fuel types
 const fuelTypes = ["Petrol", "Diesel", "CNG", "Electric", "Hybrid"];
@@ -54,6 +164,55 @@ const transmissionTypes = ["Manual", "Automatic", "AMT", "CVT", "DCT"];
 
 // Ownership types
 const ownershipTypes = ["1st Owner", "2nd Owner", "3rd Owner", "4th+ Owner"];
+
+// Condition grades
+const conditionGrades = ["Excellent", "Good", "Average", "Below Average"];
+
+// Accident types
+const accidentTypes = ["None", "Minor Claim", "Major Structural"];
+
+// --- Valuation Formula Constants ---
+
+// Age depreciation table (year → retention %)
+const ageDepreciation = {
+  0: 0.90, 1: 0.85, 2: 0.80, 3: 0.75, 4: 0.60, 5: 0.55, 6: 0.50, 7: 0.45,
+};
+
+// Brand factor mapping
+const brandFactors = {
+  "Maruti Suzuki": 1.05, "Hyundai": 1.05, "Toyota": 1.07, "Tata": 1.05,
+  "Honda": 1.03, "Kia": 1.03, "Mahindra": 1.02, "MG": 0.98,
+  "Volkswagen": 0.95, "Skoda": 0.95, "Renault": 0.92, "Nissan": 0.93,
+  "Ford": 0.90, "Jeep": 0.97, "BMW": 0.93, "Mercedes-Benz": 0.94,
+  "Audi": 0.93, "Volvo": 0.94, "Land Rover": 0.92, "Jaguar": 0.90,
+  "Mini": 0.90, "Porsche": 0.96, "Lexus": 0.95, "Isuzu": 0.93,
+  "Citroen": 0.90, "BYD": 0.90, "Datsun": 0.88, "Fiat": 0.85,
+  "Mitsubishi": 0.88, "Chevrolet": 0.85, "Other": 0.92,
+};
+
+// Demand factor mapping
+const demandFactors = { "High": 1.08, "Medium": 1.03, "Low": 0.92 };
+
+// Condition adjustment (INR)
+const conditionAdjustments = {
+  "Excellent": 30000, "Good": 25000, "Average": 15000, "Below Average": -10000,
+};
+
+// Accident penalty (INR)
+const accidentPenalties = { "None": 0, "Minor Claim": 20000, "Major Structural": 40000 };
+
+// Urgency discount (INR)
+const urgencyDiscounts = { "High": 20000, "Medium": 10000, "Low": 0 };
+
+// Ownership premium (INR) - 1st owner gets a premium, others get less
+const ownershipPremiums = {
+  "1st Owner": 10000, "2nd Owner": 0, "3rd Owner": -10000, "4th+ Owner": -20000,
+};
+
+// Expected KM per year for mileage deduction calc
+const EXPECTED_KM_PER_YEAR = 12000;
+// Rate per excess KM (INR)
+const EXCESS_KM_RATE = 1.5;
 
 // Generate years from current year to 2000
 const currentYear = new Date().getFullYear();
@@ -134,7 +293,7 @@ const FAQItem = memo(({ question, answer = "Answer coming soon...", isOpen, onCl
         {question}
       </span>
       <svg
-        className={`w-5 h-5 transition-transform text-[#525252] ${isOpen ? "rotate-180" : ""
+        className={`w-5 h-5 transition-transform text-[#525252] flex-shrink-0 ${isOpen ? "rotate-180" : ""
           }`}
         fill="none"
         viewBox="0 0 24 24"
@@ -176,17 +335,29 @@ const Sell = () => {
     registrationNumber: '',
     make: '',
     model: '',
+    trim: '',
     year: '',
     fuelType: '',
     transmission: '',
     ownership: '',
+    kmDriven: '',
+    condition: '',
+    accidentType: '',
   });
+
+  // Get available trims for selected model
+  const availableTrims = formData.model && carTrims[formData.model]
+    ? Object.keys(carTrims[formData.model])
+    : [];
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => {
       if (name === 'make') {
-        return { ...prev, [name]: value, model: '' }; // Reset model if make changes
+        return { ...prev, [name]: value, model: '', trim: '' };
+      }
+      if (name === 'model') {
+        return { ...prev, [name]: value, trim: '' };
       }
       return { ...prev, [name]: value };
     });
@@ -195,14 +366,12 @@ const Sell = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validate that all fields are filled
-    const { registrationNumber, make, model, year, fuelType, transmission, ownership } = formData;
-    if (!registrationNumber || !make || !year || !fuelType || !transmission || !ownership) {
+    const { registrationNumber, make, model, year, fuelType, transmission, ownership, kmDriven } = formData;
+    if (!registrationNumber || !make || !year || !fuelType || !transmission || !ownership || !kmDriven) {
       alert('Please fill out all car details before proceeding.');
       return;
     }
 
-    // Instead of finishing immediately, open the details popup
     setIsModalOpen(true);
   };
 
@@ -219,10 +388,14 @@ const Sell = () => {
         registration_number: formData.registrationNumber,
         make: formData.make,
         model: formData.model,
+        trim: formData.trim,
         year: formData.year,
         fuel_type: formData.fuelType,
         transmission: formData.transmission,
         ownership: formData.ownership,
+        km_driven: formData.kmDriven,
+        condition: formData.condition,
+        accident_type: formData.accidentType,
         name: userName,
         phone: userPhone,
       },
@@ -234,39 +407,77 @@ const Sell = () => {
       return;
     }
 
-    // Generate estimated price based on inputs
-    const currentYear = new Date().getFullYear();
-    const carAge = currentYear - (formData.year ? parseInt(formData.year) : currentYear - 5);
+    // ===== VALUATION FORMULA =====
+    // Final Price = (Base Price × Depreciation% × Demand Factor × Brand Factor)
+    //   – Mileage Deduction + Condition Adjustment + Ownership Premium
+    //   – Accident Penalty – Urgency Discount
 
-    // Base price varies by fuel type
-    let basePrice = 500000;
-    if (formData.fuelType === 'Diesel') basePrice = 600000;
-    else if (formData.fuelType === 'CNG') basePrice = 520000;
-    else if (formData.fuelType === 'Electric') basePrice = 700000;
-
-    // Depreciation: ~15% per year (compounding)
-    const depreciationRate = 0.85;
-    let price = basePrice * Math.pow(depreciationRate, carAge);
-
-    // Transmission affects price
-    if (formData.transmission === 'Automatic' || formData.transmission === 'DCT') {
-      price *= 1.10;
-    } else if (formData.transmission === 'CVT' || formData.transmission === 'AMT') {
-      price *= 1.05;
-    } else if (formData.transmission === 'Manual') {
-      price *= 0.92;
+    // 1. Base Price from trim/model data
+    let basePrice = 0;
+    if (formData.model && formData.trim && carTrims[formData.model] && carTrims[formData.model][formData.trim]) {
+      basePrice = carTrims[formData.model][formData.trim];
+    } else if (formData.model && carTrims[formData.model] && carTrims[formData.model]["Other"]) {
+      basePrice = carTrims[formData.model]["Other"];
+    } else {
+      // Fallback base prices by fuel type
+      if (formData.fuelType === 'Electric') basePrice = 1200000;
+      else if (formData.fuelType === 'Diesel') basePrice = 900000;
+      else if (formData.fuelType === 'CNG') basePrice = 750000;
+      else if (formData.fuelType === 'Hybrid') basePrice = 1100000;
+      else basePrice = 750000;
     }
 
-    // Ownership: each additional owner reduces value
-    if (formData.ownership === '2nd Owner') price *= 0.88;
-    else if (formData.ownership === '3rd Owner') price *= 0.78;
-    else if (formData.ownership === '4th+ Owner') price *= 0.68;
+    // 2. Car Age & Depreciation %
+    const calcYear = new Date().getFullYear();
+    const carAge = calcYear - (formData.year ? parseInt(formData.year) : calcYear - 5);
+    const clampedAge = Math.min(carAge, 7); // Cap at 7 years in table
+    const depreciationPct = ageDepreciation[clampedAge] !== undefined
+      ? ageDepreciation[clampedAge]
+      : 0.30; // 7+ years fallback
+    const depreciatedPrice = basePrice * depreciationPct;
 
-    const finalMin = (price / 100000).toFixed(2);
-    const finalMax = ((price + 50000) / 100000).toFixed(2);
-    setEstimatedOffer(`₹${finalMin} Lakhs - ₹${finalMax} Lakhs`);
+    // 3. Demand Factor (default Medium for frontend estimate)
+    const demandCategory = "Medium";
+    const demandFactor = demandFactors[demandCategory];
 
-    // Close modal, load Result view
+    // 4. Brand Factor
+    const brandFactor = brandFactors[formData.make] || brandFactors["Other"];
+
+    // 5. Mileage Deduction
+    const actualKm = parseInt(formData.kmDriven) || 0;
+    const expectedKm = Math.max(carAge, 1) * EXPECTED_KM_PER_YEAR;
+    const excessKm = Math.max(0, actualKm - expectedKm);
+    const mileageDeduction = excessKm * EXCESS_KM_RATE;
+
+    // 6. Condition Adjustment
+    const conditionGrade = formData.condition || "Good";
+    const conditionAdj = conditionAdjustments[conditionGrade] || 0;
+
+    // 7. Ownership Premium
+    const ownershipAdj = ownershipPremiums[formData.ownership] || 0;
+
+    // 8. Accident Penalty
+    const accidentPenalty = accidentPenalties[formData.accidentType] || 0;
+
+    // 9. Urgency Discount (default Low for self-serve)
+    const urgencyDiscount = urgencyDiscounts["Low"];
+
+    // Final Fair Value
+    const finalFairValue = (depreciatedPrice * demandFactor * brandFactor)
+      - mileageDeduction
+      + conditionAdj
+      + ownershipAdj
+      - accidentPenalty
+      - urgencyDiscount;
+
+    // Suggested Listing Price (~6% above fair value)
+    const suggestedListingPrice = finalFairValue * 1.06;
+    // Minimum Acceptable Price (~5% below fair value)
+    const minimumAcceptablePrice = finalFairValue * 0.95;
+
+    const formatLakhs = (val) => Math.max(0, val / 100000).toFixed(2);
+    setEstimatedOffer(`₹${formatLakhs(minimumAcceptablePrice)} - ₹${formatLakhs(suggestedListingPrice)} Lakhs`);
+
     setIsModalOpen(false);
     setShowResult(true);
   };
@@ -299,20 +510,18 @@ const Sell = () => {
   ];
 
   const faqsLeft = [
-    { question: "What is Lane marketplace?", answer: "Lane marketplace is a transparent platform designed to help you sell your car seamlessly, ensuring you get the best market value through our vast network." },
-    { question: "How is this different from market place platforms?", answer: "Unlike traditional classifieds, we handle everything from inspection to paperwork and RC transfer, guaranteeing a genuine buyer without constant phone calls." },
-    { question: "How is my car's price decided?", answer: "Pricing is backed by real-time market data, the physical condition of the car, and immediate demand from our extensive dealer and buyer network." },
-    { question: "Do you help with RC transfer and documentation?", answer: "Yes, we provide completely free end-to-end documentation and RC transfer support to ensure you face absolutely zero hassle." },
-    { question: "Can I sell a car with a loan or minor issues?", answer: "Absolutely. We clear your pending loan with the bank on your behalf and purchase cars as-is, resolving any issues post-sale." },
-    { question: "Why should I trust this platform?", answer: "We are an experienced team managing a transparent process where you are paid directly and securely before handing over the keys." },
+    { question: "What is Lane marketplace?", answer: "Lane is a transparent marketplace built to help you sell your car effortlessly and get the best value for it. Sell directly to a network of verified buyers, without the usual marketplace hassles. No confusion. No back-and-forth. Just fair pricing and a smooth, streamlined experience." },
+    { question: "How is this different from marketplace platforms?", answer: "There are no dealer auctions, no forced price reductions, and no bulk bidding involved — your car connects with the right next owner, not the lowest bidder." },
+    { question: "How is my car's price decided?", answer: "Based on model, condition, usage, and current market demand — with you having the final say." },
+    { question: "Do you help with RC transfer and documentation?", answer: "We support ownership transfer and documentation for a smooth handover." },
+    { question: "Can I sell a car with a loan or minor issues?", answer: "Share the details and we'll guide you through the process." },
   ];
 
   const faqsRight = [
-    { question: "Who are the buyers on this platform?", answer: "Our network exclusively comprises verified dealerships and premium direct buyers looking for high-quality certified pre-owned cars." },
-    { question: "Will I receive multiple calls or face bargaining?", answer: "No. You will only receive a single, fair offer from us based on inspection, eliminating any awkward haggling or endless calls." },
-    { question: "How long does it usually take to sell a car?", answer: "Typically, most cars are inspected, approved, and fully paid for within 24 to 48 hours of your initial request." },
-    { question: "Is the payment process safe?", answer: "Yes, 100% secure. The full payment is transferred to your bank account immediately before the car is even picked up from your doorstep." },
-    { question: "Do you purchase the car yourself?", answer: "We act as the marketplace facilitator connecting you to our verified network effortlessly, ensuring you receive the absolute best value." },
+    { question: "Who are the buyers on this platform?", answer: "Verified individuals actively looking to purchase a car — including first-time buyers from our driving community with clear requirements and serious intent." },
+    { question: "Will I receive multiple calls or face bargaining?", answer: "We connect you only with qualified buyers after carefully screening every inquiry." },
+    { question: "How long does it usually take to sell a car?", answer: "Most cars are matched within 7–10 days, depending on pricing and vehicle condition." },
+    { question: "Does Lane purchase the car?", answer: "Lane is a trusted marketplace that facilitates transactions between sellers and verified buyers." },
   ];
 
   const nextTestimonial = () => {
@@ -340,17 +549,17 @@ const Sell = () => {
         {/* Background Watermark Pattern */}
         <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: "url('/White BG Pattern.svg')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'repeat' }}></div>
 
-        {/* Car Image - Positioned bottom right */}
-        <div className="relative md:absolute order-2 md:order-none mt-4 md:mt-0 md:-bottom-[5%] lg:-bottom-[12%] md:-right-[2%] lg:right-[5%] w-[110%] md:w-[85%] lg:w-[65%] max-w-[850px] z-20 pointer-events-none self-center flex justify-center">
+        {/* Car Image - Positioned bottom left */}
+        <div className="relative md:absolute order-2 md:order-none mt-4 md:mt-0 md:-bottom-[5%] lg:-bottom-[12%] md:-left-[2%] lg:left-[5%] w-[110%] md:w-[85%] lg:w-[65%] max-w-[850px] z-20 pointer-events-none self-center flex justify-center">
           <img
             src="/MainCar.png"
             alt="Car"
-            className="w-[95%] md:w-full h-auto ml-auto object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.3)]"
+            className="w-[95%] md:w-full h-auto mr-auto object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.3)]"
           />
         </div>
 
-        {/* Headlines - Top Right */}
-        <div className="relative md:absolute order-1 md:order-none top-8 md:top-6 lg:top-8 right-0 md:right-[5%] lg:right-[8%] z-30 flex flex-col items-center w-full md:w-auto mt-[40px] md:mt-0 px-4 md:px-0">
+        {/* Headlines - Top Left */}
+        <div className="relative md:absolute order-1 md:order-none top-8 md:top-6 lg:top-8 left-0 md:left-[5%] lg:left-[8%] z-30 flex flex-col items-center w-full md:w-auto mt-[40px] md:mt-0 px-4 md:px-0">
 
           <div className="relative flex flex-col items-center w-full px-2 sm:px-4">
             <img
@@ -361,8 +570,8 @@ const Sell = () => {
           </div>
         </div>
 
-        {/* Form - Left side */}
-        <div className="relative md:absolute order-3 md:order-none -mt-4 sm:-mt-8 md:mt-0 md:top-[48%] md:-translate-y-1/2 left-0 right-0 md:left-12 lg:left-[8%] z-10 w-[94%] sm:w-[88%] mx-auto md:mx-0 md:w-[48%] lg:w-[42%] max-w-[540px] drop-shadow-2xl">
+        {/* Form - Right side */}
+        <div className="relative md:absolute order-3 md:order-none -mt-4 sm:-mt-8 md:mt-0 md:top-[48%] md:-translate-y-1/2 right-0 left-0 md:left-auto md:right-12 lg:right-[8%] z-10 w-[94%] sm:w-[88%] mx-auto md:mx-0 md:w-[48%] lg:w-[42%] max-w-[540px] drop-shadow-2xl">
           <div className="bg-[#FCFCFC] rounded-[20px] md:rounded-[24px] p-6 sm:p-7 md:p-8 lg:p-10 shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-gray-200">
             {showResult ? (
               <div className="flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-500 py-4">
@@ -370,13 +579,13 @@ const Sell = () => {
                   <span className="text-3xl">🎉</span>
                 </div>
                 <h3 className="font-['Bricolage_Grotesque'] text-[24px] font-extrabold text-black mb-3">Your Valuation Is Ready!</h3>
-                <p className="font-['Bricolage_Grotesque'] text-gray-600 text-[14px] leading-relaxed mb-6">Based on the details provided, here is the estimated market value for your {formData.year} {formData.make} {formData.model}:</p>
+                <p className="font-['Bricolage_Grotesque'] text-gray-600 text-[14px] leading-relaxed mb-6">Based on the details provided, here is the estimated market value for your {formData.year} {formData.make} {formData.model}{formData.trim && formData.trim !== 'Other' ? ` (${formData.trim})` : ''}:</p>
                 <div className="w-full bg-[#F3FFB6] rounded-[16px] py-6 px-4 mb-6 border border-[#00CE84]/30 shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)]">
                   <p className="font-['Bricolage_Grotesque'] text-[#00CE84] font-black text-2xl md:text-3xl tracking-tight leading-none">{estimatedOffer}</p>
                 </div>
                 <p className="font-['Bricolage_Grotesque'] text-[13px] text-gray-400 mb-8 px-2 leading-relaxed">Our execution expert will call you at <span className="text-black font-semibold">{userPhone}</span> shortly to schedule a free doorstep inspection and finalize your offer!</p>
                 <button
-                  onClick={() => { setShowResult(false); setFormData({ registrationNumber: '', make: '', model: '', year: '', fuelType: '', transmission: '', ownership: '' }); setUserName(''); setUserPhone(''); }}
+                  onClick={() => { setShowResult(false); setFormData({ registrationNumber: '', make: '', model: '', trim: '', year: '', fuelType: '', transmission: '', ownership: '', kmDriven: '', condition: '', accidentType: '' }); setUserName(''); setUserPhone(''); }}
                   className="w-full bg-black hover:bg-gray-800 text-white font-['Bricolage_Grotesque'] font-bold text-[15px] py-4 rounded-full transition-all duration-200"
                 >
                   Start New Valuation
@@ -430,8 +639,26 @@ const Sell = () => {
                   </div>
                 </div>
 
-                {/* Grid 2: Year & Fuel Type */}
+                {/* Grid 2: Variant/Trim & Year */}
                 <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-4">
+                  <div className="relative w-full">
+                    <select
+                      name="trim"
+                      value={formData.trim}
+                      onChange={handleChange}
+                      disabled={!formData.model || availableTrims.length === 0}
+                      className={`w-full appearance-none rounded-full border border-black bg-white px-5 sm:px-6 py-2.5 md:py-2.5 font-['Bricolage_Grotesque'] font-medium text-[14px] md:text-[15px] transition-all focus:outline-none focus:border-[#00CE84] focus:ring-1 focus:ring-[#00CE84] ${!formData.trim ? 'text-black/40' : 'text-gray-800'} ${!formData.model || availableTrims.length === 0 ? 'opacity-70 cursor-not-allowed bg-gray-50' : ''}`}
+                    >
+                      <option value="" disabled>Variant / Trim</option>
+                      {availableTrims.map(trim => (
+                        <option key={trim} value={trim} className="text-gray-800">{trim}</option>
+                      ))}
+                    </select>
+                    <div className="pointer-events-none absolute right-4 md:right-5 top-1/2 -translate-y-1/2">
+                      <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-gray-400" strokeWidth={2.5} />
+                    </div>
+                  </div>
+
                   <div className="relative w-full">
                     <select
                       name="year"
@@ -446,7 +673,10 @@ const Sell = () => {
                       <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-gray-400" strokeWidth={2.5} />
                     </div>
                   </div>
+                </div>
 
+                {/* Grid 3: Fuel Type & Transmission */}
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-4">
                   <div className="relative w-full">
                     <select
                       name="fuelType"
@@ -461,10 +691,7 @@ const Sell = () => {
                       <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-gray-400" strokeWidth={2.5} />
                     </div>
                   </div>
-                </div>
 
-                {/* Grid 3: Transmission & Ownership */}
-                <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-4">
                   <div className="relative w-full">
                     <select
                       name="transmission"
@@ -479,7 +706,10 @@ const Sell = () => {
                       <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-gray-400" strokeWidth={2.5} />
                     </div>
                   </div>
+                </div>
 
+                {/* Grid 4: Ownership & KM Driven */}
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-4">
                   <div className="relative w-full">
                     <select
                       name="ownership"
@@ -494,10 +724,55 @@ const Sell = () => {
                       <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-gray-400" strokeWidth={2.5} />
                     </div>
                   </div>
+
+                  <div className="relative w-full">
+                    <input
+                      type="number"
+                      name="kmDriven"
+                      value={formData.kmDriven}
+                      onChange={handleChange}
+                      placeholder="KM Driven"
+                      min="0"
+                      className="w-full appearance-none rounded-full border border-black bg-white px-5 sm:px-6 py-2.5 md:py-2.5 font-['Bricolage_Grotesque'] font-medium text-[14px] md:text-[15px] text-gray-800 placeholder-black/40 focus:outline-none focus:border-[#00CE84] focus:ring-1 focus:ring-[#00CE84] transition-all"
+                    />
+                  </div>
                 </div>
 
-                {/* Submit Button */}
-                <div className="flex justify-center pt-3 pb-2">
+                {/* Grid 5: Condition & Accident Type */}
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 md:gap-4">
+                  <div className="relative w-full">
+                    <select
+                      name="condition"
+                      value={formData.condition}
+                      onChange={handleChange}
+                      className={`w-full appearance-none rounded-full border border-black bg-white px-5 sm:px-6 py-2.5 md:py-2.5 font-['Bricolage_Grotesque'] font-medium text-[14px] md:text-[15px] transition-all focus:outline-none focus:border-[#00CE84] focus:ring-1 focus:ring-[#00CE84] ${!formData.condition ? 'text-black/40' : 'text-gray-800'}`}
+                    >
+                      <option value="" disabled>Condition</option>
+                      {conditionGrades.map(grade => <option key={grade} value={grade} className="text-gray-800">{grade}</option>)}
+                    </select>
+                    <div className="pointer-events-none absolute right-4 md:right-5 top-1/2 -translate-y-1/2">
+                      <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-gray-400" strokeWidth={2.5} />
+                    </div>
+                  </div>
+
+                  <div className="relative w-full">
+                    <select
+                      name="accidentType"
+                      value={formData.accidentType}
+                      onChange={handleChange}
+                      className={`w-full appearance-none rounded-full border border-black bg-white px-5 sm:px-6 py-2.5 md:py-2.5 font-['Bricolage_Grotesque'] font-medium text-[14px] md:text-[15px] transition-all focus:outline-none focus:border-[#00CE84] focus:ring-1 focus:ring-[#00CE84] ${!formData.accidentType ? 'text-black/40' : 'text-gray-800'}`}
+                    >
+                      <option value="" disabled>Accident History</option>
+                      {accidentTypes.map(type => <option key={type} value={type} className="text-gray-800">{type}</option>)}
+                    </select>
+                    <div className="pointer-events-none absolute right-4 md:right-5 top-1/2 -translate-y-1/2">
+                      <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-gray-400" strokeWidth={2.5} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Submit Button - sticky on mobile */}
+                <div className="flex justify-center pt-3 pb-2 sticky bottom-0 z-30 bg-[#FCFCFC]">
                   <button
                     type="submit"
                     className="hover:-translate-y-0.5 transition-transform duration-200"
@@ -599,16 +874,16 @@ const Sell = () => {
             />
             <StepCard
               number="2"
-              icon={<img src="/2.png" alt="Valuation" className="w-full h-full object-contain" />}
-              title="Valuation"
+              icon={<img src="/2.png" alt="Door Step Inspection" className="w-full h-full object-contain" />}
+              title="Door Step Inspection"
               description="Expert car check + document verification"
               bgColor="bg-[#FFB03A]"
             />
             <StepCard
               number="3"
-              icon={<img src="/3.png" alt="Door Step Inspection" className="w-full h-full object-contain" />}
-              title="Door Step Inspection"
-              description="Price at your own terms"
+              icon={<img src="/3.png" alt="Best Offer" className="w-full h-full object-contain" />}
+              title="Best Offer"
+              description="Price at your terms"
               bgColor="bg-[#00CE84]"
             />
             <StepCard
