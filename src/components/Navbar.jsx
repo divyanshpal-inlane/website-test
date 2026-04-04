@@ -166,6 +166,21 @@ const Navbar2 = ({ backgroundColor = "#FAF9E6", logo = "./LANE_LOGO.svg", burger
               }
             />
           </ListItem>
+          <ListItem button component={Link} to="/sell" onClick={handleClose}>
+            <ListItemText
+              primary={
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontFamily: "Bricolage Grotesque",
+                    textAlign: "center",
+                  }}
+                >
+                  Seller
+                </Typography>
+              }
+            />
+          </ListItem>
           <ListItem button onClick={handleMenuOpen} >
             <ListItemText
               primary={
