@@ -176,7 +176,7 @@ const Navbar2 = ({ backgroundColor = "#FAF9E6", logo = "./LANE_LOGO.svg", burger
                     textAlign: "center",
                   }}
                 >
-                  Seller
+                  Sell Your Car
                 </Typography>
               }
             />
