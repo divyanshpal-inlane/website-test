@@ -34,6 +34,7 @@ import LocationPage from "./pages/LocationPage";
 import Page from "./pages/SignupForm";
 import Sell from "./pages/Sell";
 import Reviews from "./pages/Reviews";
+import Admin from "./pages/Admin";
 
 const Layout = () => {
   return (
@@ -156,6 +157,10 @@ const router = createBrowserRouter([
   {
     path: "/sell",
     element: <Sell />,
+  },
+  {
+    path: "/admin",
+    element: <Admin />,
   }
 ], {
   future: {
