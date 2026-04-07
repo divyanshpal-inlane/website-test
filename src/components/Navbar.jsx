@@ -299,7 +299,7 @@ const Navbar2 = ({ backgroundColor = "#FAF9E6", logo = "./LANE_LOGO.svg", burger
             sx={{
               width: "100%",
               display: "flex",
-              justifyContent: "center",
+              justifyContent: isMobile ? "flex-start" : "center",
               alignItems: "center",
               position: "relative",
             }}
@@ -324,6 +324,30 @@ const Navbar2 = ({ backgroundColor = "#FAF9E6", logo = "./LANE_LOGO.svg", burger
                 style={{ marginRight: theme.spacing(1), zIndex: 2 }}
               />
             </Typography>
+
+            <Button
+              component={Link}
+              to="/sell"
+              sx={{
+                position: "fixed",
+                right: isMobile ? 70 : 90,
+                zIndex: 2,
+                textTransform: "none",
+                fontFamily: "Bricolage Grotesque",
+                fontWeight: 600,
+                fontSize: isMobile ? "0.75rem" : "0.95rem",
+                color: "#fff",
+                backgroundColor: "#6B2FA0",
+                borderRadius: "20px",
+                px: isMobile ? 1.5 : 2.5,
+                py: 0.5,
+                "&:hover": {
+                  backgroundColor: "#5a2789",
+                },
+              }}
+            >
+              Sell Your Car
+            </Button>
 
             <IconButton
               size="large"
