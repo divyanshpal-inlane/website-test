@@ -155,7 +155,7 @@ const router = createBrowserRouter([
     element: <Page />,
   },
   {
-    path: "/sell",
+    path: "/sell-your-car",
     element: <Sell />,
   },
   {
