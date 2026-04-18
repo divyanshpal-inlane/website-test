@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Helmet } from "react-helmet-async";
-import { useMediaQuery, useTheme, Box, TextField, Button, FormControlLabel, Radio, RadioGroup, Typography, FormControl, Select, MenuItem, Autocomplete, CircularProgress } from "@mui/material";
+import { useMediaQuery, useTheme, Box, TextField, Button, FormControlLabel, Radio, RadioGroup, Typography, FormControl, Select, MenuItem, Autocomplete, CircularProgress, Checkbox } from "@mui/material";
 import Navbar2 from "../components/Navbar";
 import Footer from "../components/Footer";
 import pitCrewTag from "../assets/images/PitCrew_Tag.svg";
@@ -152,7 +152,8 @@ const Signup = () => {
     city: null,
     area: null,
     license: 'yes',
-    countryCode: '+91'
+    countryCode: '+91',
+    marketingConsent: false
   });
 
   const [countryCodes, setCountryCodes] = useState([]);
@@ -419,6 +420,7 @@ const Signup = () => {
         phone: `${formData.countryCode}${formData.phone}`,
         license: formData.license === 'yes' ? 'yes' : 'no',
         locality: `${formData?.city || ''}, ${formData?.area || ''}`,
+        marketingConsent: formData.marketingConsent ? 'yes' : 'no',
         adName: 'Signup Form',
         leadSource: `Website-${queryParams.utm_source || "Direct"}`,
       };
@@ -703,6 +705,25 @@ const Signup = () => {
                 <LocationSelector formData={formData} setFormData={setFormData} />
               </APIProvider>
             </FormField>
+            <div className="h-6"></div>
+            {/* Marketing Consent */}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="marketingConsent"
+                  checked={formData.marketingConsent}
+                  onChange={(e) =>
+                    setFormData(prev => ({ ...prev, marketingConsent: e.target.checked }))
+                  }
+                  className="text-[#00CE84]"
+                />
+              }
+              label={
+                <Typography className="font-['Bricolage_Grotesque']">
+                  I am agreeing to receive marketing and transaction calls
+                </Typography>
+              }
+            />
             <div className="h-6"></div>
             <div>
               By continuing, you agree to our
