@@ -377,6 +377,11 @@ const Signup = () => {
       return;
     }
 
+    if (!formData.marketingConsent) {
+      alert('Please agree to receive marketing and transaction calls to continue');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
