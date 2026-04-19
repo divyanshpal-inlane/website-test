@@ -713,6 +713,7 @@ const Signup = () => {
             <div className="h-6"></div>
             {/* Marketing Consent */}
             <FormControlLabel
+            sx={{ alignItems: "flex-start" }}
               control={
                 <Checkbox
                   name="marketingConsent"
@@ -725,14 +726,14 @@ const Signup = () => {
               }
               label={
                 <Typography className="font-['Bricolage_Grotesque']">
-                  I am agreeing to receive marketing and transaction calls
+                  I provide my explicit consent to receive Inlane's communications via Voice Calls, SMS, WhatsApp, RCS, and Email for transactional, service, and promotional purposes. I understand that I can opt-out at any time and that this consent overrides my DND/NCPR registration.
+By proceeding, I agree to the Terms & Conditions and Privacy Policy.
                 </Typography>
               }
             />
             <div className="h-6"></div>
-            <div>
-              By continuing, you agree to our
-              <nav className="flex flex-row justify-center gap-4">
+            <div className="text-sm text-gray-600">
+              By continuing, you agree to our {" "}
                 <a
                   target="_blank"
                   href="https://inlane.in/terms-and-conditions"
@@ -749,7 +750,6 @@ const Signup = () => {
                 >
                   Privacy Policies
                 </a>
-              </nav>
             </div>
             {/* Submit Button */}
             <div className="flex justify-center">
