@@ -166,7 +166,7 @@ const Navbar2 = ({ backgroundColor = "#FAF9E6", logo = "./LANE_LOGO.svg", burger
               }
             />
           </ListItem>
-          <ListItem button component={Link} to="/sell-your-car" onClick={handleClose}>
+          <ListItem button component={Link} to="/sell-used-car" onClick={handleClose}>
             <ListItemText
               primary={
                 <Typography
@@ -327,7 +327,7 @@ const Navbar2 = ({ backgroundColor = "#FAF9E6", logo = "./LANE_LOGO.svg", burger
 
             <Button
               component={Link}
-              to="/sell-your-car"
+              to="/sell-used-car"
               sx={{
                 position: "fixed",
                 right: isMobile ? 70 : 90,
