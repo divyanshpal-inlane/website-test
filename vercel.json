@@ -2,9 +2,7 @@
   "buildCommand": "pnpm run build",
   "outputDirectory": "dist",
   "installCommand": "pnpm install",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
-  ],
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }],
   "headers": [
     {
       "source": "/assets/(.*)",
@@ -60,13 +58,67 @@
     {
       "source": "/blog/4apjgm3xegfkrfffnaoeqw",
       "destination": "/blog/",
-      "statusCode":301
+      "statusCode": 301
     },
-  {
+    {
       "source": "/blog/1i7uorqatz2bpziqprv9x9",
       "destination": "/blog/",
       "statusCode": 301
+    },
+    {
+      "source": "/blog/master-manual-transmission-gear-shifting-tips-new-drivers",
+      "destination": "/blog/how-to-find-vehicle-engine-number-chassis-number-online",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/what-to-do-if-you-lose-driving-license-card-in-india",
+      "destination": "/blog/how-to-find-vehicle-engine-number-chassis-number-online",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/master-driving-in-rainy-weather-and-urban-floods-safety-tips",
+      "destination": "/blog/how-to-apply-for-a-learners-licence-online-in-bangalore-step-by-step-process-2025-update",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/top-driving-tips-for-first-time-drivers-lane-discipline-and-more",
+      "destination": "/blog/how-to-change-address-in-your-driving-license-online-in-india",
+      "statusCode": 301
+    },
+    {
+      "source": "/essential-car-care-tips-for-first-time-owners-practical-guide",
+      "destination": "/driving-test-in-bangalore-complete-guide-2026",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/how-to-choose-your-first-car-beginners-guide-to-safety-and-driving",
+      "destination": "/blog/how-to-take-your-learners-license-test-online-a-2024-step-by-step-guide",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/how-to-renew-driving-license-in-india-guide-for-drivers-and-learners",
+      "destination": "/blog/how-to-renew-driving-licence-in-bangalore-in-2026-step-by-step-guide",
+      "statusCode": 301
+    },
+    {
+      "source": "/sell",
+      "destination": "/sell-used-car",
+      "statusCode": 301
+    },
+    {
+      "source": "/sell-your-car",
+      "destination": "/sell-used-car",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/how-to-change-address-in-driving-licence-online-in-india-a-step-by-step-guide-for-drivers",
+      "destination": "/blog/how-to-change-address-in-your-driving-license-online-in-india",
+      "statusCode": 301
+    },
+    {
+      "source": "/blog/how-to-renew-your-driving-license-in-india-a-guide-for-drivers-learners-and-car-enthusiasts",
+      "destination": "/blog/how-to-renew-driving-licence-in-bangalore-in-2026-step-by-step-guide",
+      "statusCode": 301
     }
-
   ]
 }
