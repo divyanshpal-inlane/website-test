@@ -22,7 +22,7 @@ import ReschedulePolicy from "./pages/ReschedulePolicy";
 import Blog from "./blog/Blog";
 import BlogPage from "./blog/BlogPage";
 import NewCoursePage from "./components/Courses/NewCoursePage";
-import { HelmetProvider } from 'react-helmet-async';
+import { HelmetProvider } from "react-helmet-async";
 import SignupPopup from "./components/SignupPopup";
 
 import FAQPage from "./components/FAQ/FAQPage"; // Fixed casing to match actual file
@@ -49,7 +49,11 @@ const Layout = () => {
 const Layout2 = () => {
   return (
     <div className="bg-logoWhite">
-      <Navbar backgroundColor='#FFFFFF' logo='./LANE_LOGO.svg' burgerMenu='/PurpleHamburger.png' />
+      <Navbar
+        backgroundColor="#FFFFFF"
+        logo="./LANE_LOGO.svg"
+        burgerMenu="/PurpleHamburger.png"
+      />
       <Outlet />
       <Footer />
     </div>
@@ -59,119 +63,130 @@ const Layout2 = () => {
 const Layout3 = () => {
   return (
     <div className="">
-      <Navbar backgroundColor='#FFFFFF' logo='/LANE_LOGO.svg' burgerMenu='/PurpleHamburger.png' />
+      <Navbar
+        backgroundColor="#FFFFFF"
+        logo="/LANE_LOGO.svg"
+        burgerMenu="/PurpleHamburger.png"
+      />
       <BlogPage />
       <Footer />
     </div>
   );
 };
 
-const router = createBrowserRouter([
-  {
-    path: "/about-us",
-    element: <AboutUs />,
-  },
-  {
-    path: "/courses",
-    element: <NewCoursePage />,
-  },
-  {
-    path: "/faqs", // Standalone route with integrated header/footer
-    element: <FAQPage />,
-  },
-  {
-    path: "/thank-you",
-    element: <ThankYou />,
-  },
-  {
-    path: "/driving-school-in/:location",
-    element: <LocationPage />,
-  },
-  {
-    path: "/blog",
-    element: <Layout2 />,
-    children: [
-      {
-        path: "/blog",
-        element: <Blog />,
-      },
-    ],
-  },
-  {
-    path: "/reviews",
-    element: <Layout2 />,
-    children: [
-      {
-        path: "/reviews",
-        element: <Reviews />,
-      },
-    ],
-  },
-  {
-    path: "/blog/:slug",
-    element: <Layout3 />,
-  },
-  {
-    path: "/",
-    element: <Layout />,
-    children: [
-      {
-        path: "/",
-        element: <Homepage />,
-      },
+const router = createBrowserRouter(
+  [
+    {
+      path: "/about-us",
+      element: <AboutUs />,
+    },
+    {
+      path: "/courses",
+      element: <NewCoursePage />,
+    },
+    {
+      path: "/faqs", // Standalone route with integrated header/footer
+      element: <FAQPage />,
+    },
+    {
+      path: "/thank-you",
+      element: <ThankYou />,
+    },
+    {
+      path: "/driving-school-in/:location",
+      element: <LocationPage />,
+    },
+    {
+      path: "/blog",
+      element: <Layout2 />,
+      children: [
+        {
+          path: "/blog",
+          element: <Blog />,
+        },
+      ],
+    },
+    {
+      path: "/reviews",
+      element: <Layout2 />,
+      children: [
+        {
+          path: "/reviews",
+          element: <Reviews />,
+        },
+      ],
+    },
+    {
+      path: "/blog/:slug",
+      element: <Layout3 />,
+    },
+    {
+      path: "/",
+      element: <Layout />,
+      children: [
+        {
+          path: "/",
+          element: <Homepage />,
+        },
 
-      {
-        path: "/terms-and-conditions",
-        element: <TermsAndConditions />,
-      },
-      {
-        path: "/privacy-policy",
-        element: <PrivacyPolicy />,
-      },
-      {
-        path: "/disclaimer",
-        element: <Disclaimer />,
-      },
-      {
-        path: "/payment-policy",
-        element: <PaymentPolicy />,
-      },
-      {
-        path: "/rescheduling-policy",
-        element: <ReschedulePolicy />,
-      },
-    ],
-  },
+        {
+          path: "/terms-and-conditions",
+          element: <TermsAndConditions />,
+        },
+        {
+          path: "/privacy-policy",
+          element: <PrivacyPolicy />,
+        },
+        {
+          path: "/disclaimer",
+          element: <Disclaimer />,
+        },
+        {
+          path: "/payment-policy",
+          element: <PaymentPolicy />,
+        },
+        {
+          path: "/rescheduling-policy",
+          element: <ReschedulePolicy />,
+        },
+      ],
+    },
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "/signup",
+      element: <Signup />,
+    },
+    {
+      path: "/signup-form",
+      element: <Page />,
+    },
+    {
+      path: "/sell-used-car",
+      element: <Sell />,
+    },
+    {
+      path: "/sell-your-car",
+      element: <Sell />,
+    },
+    {
+      path: "/admin",
+      element: <Admin />,
+    },
+  ],
   {
-    path: "/login",
-    element: <Login />,
+    future: {
+      v7_startTransition: true,
+      v7_relativeSplatPath: true,
+      v7_fetcherPersist: true,
+      v7_normalizeFormMethod: true,
+      v7_partialHydration: true,
+      v7_skipActionErrorRevalidation: true,
+    },
   },
-  {
-    path: "/signup",
-    element: <Signup />,
-  },
-  {
-    path: "/signup-form",
-    element: <Page />,
-  },
-  {
-    path: "/sell-used-car",
-    element: <Sell />,
-  },
-  {
-    path: "/admin",
-    element: <Admin />,
-  }
-], {
-  future: {
-    v7_startTransition: true,
-    v7_relativeSplatPath: true,
-    v7_fetcherPersist: true,
-    v7_normalizeFormMethod: true,
-    v7_partialHydration: true,
-    v7_skipActionErrorRevalidation: true,
-  }
-});
+);
 
 function App() {
   return (
