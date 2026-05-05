@@ -1,50 +1,67 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
-import { useMediaQuery, useTheme, Box, TextField, Button, FormControlLabel, Radio, RadioGroup, Typography, FormControl, Select, MenuItem, Autocomplete, CircularProgress, Checkbox } from "@mui/material";
+import {
+  useMediaQuery,
+  useTheme,
+  Box,
+  TextField,
+  Button,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Typography,
+  FormControl,
+  Select,
+  MenuItem,
+  Autocomplete,
+  CircularProgress,
+  Checkbox,
+} from "@mui/material";
 import Navbar2 from "../components/Navbar";
 import Footer from "../components/Footer";
 import pitCrewTag from "../assets/images/PitCrew_Tag.svg";
 import Rocket from "../components/SVGs/Rocket";
 import { Link, useNavigate } from "react-router-dom";
-import debounce from 'lodash/debounce';
-import ScrollToTop from '../components/ScrollToTop';
-import { useLocation } from 'react-router-dom';
-import LocationSelector from '../components/locationSelector';
-import { APIProvider } from '@vis.gl/react-google-maps';
-import { supabase } from '../supabaseClient'
+import debounce from "lodash/debounce";
+import ScrollToTop from "../components/ScrollToTop";
+import { useLocation } from "react-router-dom";
+import LocationSelector from "../components/locationSelector";
+import { APIProvider } from "@vis.gl/react-google-maps";
+import { supabase } from "../supabaseClient";
 
 // Fetch country codes and flags
 const fetchCountryCodes = async () => {
   try {
-    const response = await fetch('https://restcountries.com/v3.1/all');
+    const response = await fetch("https://restcountries.com/v3.1/all");
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     const data = await response.json();
-    if (!Array.isArray(data)) throw new Error('Unexpected response format');
+    if (!Array.isArray(data)) throw new Error("Unexpected response format");
     return data
-      .filter(country => country.idd?.root)
-      .map(country => ({
-        code: `${country.idd.root}${country.idd.suffixes ? country.idd.suffixes[0] : ''}`,
+      .filter((country) => country.idd?.root)
+      .map((country) => ({
+        code: `${country.idd.root}${country.idd.suffixes ? country.idd.suffixes[0] : ""}`,
         name: country.name.common,
-        flag: country.flags?.svg || ''
+        flag: country.flags?.svg || "",
       }));
   } catch (error) {
-    console.error('Error fetching country codes:', error);
+    console.error("Error fetching country codes:", error);
     return [];
   }
 };
 
-
 // Search locations
-const searchLocations = async (query, type, selectedCity = '') => {
+const searchLocations = async (query, type, selectedCity = "") => {
   if (!query || query.length < 2) return [];
 
   try {
     const timestamp = new Date().getTime();
-    const searchQuery = type === 'area' && selectedCity
-      ? `${query}, ${selectedCity}, india`
-      : `${query}, india`;
+    const searchQuery =
+      type === "area" && selectedCity
+        ? `${query}, ${selectedCity}, india`
+        : `${query}, india`;
 
-    const url = `https://nominatim.openstreetmap.org/search?` +
+    const url =
+      `https://nominatim.openstreetmap.org/search?` +
       `q=${encodeURIComponent(searchQuery)}&` +
       `format=json&` +
       `addressdetails=1&` +
@@ -54,78 +71,77 @@ const searchLocations = async (query, type, selectedCity = '') => {
 
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'InLane Driving School Website',
-        'Accept': 'application/json',
-      }
+        "User-Agent": "InLane Driving School Website",
+        Accept: "application/json",
+      },
     });
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
     const data = await response.json();
 
-    if (type === 'city') {
+    if (type === "city") {
       return data
-        .filter(item => (
-          item.type === 'city' ||
-          item.type === 'town' ||
-          item.type === 'administrative' ||
-          (item.address && (
-            item.address.city ||
-            item.address.town ||
-            item.address.municipality
-          ))
-        ))
-        .map(item => ({
+        .filter(
+          (item) =>
+            item.type === "city" ||
+            item.type === "town" ||
+            item.type === "administrative" ||
+            (item.address &&
+              (item.address.city ||
+                item.address.town ||
+                item.address.municipality)),
+        )
+        .map((item) => ({
           label: (
             item.address?.city ||
             item.address?.town ||
             item.address?.municipality ||
-            item.display_name.split(',')[0]
+            item.display_name.split(",")[0]
           ).trim(),
-          state: item.address?.state || '',
-          value: item.place_id
+          state: item.address?.state || "",
+          value: item.place_id,
         }))
-        .filter((item, index, self) =>
-          index === self.findIndex((t) => t.label === item.label)
+        .filter(
+          (item, index, self) =>
+            index === self.findIndex((t) => t.label === item.label),
         );
     } else {
       return data
-        .filter(item => (
-          item.type === 'suburb' ||
-          item.type === 'neighbourhood' ||
-          item.type === 'residential' ||
-          (item.address && (
-            item.address.suburb ||
-            item.address.neighbourhood ||
-            item.address.residential
-          ))
-        ))
-        .map(item => ({
+        .filter(
+          (item) =>
+            item.type === "suburb" ||
+            item.type === "neighbourhood" ||
+            item.type === "residential" ||
+            (item.address &&
+              (item.address.suburb ||
+                item.address.neighbourhood ||
+                item.address.residential)),
+        )
+        .map((item) => ({
           label: (
             item.address?.suburb ||
             item.address?.neighbourhood ||
             item.address?.residential ||
-            item.display_name.split(',')[0]
+            item.display_name.split(",")[0]
           ).trim(),
-          value: item.place_id
+          value: item.place_id,
         }))
-        .filter((item, index, self) =>
-          index === self.findIndex((t) => t.label === item.label)
+        .filter(
+          (item, index, self) =>
+            index === self.findIndex((t) => t.label === item.label),
         );
     }
   } catch (error) {
-    console.error('Search error:', error);
+    console.error("Search error:", error);
     return [];
   }
 };
-
 
 // Form field component - Memoized to prevent unnecessary re-renders
 const FormField = React.memo(({ label, children, bgColor }) => (
   <div className={`rounded-2xl p-4 md:p-6 ${bgColor}`}>
     <label className="block text-lg font-bold mb-2">{label}</label>
-
-
 
     {children}
   </div>
@@ -146,14 +162,14 @@ const Signup = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [formData, setFormData] = useState({
-    email: '',
-    name: '',
-    phone: '',
+    email: "",
+    name: "",
+    phone: "",
     city: null,
     area: null,
-    license: 'yes',
-    countryCode: '+91',
-    marketingConsent: false
+    license: "yes",
+    countryCode: "+91",
+    marketingConsent: false,
   });
 
   const [countryCodes, setCountryCodes] = useState([]);
@@ -161,7 +177,7 @@ const Signup = () => {
   const [areaOptions, setAreaOptions] = useState([]);
   const [loading, setLoading] = useState({
     city: false,
-    area: false
+    area: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -171,11 +187,14 @@ const Signup = () => {
   const isMediumScreen = useMediaQuery(theme.breakpoints.between("sm", "md"));
 
   // Memoize icon styles to prevent object recreation on every render
-  const iconStyles = useMemo(() => ({
-    small: { color: "#FFFFFF", width: 16, height: 16 },
-    medium: { color: "#FFFFFF", width: 34, height: 34 },
-    large: { color: "#FFFFFF", width: 40, height: 40 }
-  }), []);
+  const iconStyles = useMemo(
+    () => ({
+      small: { color: "#FFFFFF", width: 16, height: 16 },
+      medium: { color: "#FFFFFF", width: 34, height: 34 },
+      large: { color: "#FFFFFF", width: 40, height: 40 },
+    }),
+    [],
+  );
 
   const IconStyle = useMemo(() => {
     return isSmallScreen
@@ -205,63 +224,68 @@ const Signup = () => {
           const referrerHostname = referrerUrl.hostname.toLowerCase();
 
           // Detect Google
-          if (referrerHostname.includes('google')) {
-            result.utm_source = 'google';
-            result.utm_medium = 'organic';
-            result.utm_campaign = 'seo';
+          if (referrerHostname.includes("google")) {
+            result.utm_source = "google";
+            result.utm_medium = "organic";
+            result.utm_campaign = "seo";
           }
           // Detect Facebook
-          else if (referrerHostname.includes('facebook') || referrerHostname.includes('fb.com')) {
-            result.utm_source = 'facebook';
-            result.utm_medium = 'social';
-            result.utm_campaign = 'organic';
+          else if (
+            referrerHostname.includes("facebook") ||
+            referrerHostname.includes("fb.com")
+          ) {
+            result.utm_source = "facebook";
+            result.utm_medium = "social";
+            result.utm_campaign = "organic";
           }
           // Detect Instagram
-          else if (referrerHostname.includes('instagram')) {
-            result.utm_source = 'instagram';
-            result.utm_medium = 'social';
-            result.utm_campaign = 'organic';
+          else if (referrerHostname.includes("instagram")) {
+            result.utm_source = "instagram";
+            result.utm_medium = "social";
+            result.utm_campaign = "organic";
           }
           // Detect LinkedIn
-          else if (referrerHostname.includes('linkedin')) {
-            result.utm_source = 'linkedin';
-            result.utm_medium = 'social';
-            result.utm_campaign = 'organic';
+          else if (referrerHostname.includes("linkedin")) {
+            result.utm_source = "linkedin";
+            result.utm_medium = "social";
+            result.utm_campaign = "organic";
           }
           // Detect Twitter/X
-          else if (referrerHostname.includes('twitter') || referrerHostname.includes('t.co')) {
-            result.utm_source = 'twitter';
-            result.utm_medium = 'social';
-            result.utm_campaign = 'organic';
+          else if (
+            referrerHostname.includes("twitter") ||
+            referrerHostname.includes("t.co")
+          ) {
+            result.utm_source = "twitter";
+            result.utm_medium = "social";
+            result.utm_campaign = "organic";
           }
           // Other referrers
           else {
             result.utm_source = referrerHostname;
-            result.utm_medium = 'referral';
-            result.utm_campaign = 'organic';
+            result.utm_medium = "referral";
+            result.utm_campaign = "organic";
           }
         } catch (error) {
-          console.warn('Error parsing referrer:', error);
+          console.warn("Error parsing referrer:", error);
         }
       } else {
         // No referrer = direct traffic
-        result.utm_source = 'direct';
-        result.utm_medium = 'none';
-        result.utm_campaign = 'direct';
+        result.utm_source = "direct";
+        result.utm_medium = "none";
+        result.utm_campaign = "direct";
       }
     }
 
     setQueryParams(result);
 
     // Console log for debugging UTM parameters
-    console.log('=== UTM Tracking Debug ===');
-    console.log('All Query Parameters:', result);
-    console.log('UTM Source:', result.utm_source || 'Not provided');
-    console.log('UTM Medium:', result.utm_medium || 'Not provided');
-    console.log('UTM Campaign:', result.utm_campaign || 'Not provided');
-    console.log('Referrer:', document.referrer || 'No referrer');
-    console.log('========================');
-
+    console.log("=== UTM Tracking Debug ===");
+    console.log("All Query Parameters:", result);
+    console.log("UTM Source:", result.utm_source || "Not provided");
+    console.log("UTM Medium:", result.utm_medium || "Not provided");
+    console.log("UTM Campaign:", result.utm_campaign || "Not provided");
+    console.log("Referrer:", document.referrer || "No referrer");
+    console.log("========================");
   }, [location.search]);
 
   // Load country codes on component mount
@@ -275,7 +299,7 @@ const Signup = () => {
           setCountryCodes(codes);
         }
       } catch (error) {
-        console.error('Failed to load country codes:', error);
+        console.error("Failed to load country codes:", error);
       }
     };
 
@@ -294,18 +318,18 @@ const Signup = () => {
         return;
       }
 
-      setLoading(prev => ({ ...prev, city: true }));
+      setLoading((prev) => ({ ...prev, city: true }));
       try {
-        const results = await searchLocations(query, 'city');
+        const results = await searchLocations(query, "city");
         setCityOptions(results);
       } catch (error) {
-        console.error('City search failed:', error);
+        console.error("City search failed:", error);
         setCityOptions([]);
       } finally {
-        setLoading(prev => ({ ...prev, city: false }));
+        setLoading((prev) => ({ ...prev, city: false }));
       }
     }, 500), // Increased debounce time for better performance
-    []
+    [],
   );
 
   const debouncedAreaSearch = useCallback(
@@ -315,18 +339,22 @@ const Signup = () => {
         return;
       }
 
-      setLoading(prev => ({ ...prev, area: true }));
+      setLoading((prev) => ({ ...prev, area: true }));
       try {
-        const results = await searchLocations(query, 'area', formData.city.label);
+        const results = await searchLocations(
+          query,
+          "area",
+          formData.city.label,
+        );
         setAreaOptions(results);
       } catch (error) {
-        console.error('Area search failed:', error);
+        console.error("Area search failed:", error);
         setAreaOptions([]);
       } finally {
-        setLoading(prev => ({ ...prev, area: false }));
+        setLoading((prev) => ({ ...prev, area: false }));
       }
     }, 500), // Increased debounce time for better performance
-    [formData.city]
+    [formData.city],
   );
 
   // Cleanup debounced functions on unmount
@@ -341,14 +369,14 @@ const Signup = () => {
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
 
-    if (name === 'phone') {
+    if (name === "phone") {
       // Only allow numbers and limit to 10 digits
-      const numericValue = value.replace(/[^0-9]/g, '');
+      const numericValue = value.replace(/[^0-9]/g, "");
       if (numericValue.length <= 10) {
-        setFormData(prev => ({ ...prev, [name]: numericValue }));
+        setFormData((prev) => ({ ...prev, [name]: numericValue }));
       }
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   }, []);
 
@@ -358,51 +386,56 @@ const Signup = () => {
   }, []);
 
   // Optimized form submission
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    if (isSubmitting) return;
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      if (isSubmitting) return;
 
-    // Debug: Log queryParams at submission time
-    console.log('🔍 DEBUG: queryParams at form submission:', queryParams);
-    console.log('🔍 DEBUG: location.search:', location.search);
+      // Debug: Log queryParams at submission time
+      console.log("🔍 DEBUG: queryParams at form submission:", queryParams);
+      console.log("🔍 DEBUG: location.search:", location.search);
 
-    // Validation
-    if (!formData.email || !formData.name || !formData.phone) {
-      alert('Please fill in all required fields');
-      return;
-    }
+      // Validation
+      if (!formData.email || !formData.name || !formData.phone) {
+        alert("Please fill in all required fields");
+        return;
+      }
 
-    if (!isPhoneValid(formData.phone)) {
-      alert('Please enter a valid 10-digit phone number');
-      return;
-    }
+      if (!isPhoneValid(formData.phone)) {
+        alert("Please enter a valid 10-digit phone number");
+        return;
+      }
 
-    if (!formData.marketingConsent) {
-      alert('Please agree to receive marketing and transaction calls to continue');
-      return;
-    }
+      if (!formData.marketingConsent) {
+        alert(
+          "Please agree to receive marketing and transaction calls to continue",
+        );
+        return;
+      }
 
-    setIsSubmitting(true);
+      setIsSubmitting(true);
 
-    try {
-      await submitToGoogleSheets(formData);
-      await sendEventToGA('landing_page_signup', formData.phone ?? "");
-      navigate('/thank-you', {
-        state: {
-          name: formData.name,
-          email: formData.email
-        }
-      });
-    } catch (error) {
-      alert('Submission might have failed. Please try again.');
-      console.error('Submission error:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [formData, isSubmitting, isPhoneValid, navigate, queryParams]);
+      try {
+        await submitToGoogleSheets(formData);
+        await sendEventToGA("landing_page_signup", formData.phone ?? "");
+        navigate("/thank-you", {
+          state: {
+            name: formData.name,
+            email: formData.email,
+          },
+        });
+      } catch (error) {
+        alert("Submission might have failed. Please try again.");
+        console.error("Submission error:", error);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [formData, isSubmitting, isPhoneValid, navigate, queryParams],
+  );
 
   function getOrCreateClientId() {
-    const key = 'custom_client_id';
+    const key = "custom_client_id";
     let clientId = localStorage.getItem(key);
 
     if (!clientId) {
@@ -414,72 +447,79 @@ const Signup = () => {
   }
 
   // Optimized form submission function
-  const submitToGoogleSheets = useCallback(async (formData) => {
-    try {
-      console.log('📤 Submitting form with UTM parameters:', queryParams);
+  const submitToGoogleSheets = useCallback(
+    async (formData) => {
+      try {
+        console.log("📤 Submitting form with UTM parameters:", queryParams);
 
-      const googleSheetsUrl = 'https://script.google.com/macros/s/AKfycbz45poihO1GSt_f-UxHHWltKWHh8mDNyaXPcFzbIURMvTVKj1qPn9STBILUaMiGme7r/exec';
-      const payload = {
-        email: formData.email,
-        name: formData.name,
-        phone: `${formData.countryCode}${formData.phone}`,
-        license: formData.license === 'yes' ? 'yes' : 'no',
-        locality: `${formData?.city || ''}, ${formData?.area || ''}`,
-        marketingConsent: formData.marketingConsent ? 'yes' : 'no',
-        adName: 'Signup Form',
-        leadSource: `Website-${queryParams.utm_source || "Direct"}`,
-      };
+        const googleSheetsUrl =
+          "https://script.google.com/macros/s/AKfycbz45poihO1GSt_f-UxHHWltKWHh8mDNyaXPcFzbIURMvTVKj1qPn9STBILUaMiGme7r/exec";
+        const payload = {
+          email: formData.email,
+          name: formData.name,
+          phone: `${formData.countryCode}${formData.phone}`,
+          license: formData.license === "yes" ? "yes" : "no",
+          locality: `${formData?.city || ""}, ${formData?.area || ""}`,
+          marketingConsent: formData.marketingConsent ? "yes" : "no",
+          adName: "Signup Form",
+          leadSource: `Website-${queryParams.utm_source || "Direct"}`,
+        };
 
-      console.log('📊 Google Sheets Payload:', payload);
+        console.log("📊 Google Sheets Payload:", payload);
 
-      // Submit to Google Sheets
-      const googleSheetsPromise = fetch(googleSheetsUrl, {
-        method: 'POST',
-        mode: 'no-cors',
-        cache: 'no-cache',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
-      });
+        // Submit to Google Sheets
+        const googleSheetsPromise = fetch(googleSheetsUrl, {
+          method: "POST",
+          mode: "no-cors",
+          cache: "no-cache",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
 
-      // Submit to Cratio webhook
-      const cratioPayload = {
-        ...queryParams, // Spread query params first so they don't overwrite payload
-        ...payload,
-        timestamp: new Date().toISOString()
-      };
+        // Submit to Cratio webhook
+        const cratioPayload = {
+          ...queryParams, // Spread query params first so they don't overwrite payload
+          ...payload,
+          timestamp: new Date().toISOString(),
+        };
 
-      console.log('🎯 Cratio Webhook Payload (includes all UTM params):', cratioPayload);
+        console.log(
+          "🎯 Cratio Webhook Payload (includes all UTM params):",
+          cratioPayload,
+        );
 
-      const cratioPromise = fetch(import.meta.env.VITE_CRATIO_WEBHOOK_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        cache: 'no-cache',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify(cratioPayload)
-      });
+        const cratioPromise = fetch(import.meta.env.VITE_CRATIO_WEBHOOK_URL, {
+          method: "POST",
+          mode: "no-cors",
+          cache: "no-cache",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(cratioPayload),
+        });
 
-      // Execute both requests in parallel for better performance
-      const [googleResponse, cratioResponse] = await Promise.all([
-        googleSheetsPromise,
-        cratioPromise
-      ]);
+        // Execute both requests in parallel for better performance
+        const [googleResponse, cratioResponse] = await Promise.all([
+          googleSheetsPromise,
+          cratioPromise,
+        ]);
 
-      if (cratioResponse.type === 'opaque') {
-        console.log('✅ Cratio webhook request sent successfully');
+        if (cratioResponse.type === "opaque") {
+          console.log("✅ Cratio webhook request sent successfully");
+        }
+
+        console.log("✅ Form submission completed successfully");
+        return { status: "success" };
+      } catch (error) {
+        console.error("❌ Form submission error:", error);
+        throw error;
       }
-
-      console.log('✅ Form submission completed successfully');
-      return { status: 'success' };
-    } catch (error) {
-      console.error('❌ Form submission error:', error);
-      throw error;
-    }
-  }, [queryParams]);
+    },
+    [queryParams],
+  );
 
   // Send GA event - non-blocking, errors won't prevent form submission
   async function sendEventToGA(_eventName, _phone) {
@@ -489,12 +529,12 @@ const Signup = () => {
         {
           body: {
             eventSource: _eventName,
-            clientId: getOrCreateClientId() ?? '',
+            clientId: getOrCreateClientId() ?? "",
             leadData: {
-              phone: _phone
+              phone: _phone,
             },
           },
-        }
+        },
       );
 
       if (error) {
@@ -513,15 +553,18 @@ const Signup = () => {
   }
 
   // Memoize static styles
-  const scrollingTextStyle = useMemo(() => ({
-    '.animate-scroll': {
-      animation: 'scroll 60s linear infinite'
-    },
-    '@keyframes scroll': {
-      '0%': { transform: 'translateX(0)' },
-      '100%': { transform: 'translateX(-50%)' }
-    }
-  }), []);
+  const scrollingTextStyle = useMemo(
+    () => ({
+      ".animate-scroll": {
+        animation: "scroll 60s linear infinite",
+      },
+      "@keyframes scroll": {
+        "0%": { transform: "translateX(0)" },
+        "100%": { transform: "translateX(-50%)" },
+      },
+    }),
+    [],
+  );
 
   return (
     <div className="bg-logoWhite">
@@ -533,7 +576,11 @@ const Signup = () => {
           content="Sign up for driving lessons with InLane - India's modern driving school."
         />
       </Helmet>
-      <Navbar2 backgroundColor='#FFFFFF' logo='./LANE_LOGO.svg' burgerMenu='/PurpleHamburger.png' />
+      <Navbar2
+        backgroundColor="#FFFFFF"
+        logo="./LANE_LOGO.svg"
+        burgerMenu="/PurpleHamburger.png"
+      />
 
       <div className="flex overflow-hidden justify-center items-center mt-28 mb-24 w-full">
         <div className="inline-flex whitespace-nowrap">
@@ -564,11 +611,9 @@ const Signup = () => {
         `}</style>
       </div>
 
-
       <Box className="text-left mx-4 md:mx-40 bg-white p-4 md:p-8 rounded-lg border border-gray-200">
         <div className="font-['Bricolage_Grotesque'] max-w-2xl mx-auto text-left font-bold">
           <p className="text-2xl md:text-3xl lg:text-4xl font mb-4">
-
             We offer
             <span className="inline-block relative mx-2 font">
               <img
@@ -586,9 +631,21 @@ const Signup = () => {
           onSubmit={handleSubmit}
         >
           {/* Hidden UTM Fields */}
-          <input type="hidden" name="utm_source" value={queryParams.utm_source || ''} />
-          <input type="hidden" name="utm_medium" value={queryParams.utm_medium || ''} />
-          <input type="hidden" name="utm_campaign" value={queryParams.utm_campaign || ''} />
+          <input
+            type="hidden"
+            name="utm_source"
+            value={queryParams.utm_source || ""}
+          />
+          <input
+            type="hidden"
+            name="utm_medium"
+            value={queryParams.utm_medium || ""}
+          />
+          <input
+            type="hidden"
+            name="utm_campaign"
+            value={queryParams.utm_campaign || ""}
+          />
 
           <div className="my-8 space-y-4 md:space-y-6 md:my-16">
             {/* Email Field */}
@@ -604,10 +661,12 @@ const Signup = () => {
                 className="bg-transparent"
                 placeholder="Enter your email"
                 inputProps={{
-                  'aria-label': 'Email',
-                  style: { fontFamily: "Bricolage Grotesque" }
+                  "aria-label": "Email",
+                  style: { fontFamily: "Bricolage Grotesque" },
                 }}
-                InputLabelProps={{ style: { fontFamily: "Bricolage Grotesque" } }}
+                InputLabelProps={{
+                  style: { fontFamily: "Bricolage Grotesque" },
+                }}
               />
             </FormField>
             <div className="h-6"></div>
@@ -621,18 +680,19 @@ const Signup = () => {
                 onChange={handleChange}
                 required
                 className="bg-transparent"
-                placeholder='Enter your name'
+                placeholder="Enter your name"
                 inputProps={{
-                  'aria-label': 'Name',
-                  style: { fontFamily: "Bricolage Grotesque" }
+                  "aria-label": "Name",
+                  style: { fontFamily: "Bricolage Grotesque" },
                 }}
-                InputLabelProps={{ style: { fontFamily: "Bricolage Grotesque" } }}
+                InputLabelProps={{
+                  style: { fontFamily: "Bricolage Grotesque" },
+                }}
               />
             </FormField>
             <div className="h-6"></div>
             {/* Phone Number Field with Country Code */}
             <FormField label="Your Phone Number" bgColor="bg-[#00CE84]">
-
               <div className="flex gap-2">
                 <FormControl className="w-28">
                   <Select
@@ -641,19 +701,33 @@ const Signup = () => {
                     onChange={handleChange}
                     className="w-28"
                     renderValue={(selected) => {
-                      const country = countryCodes.find(c => c.code === selected);
+                      const country = countryCodes.find(
+                        (c) => c.code === selected,
+                      );
                       return (
                         <div className="flex items-center">
-                          {country && country.flag && <img src={country.flag} alt={country.name} className="w-6 h-4 mr-2" />}
+                          {country && country.flag && (
+                            <img
+                              src={country.flag}
+                              alt={country.name}
+                              className="w-6 h-4 mr-2"
+                            />
+                          )}
                           {country ? country.code : selected}
                         </div>
                       );
                     }}
                   >
-                    {countryCodes.map(country => (
+                    {countryCodes.map((country) => (
                       <MenuItem key={country.code} value={country.code}>
                         <div className="flex items-center">
-                          {country.flag && <img src={country.flag} alt={country.name} className="w-6 h-4 mr-2" />}
+                          {country.flag && (
+                            <img
+                              src={country.flag}
+                              alt={country.name}
+                              className="w-6 h-4 mr-2"
+                            />
+                          )}
                           {country.code} - {country.name}
                         </div>
                       </MenuItem>
@@ -663,27 +737,37 @@ const Signup = () => {
                 <TextField
                   name="phone"
                   type="tel"
-                  className='flex-1'
+                  className="flex-1"
                   value={formData.phone}
                   onChange={handleChange}
                   required
-                  error={formData.phone.length > 0 && !isPhoneValid(formData.phone)}
-                  helperText={formData.phone.length > 0 && !isPhoneValid(formData.phone) ? "Please enter a valid 10-digit number" : ""}
+                  error={
+                    formData.phone.length > 0 && !isPhoneValid(formData.phone)
+                  }
+                  helperText={
+                    formData.phone.length > 0 && !isPhoneValid(formData.phone)
+                      ? "Please enter a valid 10-digit number"
+                      : ""
+                  }
                   placeholder="Enter phone number"
-                  InputLabelProps={{ style: { fontFamily: "Bricolage Grotesque" } }}
+                  InputLabelProps={{
+                    style: { fontFamily: "Bricolage Grotesque" },
+                  }}
                   inputProps={{
-                    'aria-label': 'Phone Number',
+                    "aria-label": "Phone Number",
                     maxLength: 10,
-                    style: { fontFamily: "Bricolage Grotesque" }
+                    style: { fontFamily: "Bricolage Grotesque" },
                   }}
                 />
               </div>
             </FormField>
 
-
             <div className="h-6"></div>
             {/* License Radio Group */}
-            <FormField label="Do You Have A Four Wheeler (4W) Driver's License?" bgColor="bg-[#D1B3FF]">
+            <FormField
+              label="Do You Have A Four Wheeler (4W) Driver's License?"
+              bgColor="bg-[#D1B3FF]"
+            >
               <RadioGroup
                 row
                 name="license"
@@ -694,62 +778,86 @@ const Signup = () => {
                 <FormControlLabel
                   value="yes"
                   control={<Radio className="text-[#00CE84]" />}
-                  label={<Typography className="font-['Bricolage_Grotesque']">Yes</Typography>}
+                  label={
+                    <Typography className="font-['Bricolage_Grotesque']">
+                      Yes
+                    </Typography>
+                  }
                 />
                 <FormControlLabel
                   value="no"
                   control={<Radio className="text-[#00CE84]" />}
-                  label={<Typography className="font-['Bricolage_Grotesque']">No</Typography>}
+                  label={
+                    <Typography className="font-['Bricolage_Grotesque']">
+                      No
+                    </Typography>
+                  }
                 />
               </RadioGroup>
             </FormField>
             <div className="h-6"></div>
             {/* City and Area Selection */}
-            <FormField label="Which Locality Are You Based out of?" bgColor="bg-[#D9FF7A]">
-              <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY} libraries={["places"]}>
-                <LocationSelector formData={formData} setFormData={setFormData} />
+            <FormField
+              label="Which Locality Are You Based out of?"
+              bgColor="bg-[#D9FF7A]"
+            >
+              <APIProvider
+                apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+                libraries={["places"]}
+              >
+                <LocationSelector
+                  formData={formData}
+                  setFormData={setFormData}
+                />
               </APIProvider>
             </FormField>
             <div className="h-6"></div>
             {/* Marketing Consent */}
             <FormControlLabel
-            sx={{ alignItems: "flex-start" }}
+              sx={{ alignItems: "flex-start" }}
               control={
                 <Checkbox
                   name="marketingConsent"
                   checked={formData.marketingConsent}
                   onChange={(e) =>
-                    setFormData(prev => ({ ...prev, marketingConsent: e.target.checked }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      marketingConsent: e.target.checked,
+                    }))
                   }
                   className="text-[#00CE84]"
                 />
               }
               label={
                 <Typography className="font-['Bricolage_Grotesque']">
-                  I provide my explicit consent to receive Inlane's communications via Voice Calls, SMS, WhatsApp, RCS, and Email for transactional, service, and promotional purposes. I understand that I can opt-out at any time and that this consent overrides my DND/NCPR registration.
-By proceeding, I agree to the Terms & Conditions and Privacy Policy.
+                  I provide my explicit consent to receive Inlane's
+                  communications via Voice Calls, SMS, WhatsApp, RCS, and Email
+                  for transactional, service, and promotional purposes. I
+                  understand that I can opt-out at any time and that this
+                  consent overrides my DND/NCPR registration. By proceeding, I
+                  agree to the Terms & Conditions and Privacy Policy.
                 </Typography>
               }
             />
             <div className="h-6"></div>
             <div className="text-sm text-gray-600">
-              By continuing, you agree to our {" "}
-                <a
-                  target="_blank"
-                  href="https://inlane.in/terms-and-conditions"
-                  className="text-muted-foreground text-gray-500 underline"
-                  rel="noreferrer"
-                >
-                  Terms of Service
-                </a>
-                <a
-                  target="_blank"
-                  href="https://inlane.in/privacy-policy"
-                  className="text-muted-foreground text-gray-500 underline"
-                  rel="noreferrer"
-                >
-                  Privacy Policies
-                </a>
+              By continuing, you agree to our{" "}
+              <a
+                target="_blank"
+                href="https://inlane.in/terms-and-conditions"
+                className="text-muted-foreground text-gray-500 underline"
+                rel="noreferrer"
+              >
+                Terms of Service
+              </a>
+              <a
+                target="_blank"
+                href="https://inlane.in/privacy-policy"
+                className="text-muted-foreground text-gray-500 underline"
+                rel="noreferrer"
+              >
+                Privacy Policies
+              </a>
             </div>
             {/* Submit Button */}
             <div className="flex justify-center">
@@ -793,15 +901,14 @@ By proceeding, I agree to the Terms & Conditions and Privacy Policy.
                   boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.35)",
                 }}
               >
-                {isSubmitting ? 'Submitting...' : 'Submit'}
+                {isSubmitting ? "Submitting..." : "Submit"}
               </Button>
             </div>
           </div>
         </form>
       </Box>
 
-      <div className="flex justify-center items-center mt-52">
-      </div>
+      <div className="flex justify-center items-center mt-52"></div>
       <Footer />
     </div>
   );
