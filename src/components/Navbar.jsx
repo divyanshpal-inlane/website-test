@@ -28,8 +28,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { locations } from "../data/locations";
 
-
-const Navbar2 = ({ backgroundColor = "#FAF9E6", logo = "./LANE_LOGO.svg", burgerMenu = "/PurpleHamburger.png" }) => {
+const Navbar2 = ({
+  backgroundColor = "#FAF9E6",
+  logo = "./LANE_LOGO.svg",
+  burgerMenu = "/PurpleHamburger.png",
+}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -77,7 +80,6 @@ const Navbar2 = ({ backgroundColor = "#FAF9E6", logo = "./LANE_LOGO.svg", burger
           alignItems="center"
           margin="20px"
           mt={6}
-
         >
           <Typography
             variant="h4"
@@ -118,7 +120,12 @@ const Navbar2 = ({ backgroundColor = "#FAF9E6", logo = "./LANE_LOGO.svg", burger
             />
           </ListItem>
 
-          <ListItem button component={Link} to="/about-us" onClick={handleClose}>
+          <ListItem
+            button
+            component={Link}
+            to="/about-us"
+            onClick={handleClose}
+          >
             <ListItemText
               primary={
                 <Typography
@@ -133,8 +140,6 @@ const Navbar2 = ({ backgroundColor = "#FAF9E6", logo = "./LANE_LOGO.svg", burger
               }
             />
           </ListItem>
-
-
 
           <ListItem button component={Link} to="/courses" onClick={handleClose}>
             <ListItemText
@@ -166,7 +171,12 @@ const Navbar2 = ({ backgroundColor = "#FAF9E6", logo = "./LANE_LOGO.svg", burger
               }
             />
           </ListItem>
-          <ListItem button component={Link} to="/sell-used-car" onClick={handleClose}>
+          <ListItem
+            button
+            component={Link}
+            to="/sell-your-car"
+            onClick={handleClose}
+          >
             <ListItemText
               primary={
                 <Typography
@@ -181,7 +191,7 @@ const Navbar2 = ({ backgroundColor = "#FAF9E6", logo = "./LANE_LOGO.svg", burger
               }
             />
           </ListItem>
-          <ListItem button onClick={handleMenuOpen} >
+          <ListItem button onClick={handleMenuOpen}>
             <ListItemText
               primary={
                 <Typography
@@ -200,9 +210,8 @@ const Navbar2 = ({ backgroundColor = "#FAF9E6", logo = "./LANE_LOGO.svg", burger
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
-
-            transformOrigin={{ horizontal: 'center', vertical: 'top' }}
-            anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+            transformOrigin={{ horizontal: "center", vertical: "top" }}
+            anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
           >
             {locations.map((location, index) => (
               <MenuItem
@@ -212,9 +221,9 @@ const Navbar2 = ({ backgroundColor = "#FAF9E6", logo = "./LANE_LOGO.svg", burger
                 onClick={handleMenuClose}
                 sx={{
                   fontFamily: "Bricolage Grotesque",
-                  fontSize: '1rem',
-                  '&:hover': {
-                    backgroundColor: '#f0f0f0',
+                  fontSize: "1rem",
+                  "&:hover": {
+                    backgroundColor: "#f0f0f0",
                   },
                 }}
               >
@@ -360,7 +369,7 @@ const Navbar2 = ({ backgroundColor = "#FAF9E6", logo = "./LANE_LOGO.svg", burger
                 width: 80,
                 height: 73,
                 fontWeight: "bold",
-                zIndex: 2
+                zIndex: 2,
               }}
             >
               <img

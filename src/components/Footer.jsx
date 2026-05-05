@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Typography,
-  Link,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Box, Typography, Link, useMediaQuery, useTheme } from "@mui/material";
 import {
   Instagram as InstagramIcon,
   X as XIcon,
@@ -26,7 +20,7 @@ const Footer = () => {
           setIsVisible(true);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     const footerElement = document.getElementById("animated-footer");
@@ -53,7 +47,11 @@ const Footer = () => {
   const contactInfo = [
     { Icon: PhoneIcon, text: "+91 73380 98798", href: "tel:+917338098798" },
     { Icon: EmailIcon, text: "team@inlane.in", href: "mailto:team@inlane.in" },
-    { Icon: WhatsAppIcon, text: "WhatsApp", href: "https://wa.me/917338098798" },
+    {
+      Icon: WhatsAppIcon,
+      text: "WhatsApp",
+      href: "https://wa.me/917338098798",
+    },
     {
       Icon: LocationIcon,
       text: "3rd floor, Akruti Chambers, Stage 2, Hoysala Nagar, Indiranagar, Bengaluru, Karnataka 560038",
@@ -84,28 +82,70 @@ const Footer = () => {
     { text: "Kudlu Near Me", href: "/driving-school-in/kudlu" },
     { text: "Bagur Near Me", href: "/driving-school-in/bagur" },
     { text: "Indiranagar Near Me", href: "/driving-school-in/indiranagar" },
-    { text: "Benniganahalli Near Me", href: "/driving-school-in/benniganahalli" },
+    {
+      text: "Benniganahalli Near Me",
+      href: "/driving-school-in/benniganahalli",
+    },
     { text: "Banaswadi Near Me", href: "/driving-school-in/banaswadi" },
-    { text: "Swami Vivekananda Road Near Me", href: "/driving-school-in/swami-vivekananda-road" },
+    {
+      text: "Swami Vivekananda Road Near Me",
+      href: "/driving-school-in/swami-vivekananda-road",
+    },
     { text: "TC Palya Near Me", href: "/driving-school-in/tc-palya" },
-    { text: "Ramamurthy Nagar Near Me", href: "/driving-school-in/ramamurthy-nagar" },
+    {
+      text: "Ramamurthy Nagar Near Me",
+      href: "/driving-school-in/ramamurthy-nagar",
+    },
     { text: "Kasturi Nagar Near Me", href: "/driving-school-in/kasturi-nagar" },
     { text: "Hoodi Near Me", href: "/driving-school-in/hoodi" },
     { text: "ITPL Near Me", href: "/driving-school-in/itpl" },
   ];
 
   const latestPostsLinks = [
-    { text: "Driving License Address Change", href: "/blog/how-to-change-address-in-your-driving-license-online-in-india" },
-    { text: "Upload DL & RC in DigiLocker", href: "/blog/how-to-upload-a-driving-license-and-rc-in-the-digilocker-and-mparivahan-apps" },
-    { text: "Name Change on Driving License", href: "/blog/how-to-change-your-name-on-an-indian-driving-license-complete-guide-2024" },
-    { text: "Check Your Driving License Status", href: "/blog/check-driving-license-status-online-via-parivahan-driving-school-guide" },
-    { text: "Apply for a Learners License Online in Bangalore", href: "/blog/how-to-apply-for-a-learners-license-online-in-bangalore-step-by-step-process-2025-update" },
-    { text: "Required Documents for every stage of Driving License Application in Bangalore", href: "/blog/documents-required-for-every-stage-of-driving-license-application-in-bangalore-2024-guide" },
-    { text: "Bangalore DL Test Slot Booking", href: "/blog/how-to-book-a-driving-test-slot-in-bangalore-step-by-step-guide" },
-    { text: "Driving Test Bangalore", href: "/blog/driving-test-in-bangalore-complete-guide-2020" },
-    { text: "What to Do When You Misplace Your DL", href: "/blog/what-to-do-if-you-lose-your-driving-licence-card-in-india" },
-    { text: "Beginner Driving Mistakes & Tips", href: "/blog/10-common-driving-mistakes-beginners-make-and-how-to-avoid-them-driving-lessons-tips" },
-    { text: "Manual vs Automatic: Find Your Fit", href: "/blog/manual-vs-automatic-driving-lessons-which-one-suits-you-best" },
+    {
+      text: "Driving License Address Change",
+      href: "/blog/how-to-change-address-in-your-driving-license-online-in-india",
+    },
+    {
+      text: "Upload DL & RC in DigiLocker",
+      href: "/blog/how-to-upload-a-driving-license-and-rc-in-the-digilocker-and-mparivahan-apps",
+    },
+    {
+      text: "Name Change on Driving License",
+      href: "/blog/how-to-change-your-name-on-an-indian-driving-license-complete-guide-2024",
+    },
+    {
+      text: "Check Your Driving License Status",
+      href: "/blog/check-driving-license-status-online-via-parivahan-driving-school-guide",
+    },
+    {
+      text: "Apply for a Learners License Online in Bangalore",
+      href: "/blog/how-to-apply-for-a-learners-license-online-in-bangalore-step-by-step-process-2025-update",
+    },
+    {
+      text: "Required Documents for every stage of Driving License Application in Bangalore",
+      href: "/blog/documents-required-for-every-stage-of-driving-license-application-in-bangalore-2024-guide",
+    },
+    {
+      text: "Bangalore DL Test Slot Booking",
+      href: "/blog/how-to-book-a-driving-test-slot-in-bangalore-step-by-step-guide",
+    },
+    {
+      text: "Driving Test Bangalore",
+      href: "/blog/driving-test-in-bangalore-complete-guide-2020",
+    },
+    {
+      text: "What to Do When You Misplace Your DL",
+      href: "/blog/what-to-do-if-you-lose-your-driving-licence-card-in-india",
+    },
+    {
+      text: "Beginner Driving Mistakes & Tips",
+      href: "/blog/10-common-driving-mistakes-beginners-make-and-how-to-avoid-them-driving-lessons-tips",
+    },
+    {
+      text: "Manual vs Automatic: Find Your Fit",
+      href: "/blog/manual-vs-automatic-driving-lessons-which-one-suits-you-best",
+    },
   ];
 
   const styles = {
@@ -204,7 +244,10 @@ const Footer = () => {
   return (
     <>
       <style>{keyframes}</style>
-      <Box id="animated-footer" sx={{ ...styles.footerContainer, position: "relative" }}>
+      <Box
+        id="animated-footer"
+        sx={{ ...styles.footerContainer, position: "relative" }}
+      >
         {isVisible && (
           <img
             src="/svg/car.png"
@@ -220,11 +263,21 @@ const Footer = () => {
             {/* Logo + Social */}
             <Box mb={3}>
               <Box sx={{ maxWidth: "187px" }}>
-                <img src="/Lane_Footer_Logo.svg" alt="Logo" style={{ width: "100%", height: "auto" }} />
+                <img
+                  src="/Lane_Footer_Logo.svg"
+                  alt="Logo"
+                  style={{ width: "100%", height: "auto" }}
+                />
               </Box>
               <Box mt={2} display="flex" flexDirection="row">
                 {socialIcons.map(({ Icon, href }, i) => (
-                  <Link key={i} href={href} target="_blank" rel="noopener noreferrer" sx={{ mr: 1 }}>
+                  <Link
+                    key={i}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ mr: 1 }}
+                  >
                     <Icon sx={styles.footerIcons} />
                   </Link>
                 ))}
@@ -244,11 +297,15 @@ const Footer = () => {
             {/* Company */}
             <Box mb={3}>
               <Box sx={styles.footerHeadingImage}>
-                <Typography variant="h4" sx={styles.footerHeading}>Company</Typography>
+                <Typography variant="h4" sx={styles.footerHeading}>
+                  Company
+                </Typography>
               </Box>
               <Box sx={{ display: "flex", flexDirection: "column" }}>
                 {companyLinks.map(({ text, href }, i) => (
-                  <Link key={i} href={href} sx={styles.footerLinks}>{text}</Link>
+                  <Link key={i} href={href} sx={styles.footerLinks}>
+                    {text}
+                  </Link>
                 ))}
               </Box>
             </Box>
@@ -256,11 +313,15 @@ const Footer = () => {
             {/* Driving School In */}
             <Box mb={3}>
               <Box sx={styles.footerHeadingImage}>
-                <Typography variant="h4" sx={styles.footerHeading}>Driving School in</Typography>
+                <Typography variant="h4" sx={styles.footerHeading}>
+                  Driving School in
+                </Typography>
               </Box>
               <Box sx={{ display: "flex", flexDirection: "column" }}>
                 {drivingSchoolLinks.map(({ text, href }, i) => (
-                  <Link key={i} href={href} sx={styles.footerLinks}>{text}</Link>
+                  <Link key={i} href={href} sx={styles.footerLinks}>
+                    {text}
+                  </Link>
                 ))}
               </Box>
             </Box>
@@ -268,11 +329,15 @@ const Footer = () => {
             {/* Latest Posts */}
             <Box mb={3}>
               <Box sx={styles.footerHeadingImage}>
-                <Typography variant="h4" sx={styles.footerHeading}>Latest Posts</Typography>
+                <Typography variant="h4" sx={styles.footerHeading}>
+                  Latest Posts
+                </Typography>
               </Box>
               <Box sx={{ display: "flex", flexDirection: "column" }}>
                 {latestPostsLinks.map(({ text, href }, i) => (
-                  <Link key={i} href={href} sx={styles.footerLinks}>{text}</Link>
+                  <Link key={i} href={href} sx={styles.footerLinks}>
+                    {text}
+                  </Link>
                 ))}
               </Box>
             </Box>
@@ -280,12 +345,16 @@ const Footer = () => {
             {/* Contact Us */}
             <Box mb={3}>
               <Box sx={styles.footerHeadingImage}>
-                <Typography variant="h4" sx={styles.footerHeading}>Contact Us</Typography>
+                <Typography variant="h4" sx={styles.footerHeading}>
+                  Contact Us
+                </Typography>
               </Box>
               <Box sx={{ display: "flex", flexDirection: "column" }}>
                 {contactInfo.map(({ Icon, text, href }, i) => (
                   <Typography key={i} variant="body2" sx={styles.footerContact}>
-                    <Icon sx={{ mr: 1, color: "#00CE84", mt: "4px", flexShrink: 0 }} />
+                    <Icon
+                      sx={{ mr: 1, color: "#00CE84", mt: "4px", flexShrink: 0 }}
+                    />
                     <Link
                       sx={{ textDecoration: "none", color: "#000000" }}
                       href={href}
@@ -313,7 +382,13 @@ const Footer = () => {
               </Box>
               <Box mt={2} display="flex" flexDirection="row">
                 {socialIcons.map(({ Icon, href }, i) => (
-                  <Link key={i} href={href} target="_blank" rel="noopener noreferrer" sx={{ mr: 1 }}>
+                  <Link
+                    key={i}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ mr: 1 }}
+                  >
                     <Icon sx={styles.footerIcons} />
                   </Link>
                 ))}
@@ -334,20 +409,32 @@ const Footer = () => {
             <LinkColumn title="Company" links={companyLinks} flex={1} />
 
             {/* Driving School In */}
-            <LinkColumn title="Driving School in" links={drivingSchoolLinks} flex={1.3} />
+            <LinkColumn
+              title="Driving School in"
+              links={drivingSchoolLinks}
+              flex={1.3}
+            />
 
             {/* Latest Posts */}
-            <LinkColumn title="Latest Posts" links={latestPostsLinks} flex={1.5} />
+            <LinkColumn
+              title="Latest Posts"
+              links={latestPostsLinks}
+              flex={1.5}
+            />
 
             {/* Contact Us */}
             <Box flex={1.2} mt={6} mb={4}>
               <Box sx={styles.footerHeadingImage}>
-                <Typography variant="h4" sx={styles.footerHeading}>Contact Us</Typography>
+                <Typography variant="h4" sx={styles.footerHeading}>
+                  Contact Us
+                </Typography>
               </Box>
               <Box sx={{ display: "flex", flexDirection: "column" }}>
                 {contactInfo.map(({ Icon, text, href }, i) => (
                   <Typography key={i} variant="body2" sx={styles.footerContact}>
-                    <Icon sx={{ mr: 1, color: "#00CE84", mt: "4px", flexShrink: 0 }} />
+                    <Icon
+                      sx={{ mr: 1, color: "#00CE84", mt: "4px", flexShrink: 0 }}
+                    />
                     <Link
                       sx={{ textDecoration: "none", color: "#000000" }}
                       href={href}
