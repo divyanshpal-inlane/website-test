@@ -168,10 +168,6 @@ const router = createBrowserRouter(
       element: <Sell />,
     },
     {
-      path: "/sell-your-car",
-      element: <Sell />,
-    },
-    {
       path: "/admin",
       element: <Admin />,
     },
