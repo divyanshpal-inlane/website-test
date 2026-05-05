@@ -14,7 +14,7 @@ import RoadSvg_Sm from "../components/SVGs/RoadSvg_Mobile";
 import { Link } from "react-router-dom";
 import Testimonial from "../components/Testimonial";
 import Rocket from "../components/SVGs/Rocket";
-import { Helmet } from 'react-helmet-async';
+import { Helmet } from "react-helmet-async";
 
 const LandingPage = () => {
   const theme = useTheme();
@@ -26,8 +26,8 @@ const LandingPage = () => {
   const IconStyle = isSmallScreen
     ? smallIconStyle
     : isMediumScreen
-    ? mediumIconStyle
-    : largeIconStyle;
+      ? mediumIconStyle
+      : largeIconStyle;
   const { scrollYProgress } = useScroll();
   const [scrollPosition, setScrollPosition] = useState(0);
   const controls = useAnimation();
@@ -54,6 +54,18 @@ const LandingPage = () => {
     for (const [key, value] of params.entries()) {
       result[key] = value;
     }
+
+    if (result.utm_source) {
+      localStorage.setItem(
+        "utm_params",
+        JSON.stringify({
+          utm_source: result.utm_source,
+          utm_medium: result.utm_medium,
+          utm_campaign: result.utm_campaign,
+        }),
+      );
+    }
+
     // Build query string
     const queryString = new URLSearchParams(result).toString();
     // Save into state
@@ -66,21 +78,27 @@ const LandingPage = () => {
     <>
       <Helmet>
         <title>Learn Driving in Just 10 Days | Lane Driving School</title>
-        <meta 
-          name="description" 
+        <meta
+          name="description"
           content="Drive confidently with Lane's proven curriculum and expert instructors. Flexible schedules, personalized attention, and excellent results await"
         />
-        <meta 
-          name="keywords" 
+        <meta
+          name="keywords"
           content="driving school bangalore, car driving classes, learn driving bangalore, best driving school, driving lessons near me, driving instructor bangalore, automatic car training, driving school registration"
         />
         {/* Essential meta tags */}
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://inlane.in" />
-        
+
         {/* Open Graph Tags */}
-        <meta property="og:title" content="InLane - Modern Driving School in Bangalore" />
-        <meta property="og:description" content="Start your journey to becoming a confident driver with InLane. Professional driving lessons, structured courses, and comprehensive road safety education in Bangalore." />
+        <meta
+          property="og:title"
+          content="InLane - Modern Driving School in Bangalore"
+        />
+        <meta
+          property="og:description"
+          content="Start your journey to becoming a confident driver with InLane. Professional driving lessons, structured courses, and comprehensive road safety education in Bangalore."
+        />
         <meta property="og:url" content="https://inlane.in" />
         <meta property="og:type" content="website" />
       </Helmet>
@@ -117,14 +135,16 @@ const LandingPage = () => {
                 to={`/signup?${queryParams}`}
                 startIcon={<Rocket color={IconStyle} />}
                 sx={{
-                  background: "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
+                  background:
+                    "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
                   color: "white",
                   fontWeight: "bold",
                   fontFamily: "Bricolage Grotesque",
                   textDecoration: "none",
                   textTransform: "none",
                   "&:hover": {
-                    background: "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
+                    background:
+                      "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
                   },
                   border: "2.5px solid #FFFFFF",
                   borderRadius: "50px",
@@ -148,7 +168,7 @@ const LandingPage = () => {
           </div>
         </Box>
       </Box>
-    
+
       {/* second section of the hero page  */}
 
       <Box
@@ -156,16 +176,13 @@ const LandingPage = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-         
         }}
       >
         <Box
           sx={{
-           
             width: { xs: "100%", sm: "90%", md: "85%" },
-           
+
             maxWidth: "1700px",
-            
           }}
         >
           {!isSmallScreen ? <RoadSVG /> : <RoadSvg_Sm />}
@@ -241,57 +258,57 @@ const LandingPage = () => {
                 padding: { xs: "10px", sm: "11px", md: "20px" },
               }}
             />
-              <div>
-                By continuing, you agree to our
-                <nav className="flex flex-row justify-center gap-4">
-                  <a
-                    target="_blank"
-                    href="https://inlane.in/terms-and-conditions"
-                    className="text-muted-foreground text-gray-500 underline"
-                    rel="noreferrer"
-                  >
-                    Terms of Service
-                  </a>
-                  <a
-                    target="_blank"
-                    href="https://inlane.in/privacy-policy"
-                    className="text-muted-foreground text-gray-500 underline"
-                    rel="noreferrer"
-                  >
-                    Privacy Policies
-                  </a>
-                </nav>
-              </div>
-              <Button
-                variant="contained"
-                component={Link}
-                target="_blank"
-                to="/signup"
-                size="large"
-                startIcon={<Rocket color={IconStyle} />}
-                sx={{
-                  background: "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
-                  color: "white",
-                  "&:hover": {
-                    background: "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
-                  },
-                  border: "3px solid #FFFFFF",
-                  borderRadius: "50px",
-                  boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.35)",
-                  padding: { xs: "12px 24px", sm: "14px 32px", md: "16px 44px" },
-                  width: { xs: "60%", sm: "70%", md: "60%", lg: 324.38 },
-                  maxWidth: 324.38,
-                  height: { xs: 38, sm: 60, md: 69.47 },
-                  fontFamily: "Bricolage Grotesque",
-                  fontSize: { xs: "16px", sm: "24px", md: "30px", lg: "36px" },
-                  fontWeight: "bold",
-                  textTransform: "none",
-                  marginTop: { xs: "12px", sm: "30px", md: "40px" },
-                }}
-              >
-                
-                Sign Up
-              </Button>
+            <div>
+              By continuing, you agree to our
+              <nav className="flex flex-row justify-center gap-4">
+                <a
+                  target="_blank"
+                  href="https://inlane.in/terms-and-conditions"
+                  className="text-muted-foreground text-gray-500 underline"
+                  rel="noreferrer"
+                >
+                  Terms of Service
+                </a>
+                <a
+                  target="_blank"
+                  href="https://inlane.in/privacy-policy"
+                  className="text-muted-foreground text-gray-500 underline"
+                  rel="noreferrer"
+                >
+                  Privacy Policies
+                </a>
+              </nav>
+            </div>
+            <Button
+              variant="contained"
+              component={Link}
+              target="_blank"
+              to="/signup"
+              size="large"
+              startIcon={<Rocket color={IconStyle} />}
+              sx={{
+                background: "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
+                color: "white",
+                "&:hover": {
+                  background:
+                    "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
+                },
+                border: "3px solid #FFFFFF",
+                borderRadius: "50px",
+                boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.35)",
+                padding: { xs: "12px 24px", sm: "14px 32px", md: "16px 44px" },
+                width: { xs: "60%", sm: "70%", md: "60%", lg: 324.38 },
+                maxWidth: 324.38,
+                height: { xs: 38, sm: 60, md: 69.47 },
+                fontFamily: "Bricolage Grotesque",
+                fontSize: { xs: "16px", sm: "24px", md: "30px", lg: "36px" },
+                fontWeight: "bold",
+                textTransform: "none",
+                marginTop: { xs: "12px", sm: "30px", md: "40px" },
+              }}
+            >
+              Sign Up
+            </Button>
           </Box>
         </Box>
       </Box>
