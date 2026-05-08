@@ -75,30 +75,35 @@ const Footer = () => {
   const drivingSchoolLinks = [
     { text: "HSR Layout", href: "/driving-school-in/hsr-layout" },
     { text: "KR Puram Near Me", href: "/driving-school-in/kr-puram" },
-    { text: "Mahadevapura Near Me", href: "/driving-school-in/mahadevapura" },
+    // { text: "Mahadevapura Near Me", href: "/driving-school-in/mahadevapura" },
     { text: "Whitefield Near Me", href: "/driving-school-in/whitefield" },
-    { text: "Marathahalli Near Me", href: "/driving-school-in/marathahalli" },
+    // { text: "Marathahalli Near Me", href: "/driving-school-in/marathahalli" },
     { text: "Kudlu Gate Near Me", href: "/driving-school-in/kudlu-gate" },
-    { text: "Kudlu Near Me", href: "/driving-school-in/kudlu" },
-    { text: "Bagur Near Me", href: "/driving-school-in/bagur" },
+    // { text: "Kudlu Near Me", href: "/driving-school-in/kudlu" },
+    // { text: "Bagur Near Me", href: "/driving-school-in/bagur" },
     { text: "Indiranagar Near Me", href: "/driving-school-in/indiranagar" },
-    {
-      text: "Benniganahalli Near Me",
-      href: "/driving-school-in/benniganahalli",
-    },
+    // {
+    //   text: "Benniganahalli Near Me",
+    //   // href: "/driving-school-in/benniganahalli",
+    // },
     { text: "Banaswadi Near Me", href: "/driving-school-in/banaswadi" },
-    {
-      text: "Swami Vivekananda Road Near Me",
-      href: "/driving-school-in/swami-vivekananda-road",
-    },
-    { text: "TC Palya Near Me", href: "/driving-school-in/tc-palya" },
+    // {
+    //   text: "Swami Vivekananda Road Near Me",
+    //   // href: "/driving-school-in/swami-vivekananda-road",
+    // },
+    // { text: "TC Palya Near Me", href: "/driving-school-in/tc-palya" },
     {
       text: "Ramamurthy Nagar Near Me",
       href: "/driving-school-in/ramamurthy-nagar",
     },
-    { text: "Kasturi Nagar Near Me", href: "/driving-school-in/kasturi-nagar" },
-    { text: "Hoodi Near Me", href: "/driving-school-in/hoodi" },
-    { text: "ITPL Near Me", href: "/driving-school-in/itpl" },
+    // { text: "Kasturi Nagar Near Me", href: "/driving-school-in/kasturi-nagar" },
+    // { text: "Hoodi Near Me", href: "/driving-school-in/hoodi" },
+    // { text: "ITPL Near Me", href: "/driving-school-in/itpl" },
+    { text: "Hebbal Near Me", href: "/driving-school-in/hebbal" },
+    { text: "Yelahanka Near Me", href: "/driving-school-in/yelahanka" },
+    { text: "MG Road Near Me", href: "/driving-school-in/mg-road" },
+    { text: "BTM Layout Near Me", href: "/driving-school-in/btm-layout" },
+    { text: "Rajajinagar Near Me", href: "/driving-school-in/rajajinagar" },
   ];
 
   const latestPostsLinks = [
