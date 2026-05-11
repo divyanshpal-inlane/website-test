@@ -7,15 +7,27 @@ import { useSEO } from "../../hooks/useSEO";
 import pitCrewTag from "../../assets/images/PitCrew_Tag.svg";
 import { Link } from "react-router-dom";
 
+const LinkedInIcon = ({ className = "w-5 h-5" }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.852 3.37-1.852 3.601 0 4.267 2.37 4.267 5.455v6.288zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+  </svg>
+);
+
 const AboutUs = () => {
   const teamMembers = aboutUsData
     .map((item) => (item.title === "Team" ? item.members : []))
     .flat();
   const weAtLane = aboutUsData.find((item) => item.title === "We at LANE");
   const founder = aboutUsData.find((item) => item.title === "Our Founder");
-  const seo = { ...seoData['/about-us'], canonical: '/about-us' };
+  const seo = { ...seoData["/about-us"], canonical: "/about-us" };
   useSEO(seo);
-  
+
   return (
     <>
       <Navbar2
@@ -105,16 +117,19 @@ const AboutUs = () => {
               </div>
               <p className="text-md md:text-xl mb-4">{weAtLane.description1}</p>
               <p className="text-md md:text-xl">{weAtLane.description2}</p>
-              
+
               <a
-                  href="/signup"
-                  className="inline-flex items-center justify-center ms-3 md:w-auto px-6 md:px-8 py-2 text-lg md:text-xl mt-12 shadow-xl font-extrabold text-white font-['Bricolage Grotesque'] 
+                href="/signup"
+                className="inline-flex items-center justify-center ms-3 md:w-auto px-6 md:px-8 py-2 text-lg md:text-xl mt-12 shadow-xl font-extrabold text-white font-['Bricolage Grotesque'] 
                   rounded-full border-2 border-white bg-gradient-to-r from-[#00CE84] to-[#00BC78] hover:from-[#00CE84] hover:to-[#00CE84] transition-colors duration-200"
-                  
-                >
-                  <img src="/course/rocket.svg" alt="rocket" className="w-5 md:w-5 h-5 md:h-5 mr-2" />
-                  Sign Up
-                </a>
+              >
+                <img
+                  src="/course/rocket.svg"
+                  alt="rocket"
+                  className="w-5 md:w-5 h-5 md:h-5 mr-2"
+                />
+                Sign Up
+              </a>
             </div>
 
             {/* Founder Section */}
@@ -140,12 +155,17 @@ const AboutUs = () => {
                       Meet Samiksha!
                     </h2>
                     <h3 className="text-xl mb-4 font-semibold">The FOUNDER</h3>
-                    <p className="text-lg md:text-xl ">{founder.description1}</p> <br />
-                    <p className="text-lg md:text-xl ">{founder.description2}</p>
+                    <p className="text-lg md:text-xl ">
+                      {founder.description1}
+                    </p>{" "}
+                    <br />
+                    <p className="text-lg md:text-xl ">
+                      {founder.description2}
+                    </p>
                   </div>
                 </div>
                 {/* Team Section */}
-                   
+
                 <div className="bg-white rounded-3xl p-4 md:p-16 mb-12 w-full md:w-[80%]">
                   <h2 className="text-3xl md:text-7xl mb-8 m-auto w-full text-start">
                     And now, the{" "}
@@ -165,23 +185,52 @@ const AboutUs = () => {
                       <div key={index} className="rounded-2xl overflow-hidden ">
                         <div className="bg-[#D1B3FF] p-3 rounded-2xl">
                           <div className="aspect-w-1 aspect-h-1 w-full rounded-xl overflow-hidden">
-                            <img
+                            {/* <img
                               src={member.image}
                               alt={member.name}
                               className="w-full h-full object-cover"
+                            /> */}
+                            <img
+                              src={member.image}
+                              alt={member.name}
+                              className="object-cover"
+                              style={{
+                                objectPosition:
+                                  member.imagePosition || "50% 20%",
+                                width: `${member.imageScale || 100}%`,
+                                height: `${member.imageScale || 100}%`,
+                                maxWidth: "unset",
+                              }}
                             />
                           </div>
                         </div>
-                        <div className="p-4">
-                          <h3 className="font-bold text-lg mb-1">
-                            {member.name}
-                          </h3>
-                          <p className="  text-sm leading-snug">
-                            {member.role}
-                          </p>
+                        {/* Name + role on the left, LinkedIn icon on the right.
+                            Using justify-between keeps the layout balanced
+                            even if a role wraps to two lines. */}
+                        <div className="p-4 flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <h3 className="font-bold text-lg mb-1">
+                              {member.name}
+                            </h3>
+                            <p className="text-sm leading-snug">
+                              {member.role}
+                            </p>
+                          </div>
+                          {member.linkedin && (
+                            <a
+                              href={member.linkedin}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`${member.name}'s LinkedIn profile`}
+                              className="shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-full bg-[#a185cc] text-white shadow-sm hover:bg-[#0A66C2] hover:text-white transition-colors duration-200 mt-1"
+                            >
+                              <LinkedInIcon className="w-5 h-5" />
+                            </a>
+                          )}
                         </div>
                       </div>
                     ))}
+
                     {/* PS Message as 6th card */}
                     <div
                       className="md:rounded-[24px] rounded-3xl p-4 md:p-6 h-[58%] md:h-auto w-full "
@@ -194,10 +243,11 @@ const AboutUs = () => {
                       <div className="flex flex-col gap-2">
                         <p className="text-[#1A1A1A] text-[15px] leading-[1.4] text-left">
                           <span className="font-bold">P.S.</span> Big thanks to
-                          Shubham, Dheeraj and Shashank,
-                          <br />
+                          Shashank and Shubham
+                          {/* <br /> */}
                           the awesome friends of Lane who keep everything
-                          <br />
+                          &thinsp;
+                          {/* <br /> */}
                           running smoothly! 🙌💥
                         </p>
                         <p className="text-[#1A1A1A] text-[15px] text-left">
