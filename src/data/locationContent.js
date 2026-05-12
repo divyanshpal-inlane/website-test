@@ -5,7 +5,7 @@ const locationContent = {
     region: "EAST BANGALORE",
     heroTagline: "Learn Car Driving in Whitefield with Expert Trainers",
     intro:
-      "Looking for the best car driving school in Whitefield? InLane offers professional 4-wheeler driving courses in Whitefield designed for beginners and working professionals. Whether you're near Hope Farm, ITPL, or Forum Shantiniketan, our certified instructors ensure you learn to drive safely and confidently.",
+      "Looking for the best car driving school in Whitefield? InLane offers professional 4-wheeler driving courses in Whitefield designed for beginners and working professionals. Whether you're near Hope Farm, Forum Shantiniketan, or Varthur, our certified instructors ensure you learn to drive safely and confidently.",
     whyChoose: [
       "Certified and experienced instructors",
       "Flexible batch timings (weekdays & weekends)",
@@ -16,21 +16,18 @@ const locationContent = {
     practiceRoutes: ["Varthur Road, Channasandra Main Road, ECC Road"],
     areasCovered: [
       "Hope Farm",
-      "ITPL (International Tech Park)",
-      "EPIP Zone",
       "Kadugodi",
       "Varthur",
       "Brookefield",
       "Whitefield Main Road",
-      "Hoodi",
       "Siddhapura",
       "Pattandur Agrahara",
       "Forum Shantiniketan area",
       "VR Bengaluru area",
     ],
     reviews: [
-      "Great experience learning car driving in Whitefield. The trainer was patient and helped me navigate the busy Hope Farm junction and ITPL peak-hour traffic with confidence.",
-      "Best driving school near Brookefield. Flexible timings worked perfectly around my IT job schedule.",
+      "Great experience learning car driving in Whitefield. The trainer was patient and helped me navigate the busy Hope Farm junction with confidence.",
+      "Best driving school near Brookefield. Flexible timings made it easy to fit classes around my work schedule.",
     ],
     courseTiers: [
       {
@@ -62,15 +59,15 @@ const locationContent = {
       },
     ],
     aboutDriving:
-      "Whitefield is East Bangalore's largest IT and residential hub, home to ITPL, EPIP Zone, and sprawling apartment communities stretching from Hope Farm to Varthur. Driving here means adapting to a mix of quiet gated-community roads, congested Hope Farm and Varthur junctions, and intense peak-hour tech park traffic around ITPL and Hoodi. Our trainers begin learners on the calmer internal roads near Brookefield and Pattandur Agrahara before introducing the main Whitefield Road, ITPL stretch, and Hoodi Circle. This balanced exposure helps Whitefield learners — especially IT professionals — build confidence for both daily commutes and weekend highway runs.",
+      "Whitefield has grown into one of East Bangalore's largest residential and IT hubs, with traffic patterns that shift sharply between quiet gated-community roads and the congested Hope Farm and Varthur junctions. Learning to drive here means adapting to both extremes. Our trainers begin with internal roads near Brookefield and Pattandur Agrahara before moving to the main Whitefield Road and Hope Farm circle. This balanced exposure helps Whitefield learners build confidence for both daily commutes and weekend highway runs.",
     faqs: [
       {
         q: "How much does a car driving course cost in Whitefield?",
-        a: "Fees for our car driving classes in Whitefield vary depending on the course type and duration. Contact us for exact pricing.",
+        a: " Fees for our car driving classes in Whitefield vary depending on the course type and duration. Contact us for exact pricing.",
       },
       {
         q: "Do you provide doorstep pickup in Whitefield?",
-        a: "Yes, we offer pickup and drop across most parts of Whitefield including Hope Farm, ITPL, EPIP Zone, Kadugodi, Varthur, Brookefield, Hoodi, and areas near Forum Shantiniketan.",
+        a: " Yes, we offer pickup and drop across most parts of Whitefield including Hope Farm, Kadugodi, Varthur, Brookefield, and areas near Forum Shantiniketan.",
       },
       {
         q: "How many days does it take to learn car driving in Whitefield?",
@@ -78,10 +75,10 @@ const locationContent = {
       },
       {
         q: "Can beginners join your driving classes in Whitefield?",
-        a: "Absolutely. Our beginner course in Whitefield is designed for first-time drivers and IT professionals, including residents from Siddhapura, Pattandur Agrahara, and apartment communities along Whitefield Main Road.",
+        a: "Absolutely. Our beginner course in Whitefield is designed for first-time drivers, including residents from Siddhapura, Pattandur Agrahara, and localities along Whitefield Main Road.",
       },
       {
-        q: "Do you help with driving license process for Whitefield residents?",
+        q: "Do you help with the driving license process for Whitefield residents?",
         a: "Yes, we assist learners from Whitefield and surrounding localities with the complete driving license application process, including RTO documentation and test preparation.",
       },
     ],
@@ -95,12 +92,109 @@ const locationContent = {
         href: "/driving-school-in/mahadevapura",
       },
       {
-        text: "Driving School in Indira Nagar",
-        href: "/driving-school-in/indiranagar",
+        text: "Driving School in ITPL",
+        href: "/driving-school-in/itpl",
       },
       {
         text: "Driving School in KR Puram",
         href: "/driving-school-in/kr-puram",
+      },
+    ],
+  },
+
+  Hoodi: {
+    region: "EAST BANGALORE",
+    heroTagline: "Learn Car Driving in Hoodi with Expert Trainers",
+    intro:
+      "Looking for the best car driving school in Hoodi? InLane offers professional 4-wheeler driving courses in Hoodi designed for beginners and working professionals. Whether you're near Hoodi Circle, Hoodi Main Road, or Graphite India Junction, our certified instructors ensure you learn driving safely and confidently.",
+
+    whyChoose: [
+      "Certified and experienced instructors",
+      "Flexible batch timings (weekdays & weekends)",
+      "Doorstep pickup & drop available",
+      "Training on real Bangalore traffic conditions",
+      "Assistance with driving license process",
+    ],
+    practiceRoutes:
+      "Hoodi Main Road, Whitefield-Hoodi Road, Graphite India Road",
+    courseTiers: {
+      beginner: [
+        "Basics of car control",
+        "Clutch, gear, braking techniques",
+        "Traffic rules and safety",
+      ],
+      intermediate: [
+        "City driving practice",
+        "Parking techniques",
+        "Lane discipline",
+      ],
+      advanced: [
+        "Highway driving",
+        "Night driving",
+        "Defensive driving skills",
+      ],
+    },
+
+    areasCovered: [
+      "Hoodi Circle",
+      "Hoodi Main Road",
+      "Graphite India Junction",
+      "Sonnenahalli (Hoodi side)",
+      "Garudachar Palya (Hoodi side)",
+      "Nallurahalli (Hoodi side)",
+      "Immadihalli",
+      "Channasandra (Hoodi side)",
+      "Apartment clusters around Hoodi",
+    ],
+
+    reviews: [
+      "Great experience learning car driving in Hoodi. The trainer was patient and helped me handle the peak-hour traffic near Hoodi Circle confidently.",
+      "Best driving school near Graphite India Junction. Flexible timings worked perfectly around my office hours.",
+    ],
+
+    pricingNote:
+      "Our pricing is affordable and transparent. Contact us to get the latest car driving course fees in Hoodi based on your requirement.",
+
+    cta: "Start your journey with the top driving school in Hoodi. Whether you're a beginner or want to improve your skills, InLane has the right course for you.",
+
+    aboutDriving:
+      "Hoodi sits at the heart of Bangalore's East IT corridor, where Whitefield-bound and ORR-bound traffic converge around Hoodi Circle and Graphite India Junction. Driving here means handling constant cab and shuttle traffic, narrow merging lanes, and peak-hour congestion driven by the surrounding tech parks. Our trainers begin learners on the quieter internal stretches near Sonnenahalli and Nallurahalli before gradually moving to Hoodi Main Road and the main junctions. This prepares Hoodi students — especially IT professionals — for the demanding daily commute across the East Bangalore tech corridor.",
+
+    faqs: [
+      {
+        q: "How much does a car driving course cost in Hoodi?",
+        a: "Fees for our car driving classes in Hoodi vary depending on the course type and duration. Contact us for exact pricing.",
+      },
+      {
+        q: "Do you provide doorstep pickup in Hoodi?",
+        a: "Yes, we offer pickup and drop across most parts of Hoodi including Hoodi Circle, Main Road, Graphite India Junction, Sonnenahalli, and apartment clusters near Immadihalli.",
+      },
+      {
+        q: "How many days does it take to learn car driving in Hoodi?",
+        a: "Typically, 15–30 days depending on the course and learner's progress. We offer early-morning and late-evening slots that work well for IT professionals based near Hoodi.",
+      },
+      {
+        q: "Can beginners join your driving classes in Hoodi?",
+        a: "Absolutely. Our beginner course in Hoodi is designed for first-time drivers, including residents from Nallurahalli, Immadihalli, and apartment communities around Hoodi Circle.",
+      },
+      {
+        q: "Do you help with driving license process for Hoodi residents?",
+        a: "Yes, we assist learners from Hoodi and surrounding localities with the complete driving license application process, including RTO documentation and test preparation.",
+      },
+    ],
+
+    internalLinks: [
+      {
+        text: "Driving School in Whitefield",
+        href: "/driving-school-in/whitefield",
+      },
+      {
+        text: "Driving School in TC Palya",
+        href: "/driving-school-in/tc-palya",
+      },
+      {
+        text: "Driving School in Avalahalli",
+        href: "/driving-school-in/avalahalli",
       },
     ],
   },
@@ -129,8 +223,6 @@ const locationContent = {
       "Kundalahalli",
       "Sai Layout",
       "Phoenix Marketcity area",
-      "Outer Ring Road stretch",
-      "Apartment clusters around Mahadevapura",
     ],
     reviews: [
       "Great experience learning car driving in Mahadevapura. The trainer was patient and helped me handle the Outer Ring Road traffic confidently.",
@@ -174,7 +266,7 @@ const locationContent = {
       },
       {
         q: "Do you provide doorstep pickup in Mahadevapura?",
-        a: "Yes, we offer pickup and drop across most parts of Mahadevapura including Doddanekundi, Garudachar Palya, Dyavasandra, Sonnenahalli, Kundalahalli, and areas near Phoenix Marketcity.",
+        a: "Yes, we offer pickup and drop across most parts of Mahadevapura including Doddanekundi, Garudachar Palya, Dyavasandra, Sonnenahalli, and areas near Phoenix Marketcity.",
       },
       {
         q: "How many days does it take to learn car driving in Mahadevapura?",
@@ -208,6 +300,103 @@ const locationContent = {
       },
     ],
   },
+
+  ITPL: {
+    region: "WHITEFIELD / EAST BANGALORE",
+    heroTagline: "Learn Car Driving near ITPL with Expert Trainers",
+    intro:
+      "Looking for the best car driving school near ITPL? InLane offers professional 4-wheeler driving courses near ITPL designed for beginners and IT professionals working in the tech park. Whether you're near ITPL Main Gate, EPIP Zone, or Ascendas Park Square Mall, our certified instructors ensure you learn driving safely and confidently.",
+
+    whyChoose: [
+      "Certified and experienced instructors",
+      "Flexible batch timings (weekdays & weekends)",
+      "Doorstep pickup & drop available",
+      "Training on real Bangalore traffic conditions",
+      "Assistance with driving license process",
+    ],
+
+    courseTiers: {
+      beginner: [
+        "Basics of car control",
+        "Clutch, gear, braking techniques",
+        "Traffic rules and safety",
+      ],
+      intermediate: [
+        "City driving practice",
+        "Parking techniques",
+        "Lane discipline",
+      ],
+      advanced: [
+        "Highway driving",
+        "Night driving",
+        "Defensive driving skills",
+      ],
+    },
+    practiceRoutes: "ITPL Main Road, Vydehi Hospital Road, Brookefield Road",
+    areasCovered: [
+      "ITPL Main Gate area",
+      "ITPL Main Road",
+      "EPIP Zone",
+      "Pattandur Agrahara (ITPL side)",
+      "Sadaramangala",
+      "Sri Sathya Sai Hospital Road",
+      "Vydehi Hospital area",
+      "Ascendas Park Square Mall area",
+      "Apartment clusters adjacent to ITPL",
+    ],
+
+    reviews: [
+      "Great experience learning car driving near ITPL. The trainer was patient and helped me handle the peak-hour tech park traffic confidently.",
+      "Best driving school near EPIP Zone. Flexible timings worked perfectly around my office hours at ITPL.",
+    ],
+
+    pricingNote:
+      "Our pricing is affordable and transparent. Contact us to get the latest car driving course fees near ITPL based on your requirement.",
+
+    cta: "Start your journey with the top driving school near ITPL. Whether you're a beginner or want to improve your skills, InLane has the right course for you.",
+
+    aboutDriving:
+      "ITPL is one of East Bangalore's largest tech parks, and the roads around it see some of the most intense peak-hour traffic in the city — especially during morning and evening IT rush windows. Driving here means learning to handle cab-heavy traffic at the ITPL gate, tight parking around EPIP Zone, and frequent pedestrian movement near the mall and food court areas. Our trainers begin learners on the calmer off-peak stretches near Sadaramangala and Pattandur Agrahara before moving to ITPL Main Road during peak hours. This prepares ITPL learners — especially busy IT professionals — for real daily-commute driving conditions.",
+
+    faqs: [
+      {
+        q: "How much does a car driving course cost near ITPL?",
+        a: "Fees for our car driving classes near ITPL vary depending on the course type and duration. Contact us for exact pricing.",
+      },
+      {
+        q: "Do you provide doorstep pickup near ITPL?",
+        a: "Yes, we offer pickup and drop across most areas around ITPL including the Main Gate, EPIP Zone, Pattandur Agrahara, Sadaramangala, and nearby apartment clusters.",
+      },
+      {
+        q: "How many days does it take to learn car driving near ITPL?",
+        a: "Typically, 15–30 days depending on the course and learner's progress. We offer early-morning and late-evening slots that work well for IT professionals based at ITPL.",
+      },
+      {
+        q: "Can beginners join your driving classes near ITPL?",
+        a: "Absolutely. Our beginner course near ITPL is designed for first-time drivers, including working professionals from EPIP Zone and Pattandur Agrahara.",
+      },
+      {
+        q: "Do you help with driving license process for ITPL learners?",
+        a: "Yes, we assist learners working or living near ITPL with the complete driving license application process, including RTO documentation and test preparation.",
+      },
+    ],
+
+    internalLinks: [
+      {
+        text: "Driving School in Whitefield",
+        href: "/driving-school-in/whitefield",
+      },
+      {
+        text: "Driving School in Marathahalli",
+        href: "/driving-school-in/marathahalli",
+      },
+      {
+        text: "Driving School in Sarjapur Road",
+        href: "/driving-school-in/sarjapur-road",
+      },
+    ],
+  },
+
   Marathahalli: {
     region: "EAST BANGALORE",
     heroTagline: "Learn Car Driving in Marathahalli with Expert Trainers",
@@ -233,7 +422,6 @@ const locationContent = {
       "Thubarahalli",
       "Doddakannelli",
       "Marathahalli Market area",
-      "Old Airport Road stretch",
     ],
     reviews: [
       "Great experience learning car driving in Marathahalli. The trainer was patient and helped me tackle the Marathahalli Bridge traffic confidently.",
@@ -269,7 +457,7 @@ const locationContent = {
       },
     ],
     aboutDriving:
-      "Marathahalli is defined by one of Bangalore's most complex junctions — the Marathahalli Bridge — where the Outer Ring Road, Old Airport Road, and the road to Whitefield converge. Driving confidently here requires sharp lane awareness and quick decision-making. Our trainers start learners on calmer internal stretches near AECS Layout and Munnekollal before gradually introducing the bridge and main junction traffic. By course end, Marathahalli students are comfortable handling some of the city's most challenging merging points.",
+      "Marathahalli is defined by one of Bangalore's most unforgiving junctions — the Marathahalli Bridge — where the Outer Ring Road, Old Airport Road, and the road to Whitefield converge. Driving confidently here requires sharp lane awareness and quick decision-making. Our trainers start learners on calmer internal stretches near AECS Layout and Munnekollal before gradually introducing the bridge and main junction traffic. By course end, Marathahalli students are comfortable handling some of the city's most complex merging points.",
     faqs: [
       {
         q: "How much does a car driving course cost in Marathahalli?",
@@ -304,20 +492,122 @@ const locationContent = {
       },
 
       {
-        text: "Driving School in Indira Nagar",
-        href: "/driving-school-in/indiranagar",
+        text: "Driving School in ITPL",
+        href: "/driving-school-in/itpl",
       },
+      {
+        text: "Driving School in Sarjapur Road",
+        href: "/driving-school-in/sarjapur-road",
+      },
+    ],
+  },
+
+  Benniganahalli: {
+    region: "EAST BANGALORE",
+    heroTagline: "Learn Car Driving in Benniganhalli with Expert Trainers",
+    intro:
+      "Looking for the best car driving school in Benniganhalli? InLane offers professional 4-wheeler driving courses in Benniganhalli designed for beginners and working professionals. Whether you're near Benniganhalli Metro Station, Benniganhalli Lake, or the Railway Station area, our certified instructors ensure you learn driving safely and confidently.",
+
+    whyChoose: [
+      "Certified and experienced instructors",
+      "Flexible batch timings (weekdays & weekends)",
+      "Doorstep pickup & drop available",
+      "Training on real Bangalore traffic conditions",
+      "Assistance with driving license process",
+    ],
+
+    courseTiers: {
+      beginner: [
+        "Basics of car control",
+        "Clutch, gear, braking techniques",
+        "Traffic rules and safety",
+      ],
+      intermediate: [
+        "City driving practice",
+        "Parking techniques",
+        "Lane discipline",
+      ],
+      advanced: [
+        "Highway driving",
+        "Night driving",
+        "Defensive driving skills",
+      ],
+    },
+
+    practiceRoutes:
+      "Old Madras Road (NH75), Benniganahalli(tin factory) Main Road, Pai Layout Main Road",
+
+    areasCovered: [
+      "Benniganahalli Metro Station area",
+      "Benniganahalli Railway Station",
+      "Benniganahalli Lake area",
+      "Nagavarapalya",
+      "Vijnanapura",
+      "Channasandra Main Road stretch",
+      "Apartment clusters around Benniganahalli",
+    ],
+
+    reviews: [
+      "Great experience learning car driving in Benniganahalli. The trainer was patient and helped me get comfortable near the railway crossing and main road junctions.",
+      "Best driving school near Benniganahalli Metro Station. Flexible timings made it easy to fit classes around my work schedule.",
+    ],
+
+    pricingNote:
+      "Our pricing is affordable and transparent. Contact us to get the latest car driving course fees in Benniganhalli based on your requirement.",
+
+    cta: "Start your journey with the top driving school in Benniganahalli. Whether you're a beginner or want to improve your skills, InLane has the right course for you.",
+
+    aboutDriving:
+      "Benniganahalli sits at a busy East Bangalore junction where the Old Madras Road stretch meets the Purple Line metro corridor. Learning to drive here means getting comfortable with railway-level crossings, narrow inner lanes, and the merging traffic near the metro station. Our trainers start you on quieter roads around Benniganahalli Lake before gradually moving to the Channasandra Main Road and Old Madras Road stretches. This step-by-step approach helps first-time drivers build real confidence for East Bangalore conditions.",
+
+    faqs: [
+      {
+        q: "How much does a car driving course cost in Benniganahalli?",
+        a: "Fees for our car driving classes in Benniganahalli vary depending on the course type and duration. Contact us for exact pricing.",
+      },
+      {
+        q: "Do you provide doorstep pickup in Benniganahalli?",
+        a: "Yes, we offer pickup and drop across most parts of Benniganahalli including areas near the Metro Station, Railway Station, Nagavarapalya, Vijnanapura, and Benniganahalli Lake.",
+      },
+      {
+        q: "How many days does it take to learn car driving in Benniganahalli?",
+        a: "Typically, 15–30 days depending on the course and learner's progress. Most of our Benniganahalli students complete training within a month.",
+      },
+      {
+        q: "Can beginners join your driving classes in Benniganahalli?",
+        a: "Absolutely. Our beginner course in Benniganahalli is designed for first-time drivers, including residents from Nagavarapalya, Vijnanapura, and apartment communities around Benniganahalli.",
+      },
+      {
+        q: "Do you help with driving license process for Benniganahalli residents?",
+        a: "Yes, we assist learners from Benniganahalli and surrounding localities with the complete driving license application process, including RTO documentation and test preparation.",
+      },
+    ],
+
+    internalLinks: [
       {
         text: "Driving School in KR Puram",
         href: "/driving-school-in/kr-puram",
       },
+      {
+        text: "Driving School in Mahadevapura",
+        href: "/driving-school-in/mahadevapura",
+      },
+      {
+        text: "Driving School in Baiyappanahalli",
+        href: "/driving-school-in/baiyappanahalli",
+      },
+      {
+        text: "Driving School in Whitefield",
+        href: "/driving-school-in/whitefield",
+      },
     ],
   },
+
   "KR Puram": {
     region: "EAST BANGALORE",
     heroTagline: "Learn Car Driving in KR Puram with Expert Trainers",
     intro:
-      "Looking for the best car driving school in KR Puram? InLane offers professional 4-wheeler driving courses in KR Puram designed for beginners and working professionals. Whether you're near KR Puram Railway Station, Tin Factory, or the Hanging Bridge, our certified instructors ensure you learn to drive safely and confidently.",
+      "Looking for the best car driving school in KR Puram? InLane offers professional 4-wheeler driving courses in KR Puram designed for beginners and working professionals. Whether you're near KR Puram Railway Station, or the Tin Factory, our certified instructors ensure you learn to drive safely and confidently.",
     whyChoose: [
       "Certified and experienced instructors",
       "Flexible batch timings (weekdays & weekends)",
@@ -333,16 +623,13 @@ const locationContent = {
       "Tin Factory",
       "Medahalli",
       "Battarahalli",
-      "TC Palya",
-      "TC Palya Main Road",
       "Channasandra",
       "Devasandra",
       "Vijinapura",
-      "Basavanapura",
-      "Chikkabanahalli",
+      "Kaggadasapura",
     ],
     reviews: [
-      "Great experience learning car driving in KR Puram. The trainer was patient and helped me get comfortable navigating the Tin Factory junction and Hanging Bridge.",
+      "Great experience learning car driving in KR Puram. The trainer was patient and helped me get comfortable navigating the Tin Factory junction.",
       "Best driving school near KR Puram Railway Station. Flexible timings made it easy to balance work and classes.",
     ],
     courseTiers: [
@@ -375,7 +662,7 @@ const locationContent = {
       },
     ],
     aboutDriving:
-      "KR Puram is one of East Bangalore's busiest junctions, shaped by the Tin Factory signal, the Hanging Bridge, and constant traffic from Old Madras Road. The surrounding TC Palya and Channasandra belt adds narrow inner-lane driving to the mix. Learning to drive here means getting comfortable with high-volume traffic, heavy vehicle movement, and tight merging points. Our trainers begin with calmer stretches around Medahalli, Battarahalli, and TC Palya inner roads before progressing to the main junctions. By the end of the course, KR Puram learners are confident handling some of the toughest traffic conditions in the city.",
+      "KR Puram is one of East Bangalore's busiest junctions, shaped by the Tin Factory signal, the Hanging Bridge, and constant traffic from Old Madras Road. Learning to drive here means getting comfortable with high-volume traffic, heavy vehicle movement, and tight merging points. Our trainers begin with calmer stretches around Medahalli and Battarahalli before progressing to the main junctions. By the end of the course, KR Puram learners are confident handling some of the toughest traffic conditions in the city.",
     faqs: [
       {
         q: "How much does a car driving course cost in KR Puram?",
@@ -383,7 +670,7 @@ const locationContent = {
       },
       {
         q: "Do you provide doorstep pickup in KR Puram?",
-        a: "Yes, we offer pickup and drop across most parts of KR Puram including Medahalli, Battarahalli, TC Palya, Channasandra, Devasandra, Vijinapura, and areas near the Railway Station and Tin Factory.",
+        a: "Yes, we offer pickup and drop across most parts of KR Puram including Medahalli, Battarahalli, Channasandra, Devasandra, and areas near the KR Puram Railway Station.",
       },
       {
         q: "How many days does it take to learn car driving in KR Puram?",
@@ -391,7 +678,7 @@ const locationContent = {
       },
       {
         q: "Can beginners join your driving classes in KR Puram?",
-        a: "Absolutely. Our beginner course in KR Puram is designed for first-time drivers, including residents from TC Palya, Vijinapura, Basavanapura, and localities around the Tin Factory.",
+        a: "Absolutely. Our beginner course in KR Puram is designed for first-time drivers, including residents from Vijinapura, Kaggadasapura, and localities around the Tin Factory.",
       },
       {
         q: "Do you help with driving license process for KR Puram residents?",
@@ -400,8 +687,8 @@ const locationContent = {
     ],
     internalLinks: [
       {
-        text: "Driving School in Marathahalli",
-        href: "/driving-school-in/marathahalli",
+        text: "Driving School in Benniganhalli",
+        href: "/driving-school-in/benniganhalli",
       },
       {
         text: "Driving School in Mahadevapura",
@@ -409,20 +696,223 @@ const locationContent = {
       },
 
       {
+        text: "Driving School in Whitefield",
+        href: "/driving-school-in/whitefield",
+      },
+      {
+        text: "Driving School in TC Palya",
+        href: "/driving-school-in/tc-palya",
+      },
+    ],
+  },
+
+  Baiyappanahalli: {
+    region: "EAST BANGALORE",
+    heroTagline: "Learn Car Driving in Baiyappanahalli with Expert Trainers",
+    intro:
+      "Looking for the best car driving school in Baiyappanahalli? InLane offers professional 4-wheeler driving courses in Baiyappanahalli designed for beginners and working professionals. Whether you're near Baiyappanahalli Metro Station, the Railway Terminal, or NGEF Layout, our certified instructors ensure you learn driving safely and confidently.",
+
+    whyChoose: [
+      "Certified and experienced instructors",
+      "Flexible batch timings (weekdays & weekends)",
+      "Doorstep pickup & drop available",
+      "Training on real Bangalore traffic conditions",
+      "Assistance with driving license process",
+    ],
+
+    courseTiers: {
+      beginner: [
+        "Basics of car control",
+        "Clutch, gear, braking techniques",
+        "Traffic rules and safety",
+      ],
+      intermediate: [
+        "City driving practice",
+        "Parking techniques",
+        "Lane discipline",
+      ],
+      advanced: [
+        "Highway driving",
+        "Night driving",
+        "Defensive driving skills",
+      ],
+    },
+
+    practiceRoutes:
+      "Swami Vivekananda Road, Baiyappanahalli Road, NGEF Main Road",
+
+    areasCovered: [
+      "Baiyappanahalli Metro Station area",
+      "Baiyappanahalli Railway Terminal",
+      "NGEF Layout",
+      "Jyothipura",
+      "Vijinapura",
+      "Byrasandra",
+      "Kaggadasapura Road junction",
+      "Apartment clusters around Baiyappanahalli",
+    ],
+
+    reviews: [
+      "Great experience learning car driving in Baiyappanahalli. The trainer was patient and helped me get comfortable with the busy traffic near the metro station.",
+      "Best driving school near NGEF Layout. Flexible timings made it easy to fit classes around my work schedule.",
+    ],
+
+    pricingNote:
+      "Our pricing is affordable and transparent. Contact us to get the latest car driving course fees in Baiyappanahalli based on your requirement.",
+
+    cta: "Start your journey with the top driving school in Baiyappanahalli. Whether you're a beginner or want to improve your skills, InLane has the right course for you.",
+
+    aboutDriving:
+      "Baiyappanahalli is a major East Bangalore transit hub, home to the Purple Line metro terminal and a key railway terminal on the Old Madras Road corridor. Driving here means handling heavy commuter traffic, frequent auto and cab movement near the metro and railway stations, and quick merges onto Swami Vivekananda Road. Our trainers start learners on the quieter internal roads of NGEF Layout and Jyothipura before moving to the busier main junctions. This prepares Baiyappanahalli students for the mix of commercial and commuter traffic that defines the area.",
+
+    faqs: [
+      {
+        q: "How much does a car driving course cost in Baiyappanahalli?",
+        a: "Fees for our car driving classes in Baiyappanahalli vary depending on the course type and duration. Contact us for exact pricing.",
+      },
+      {
+        q: "Do you provide doorstep pickup in Baiyappanahalli?",
+        a: "Yes, we offer pickup and drop across most parts of Baiyappanahalli including areas near the Metro Station, Railway Terminal, NGEF Layout, Jyothipura, and Byrasandra.",
+      },
+      {
+        q: "How many days does it take to learn car driving in Baiyappanahalli?",
+        a: "Typically, 15–30 days depending on the course and learner's progress. Most of our Baiyappanahalli students complete training within a month.",
+      },
+      {
+        q: "Can beginners join your driving classes in Baiyappanahalli?",
+        a: "Absolutely. Our beginner course in Baiyappanahalli is designed for first-time drivers, including residents from Vijinapura, Byrasandra, and apartment communities near Baiyappanahalli Metro Station.",
+      },
+      {
+        q: "Do you help with driving license process for Baiyappanahalli residents?",
+        a: "Yes, we assist learners from Baiyappanahalli and surrounding localities with the complete driving license application process, including RTO documentation and test preparation.",
+      },
+    ],
+
+    internalLinks: [
+      {
+        text: "Driving School in Vivekananda Road",
+        href: "/driving-school-in/swami-vivekananda-road",
+      },
+      {
         text: "Driving School in Indira Nagar",
         href: "/driving-school-in/indiranagar",
       },
       {
-        text: "Driving School in Whitefield",
-        href: "/driving-school-in/whitefield",
+        text: "Driving School in Kasturi Nagar",
+        href: "/driving-school-in/kasturi-nagar",
+      },
+      {
+        text: "Driving School in Benniganhalli",
+        href: "/driving-school-in/benniganhalli",
       },
     ],
   },
+
+  "Swami Vivekananda Road": {
+    region: "CENTRAL EAST BANGALORE",
+    heroTagline:
+      "Learn Car Driving in Swami Vivekananda Road with Expert Trainers",
+    intro:
+      "Looking for the best car driving school on Swami Vivekananda Road? InLane offers professional 4-wheeler driving courses along Swami Vivekananda Road designed for beginners and working professionals. Whether you're near Swami Vivekananda Metro Station, Halasuru, or Cambridge Layout, our certified instructors ensure you learn driving safely and confidently.",
+
+    whyChoose: [
+      "Certified and experienced instructors",
+      "Flexible batch timings (weekdays & weekends)",
+      "Doorstep pickup & drop available",
+      "Training on real Bangalore traffic conditions",
+      "Assistance with driving license process",
+    ],
+
+    courseTiers: {
+      beginner: [
+        "Basics of car control",
+        "Clutch, gear, braking techniques",
+        "Traffic rules and safety",
+      ],
+      intermediate: [
+        "City driving practice",
+        "Parking techniques",
+        "Lane discipline",
+      ],
+      advanced: [
+        "Highway driving",
+        "Night driving",
+        "Defensive driving skills",
+      ],
+    },
+
+    practiceRoutes:
+      "Old Madras Road (NH75), Swami Vivekananda Road, Cambridge Road",
+
+    areasCovered: [
+      "Swami Vivekananda Metro Station area",
+      "Halasuru",
+      "Ulsoor (SV Road side)",
+      "Jogupalya",
+      "Pottery Town",
+      "Cambridge Layout",
+      "Maruthi Seva Nagar",
+      "Lakshmipuram",
+      "Jeevanahalli",
+    ],
+
+    reviews: [
+      "Great experience learning car driving near Swami Vivekananda Road. The trainer was patient and helped me get comfortable with the constant signal stops along the stretch.",
+      "Best driving school near Swami Vivekananda Metro Station. Flexible timings made it easy to fit classes around my work schedule.",
+    ],
+
+    pricingNote:
+      "Our pricing is affordable and transparent. Contact us to get the latest car driving course fees on Swami Vivekananda Road based on your requirement.",
+
+    cta: "Start your journey with the top driving school on Swami Vivekananda Road. Whether you're a beginner or want to improve your skills, InLane has the right course for you.",
+
+    aboutDriving:
+      "Swami Vivekananda Road is one of East Bangalore's main arterial stretches, running under the Purple Line metro and connecting the Indiranagar area to Baiyappanahalli. Driving here means handling dense signal-to-signal city traffic, metro pillar navigation, and constant lane changes due to heavy commercial and commuter movement. Our trainers begin learners on the quieter inner roads of Cambridge Layout and Pottery Town before moving onto the main stretch. This prepares SV Road students to confidently handle one of the busiest urban driving corridors in the city.",
+
+    faqs: [
+      {
+        q: "How much does a car driving course cost on Swami Vivekananda Road?",
+        a: "Fees for our car driving classes on Swami Vivekananda Road vary depending on the course type and duration. Contact us for exact pricing.",
+      },
+      {
+        q: "Do you provide doorstep pickup on Swami Vivekananda Road?",
+        a: "Yes, we offer pickup and drop across most parts of Swami Vivekananda Road including areas near the Metro Station, Halasuru, Pottery Town, Cambridge Layout, and Maruthi Seva Nagar.",
+      },
+      {
+        q: "How many days does it take to learn car driving on Swami Vivekananda Road?",
+        a: "Typically, 15–30 days depending on the course and learner's progress. Most of our Swami Vivekananda Road students complete training within a month.",
+      },
+      {
+        q: "Can beginners join your driving classes on Swami Vivekananda Road?",
+        a: "Absolutely. Our beginner course on Swami Vivekananda Road is designed for first-time drivers, including residents from Jogupalya, Lakshmipuram, and apartment communities along the stretch.",
+      },
+      {
+        q: "Do you help with driving license process for Swami Vivekananda Road residents?",
+        a: "Yes, we assist learners from Swami Vivekananda Road and surrounding localities with the complete driving license application process, including RTO documentation and test preparation.",
+      },
+    ],
+
+    internalLinks: [
+      {
+        text: "Driving School in Indira Nagar",
+        href: "/driving-school-in/indiranagar",
+      },
+      {
+        text: "Driving School in Baiyappanahalli",
+        href: "/driving-school-in/baiyappanahalli",
+      },
+      {
+        text: "Driving School in Kasturi Nagar",
+        href: "/driving-school-in/kasturi-nagar",
+      },
+    ],
+  },
+
   Indiranagar: {
     region: "CENTRAL EAST BANGALORE",
     heroTagline: "Learn Car Driving in Indiranagar with Expert Trainers",
     intro:
-      "Looking for the best car driving school in Indiranagar? InLane offers professional 4-wheeler driving courses in Indiranagar designed for beginners and working professionals. Whether you're near 100 Feet Road, CMH Road, or Indiranagar Metro Station, our certified instructors ensure you learn to drive safely and confidently.",
+      "Looking for the best car driving school in Indiranagar? InLane offers professional 4-wheeler driving courses in Indiranagar designed for beginners and working professionals. Whether you're near 100 Feet Road, CMH Road, or Indiranagar Metro Station, our certified instructors ensure you learn driving safely and confidently.",
     whyChoose: [
       "Certified and experienced instructors",
       "Flexible batch timings (weekdays & weekends)",
@@ -442,15 +932,10 @@ const locationContent = {
       "Jeevan Bima Nagar",
       "Binnamangala",
       "Domlur (Indiranagar side)",
-      "Baiyappanahalli",
-      "Swami Vivekananda Road",
-      "Halasuru / Ulsoor",
-      "Cambridge Layout",
-      "NGEF Layout",
       "12th Main area",
     ],
     reviews: [
-      "Great experience learning car driving in Indiranagar. The trainer was patient and helped me handle the busy 100 Feet Road and metro-corridor traffic confidently.",
+      "Great experience learning car driving in Indiranagar. The trainer was patient and helped me handle the busy 100 Feet Road traffic confidently.",
       "Best driving school near CMH Road. Flexible timings made it easy to fit classes around my work schedule.",
     ],
     courseTiers: [
@@ -483,7 +968,7 @@ const locationContent = {
       },
     ],
     aboutDriving:
-      "Indiranagar is one of Central-East Bangalore's busiest commercial and residential zones, with non-stop traffic along 100 Feet Road, CMH Road, and the Swami Vivekananda Road metro corridor connecting to Baiyappanahalli. Learning to drive here means handling constant signal stops, narrow lane-parking, pedestrian-heavy stretches, and metro pillar navigation. Our trainers start learners on the quieter inner roads of HAL 2nd Stage, Defence Colony, and Cambridge Layout before moving to the main commercial stretches and SV Road. By the end of the course, Indiranagar students are comfortable navigating some of the city's most crowded urban driving conditions.",
+      "Indiranagar is one of Central-East Bangalore's busiest commercial and residential zones, with non-stop traffic along 100 Feet Road and CMH Road. Learning to drive here means handling constant signal stops, narrow lane-parking, and pedestrian-heavy stretches. Our trainers start learners on the quieter inner roads of HAL 2nd Stage and Defence Colony before moving to the main commercial stretches. By the end of the course, Indiranagar students are comfortable navigating some of the city's most crowded urban driving conditions.",
     faqs: [
       {
         q: "How much does a car driving course cost in Indiranagar?",
@@ -491,7 +976,7 @@ const locationContent = {
       },
       {
         q: "Do you provide doorstep pickup in Indiranagar?",
-        a: "Yes, we offer pickup and drop across most parts of Indiranagar including 100 Feet Road, CMH Road, HAL 2nd Stage, HAL 3rd Stage, Defence Colony, Baiyappanahalli, Ulsoor, and Cambridge Layout.",
+        a: "Yes, we offer pickup and drop across most parts of Indiranagar including 100 Feet Road, CMH Road, HAL 2nd Stage, HAL 3rd Stage, Defence Colony, and areas near Indiranagar Metro Station.",
       },
       {
         q: "How many days does it take to learn car driving in Indiranagar?",
@@ -499,7 +984,7 @@ const locationContent = {
       },
       {
         q: "Can beginners join your driving classes in Indiranagar?",
-        a: "Absolutely. Our beginner course in Indiranagar is designed for first-time drivers, including residents from Jeevan Bima Nagar, Binnamangala, Domlur, and apartment communities along the metro corridor.",
+        a: "Absolutely. Our beginner course in Indiranagar is designed for first-time drivers, including residents from Jeevan Bima Nagar, Binnamangala, and localities around 12th Main.",
       },
       {
         q: "Do you help with driving license process for Indiranagar residents?",
@@ -508,29 +993,227 @@ const locationContent = {
     ],
     internalLinks: [
       {
-        text: "Driving School in Marathahalli",
-        href: "/driving-school-in/marathahalli",
+        text: "Driving School in Vivekananda Road",
+        href: "/driving-school-in/swami-vivekananda-road",
       },
       {
-        text: "Driving School in Mahadevapura",
-        href: "/driving-school-in/mahadevapura",
+        text: "Driving School in Koramangala",
+        href: "/driving-school-in/koramangala",
       },
 
+      {
+        text: "Driving School in MG Road",
+        href: "/driving-school-in/mg-road",
+      },
+    ],
+  },
+
+  "TC Palya": {
+    region: "EAST BANGALORE",
+    heroTagline: "Learn Car Driving in TC Palya with Expert Trainers",
+    intro:
+      "Looking for the best car driving school in TC Palya? InLane offers professional 4-wheeler driving courses in TC Palya designed for beginners and working professionals. Whether you're near TC Palya Main Road, TC Palya Cross, or Basavanapura, our certified instructors ensure you learn driving safely and confidently.",
+
+    whyChoose: [
+      "Certified and experienced instructors",
+      "Flexible batch timings (weekdays & weekends)",
+      "Doorstep pickup & drop available",
+      "Training on real Bangalore traffic conditions",
+      "Assistance with driving license process",
+    ],
+
+    courseTiers: {
+      beginner: [
+        "Basics of car control",
+        "Clutch, gear, braking techniques",
+        "Traffic rules and safety",
+      ],
+      intermediate: [
+        "City driving practice",
+        "Parking techniques",
+        "Lane discipline",
+      ],
+      advanced: [
+        "Highway driving",
+        "Night driving",
+        "Defensive driving skills",
+      ],
+    },
+
+    practiceRoutes:
+      "TC Palya Main Road, Ramamurthy Nagar Main Road, Anandapura Main Road",
+
+    areasCovered: [
+      "TC Palya Main Road",
+      "TC Palya Cross",
+      "Basavanapura",
+      "Battarahalli (TC Palya side)",
+      "Medahalli (TC Palya side)",
+      "Chikkabanahalli",
+      "Channasandra stretch",
+      "Apartment clusters around TC Palya",
+    ],
+
+    reviews: [
+      "Great experience learning car driving in TC Palya. The trainer was patient and helped me build confidence on the narrow lanes before moving to the main road.",
+      "Best driving school near TC Palya Main Road. Flexible timings made it easy to fit classes around my work schedule.",
+    ],
+
+    pricingNote:
+      "Our pricing is affordable and transparent. Contact us to get the latest car driving course fees in TC Palya based on your requirement.",
+
+    cta: "Start your journey with the top driving school in TC Palya. Whether you're a beginner or want to improve your skills, InLane has the right course for you.",
+
+    aboutDriving:
+      "TC Palya is a densely populated residential pocket in East Bangalore, known for its mix of narrow inner lanes and the busier TC Palya Main Road that feeds into the Old Madras Road corridor. Driving here means learning to handle tight two-wheeler traffic, parked vehicles along the roadside, and sudden pedestrian movement near local markets. Our trainers start learners on the calmer inner stretches around Basavanapura and Chikkabanahalli before moving to the main road. This step-by-step progression prepares TC Palya students for real East Bangalore driving conditions.",
+
+    faqs: [
+      {
+        q: "How much does a car driving course cost in TC Palya?",
+        a: "Fees for our car driving classes in TC Palya vary depending on the course type and duration. Contact us for exact pricing.",
+      },
+      {
+        q: "Do you provide doorstep pickup in TC Palya?",
+        a: "Yes, we offer pickup and drop across most parts of TC Palya including TC Palya Main Road, TC Palya Cross, Basavanapura, Chikkabanahalli, and surrounding apartment clusters.",
+      },
+      {
+        q: "How many days does it take to learn car driving in TC Palya?",
+        a: "Typically, 15–30 days depending on the course and learner's progress. Most of our TC Palya students complete training within a month.",
+      },
+      {
+        q: "Can beginners join your driving classes in TC Palya?",
+        a: "Absolutely. Our beginner course in TC Palya is designed for first-time drivers, including residents from Basavanapura, Chikkabanahalli, and the Channasandra stretch.",
+      },
+      {
+        q: "Do you help with driving license process for TC Palya residents?",
+        a: "Yes, we assist learners from TC Palya and surrounding localities with the complete driving license application process, including RTO documentation and test preparation.",
+      },
+    ],
+
+    internalLinks: [
       {
         text: "Driving School in KR Puram",
         href: "/driving-school-in/kr-puram",
       },
       {
-        text: "Driving School in Whitefield",
-        href: "/driving-school-in/whitefield",
+        text: "Driving School in Ramamurthy Nagar",
+        href: "/driving-school-in/ramamurthy-nagar",
+      },
+      {
+        text: "Driving School in Hoodi",
+        href: "/driving-school-in/hoodi",
+      },
+      {
+        text: "Driving School in Avalahalli",
+        href: "/driving-school-in/avalahalli",
       },
     ],
   },
+
+  Avalahalli: {
+    region: "NORTH-EAST BANGALORE",
+    heroTagline: "Learn Car Driving in Avalahalli with Expert Trainers",
+    intro:
+      "Looking for the best car driving school in Avalahalli? InLane offers professional 4-wheeler driving courses in Avalahalli designed for beginners and working professionals. Whether you're near Avalahalli Main Road, BDA Layout Avalahalli, or Avalahalli Lake, our certified instructors ensure you learn driving safely and confidently.",
+
+    whyChoose: [
+      "Certified and experienced instructors",
+      "Flexible batch timings (weekdays & weekends)",
+      "Doorstep pickup & drop available",
+      "Training on real Bangalore traffic conditions",
+      "Assistance with driving license process",
+    ],
+
+    courseTiers: {
+      beginner: [
+        "Basics of car control",
+        "Clutch, gear, braking techniques",
+        "Traffic rules and safety",
+      ],
+      intermediate: [
+        "City driving practice",
+        "Parking techniques",
+        "Lane discipline",
+      ],
+      advanced: [
+        "Highway driving",
+        "Night driving",
+        "Defensive driving skills",
+      ],
+    },
+
+    practiceRoutes:
+      "Avalahalli Main Road, Old Madras Road (NH75) – Avalahalli Stretch, Medahalli-Avalahalli Road",
+
+    areasCovered: [
+      "Avalahalli Main Road",
+      "BDA Layout Avalahalli",
+      "Avalahalli Lake area",
+      "Kalkere (Avalahalli side)",
+      "Narayanapura (Avalahalli side)",
+      "Vaderahalli",
+      "Seegehalli",
+      "Chelekere",
+      "Apartment clusters around Avalahalli",
+    ],
+
+    reviews: [
+      "Great experience learning car driving in Avalahalli. The trainer was patient and helped me practice on the quieter BDA layout roads before moving to the main road.",
+      "Best driving school near Avalahalli Main Road. Flexible timings made it easy to fit classes around my work schedule.",
+    ],
+
+    pricingNote:
+      "Our pricing is affordable and transparent. Contact us to get the latest car driving course fees in Avalahalli based on your requirement.",
+
+    cta: "Start your journey with the top driving school in Avalahalli. Whether you're a beginner or want to improve your skills, InLane has the right course for you.",
+
+    aboutDriving:
+      "Avalahalli is a quieter North-East Bangalore locality built around the BDA layout and Avalahalli Lake, making it one of the more beginner-friendly areas to learn driving in the city. The inner BDA layout roads are wide and relatively low-traffic, which gives new drivers ideal conditions to build core skills. Our trainers begin learners on these calm layout roads before gradually introducing the busier Avalahalli Main Road and Kalkere stretch. This step-by-step approach makes Avalahalli especially suitable for first-time drivers who want to learn at their own pace.",
+
+    faqs: [
+      {
+        q: "How much does a car driving course cost in Avalahalli?",
+        a: "Fees for our car driving classes in Avalahalli vary depending on the course type and duration. Contact us for exact pricing.",
+      },
+      {
+        q: "Do you provide doorstep pickup in Avalahalli?",
+        a: "Yes, we offer pickup and drop across most parts of Avalahalli including Main Road, BDA Layout, Kalkere side, Vaderahalli, and areas near Avalahalli Lake.",
+      },
+      {
+        q: "How many days does it take to learn car driving in Avalahalli?",
+        a: "Typically, 15–30 days depending on the course and learner's progress. Most of our Avalahalli students complete training within a month.",
+      },
+      {
+        q: "Can beginners join your driving classes in Avalahalli?",
+        a: "Absolutely. Our beginner course in Avalahalli is designed for first-time drivers, including residents from BDA Layout, Seegehalli, and apartment communities around Chelekere.",
+      },
+      {
+        q: "Do you help with driving license process for Avalahalli residents?",
+        a: "Yes, we assist learners from Avalahalli and surrounding localities with the complete driving license application process, including RTO documentation and test preparation.",
+      },
+    ],
+
+    internalLinks: [
+      {
+        text: "Driving School in Hoodi",
+        href: "/driving-school-in/hoodi",
+      },
+      {
+        text: "Driving School in TC Palya",
+        href: "/driving-school-in/tc-palya",
+      },
+      {
+        text: "Driving School in KR Puram",
+        href: "/driving-school-in/kr-puram",
+      },
+    ],
+  },
+
   "Ramamurthy Nagar": {
     region: "NORTH-EAST BANGALORE",
     heroTagline: "Learn Car Driving in Ramamurthy Nagar with Expert Trainers",
     intro:
-      "Looking for the best car driving school in Ramamurthy Nagar? InLane offers professional 4-wheeler driving courses in Ramamurthy Nagar designed for beginners and working professionals. Whether you're near Ramamurthy Nagar Main Road, Ring Road Junction, or Horamavu, our certified instructors ensure you learn to drive safely and confidently.",
+      "Looking for the best car driving school in Ramamurthy Nagar? InLane offers professional 4-wheeler driving courses in Ramamurthy Nagar designed for beginners and working professionals. Whether you're near Ramamurthy Nagar Main Road, Ring Road Junction, or Bhuvaneshwari Nagar, our certified instructors ensure you learn driving safely and confidently.",
     whyChoose: [
       "Certified and experienced instructors",
       "Flexible batch timings (weekdays & weekends)",
@@ -544,21 +1227,16 @@ const locationContent = {
     areasCovered: [
       "Ramamurthy Nagar Main Road",
       "Ramamurthy Nagar Ring Road",
-      "Horamavu",
-      "Horamavu Agara",
-      "Avalahalli",
-      "BDA Layout Avalahalli",
-      "Kalkere",
-      "Sai Layout",
       "Bhuvaneshwari Nagar",
       "Jai Bheema Nagar",
       "Nagareshwara Nagenahalli",
       "Geddalahalli",
-      "Nandini Layout",
+      "Dodda Banaswadi extension",
+      "Apartment clusters around Ramamurthy Nagar",
     ],
     reviews: [
       "Great experience learning car driving in Ramamurthy Nagar. The trainer was patient and helped me get used to the Ring Road traffic step by step.",
-      "Best driving school near Horamavu. Flexible timings made it easy to fit classes around my work schedule.",
+      "Best driving school near Ramamurthy Nagar Main Road. Flexible timings made it easy to fit classes around my work schedule.",
     ],
     courseTiers: [
       {
@@ -590,7 +1268,7 @@ const locationContent = {
       },
     ],
     aboutDriving:
-      "Ramamurthy Nagar is a densely populated East Bangalore residential zone, framed by the Outer Ring Road on one side and a network of inner layout roads stretching into Horamavu and Avalahalli on the other. Driving here means learning to handle heavy two-wheeler traffic on the Main Road, frequent signal stops at the Ring Road junction, narrow parked-car-lined streets in residential pockets, and calmer BDA layout roads around Avalahalli. Our trainers begin learners on the quieter inner lanes of Bhuvaneshwari Nagar, Sai Layout, and BDA Layout Avalahalli before progressing to the Main Road and Ring Road stretches. This builds solid confidence for both daily commutes and city-wide driving.",
+      "Ramamurthy Nagar is a densely populated East Bangalore residential area, framed by the Outer Ring Road on one side and a network of inner layout roads on the other. Driving here means learning to handle heavy two-wheeler traffic on the Main Road, frequent signal stops at the Ring Road junction, and narrow, parked-car-lined streets inside the residential pockets. Our trainers begin learners on the calmer inner lanes of Bhuvaneshwari Nagar and Jai Bheema Nagar before progressing to the Main Road and Ring Road stretches. This builds solid confidence for both daily commutes and city-wide driving.",
     faqs: [
       {
         q: "How much does a car driving course cost in Ramamurthy Nagar?",
@@ -598,7 +1276,7 @@ const locationContent = {
       },
       {
         q: "Do you provide doorstep pickup in Ramamurthy Nagar?",
-        a: "Yes, we offer pickup and drop across most parts of Ramamurthy Nagar including Main Road, Ring Road, Horamavu, Avalahalli, Kalkere, Sai Layout, Bhuvaneshwari Nagar, and Geddalahalli.",
+        a: "Yes, we offer pickup and drop across most parts of Ramamurthy Nagar including Main Road, Ring Road, Bhuvaneshwari Nagar, Jai Bheema Nagar, and Geddalahalli.",
       },
       {
         q: "How many days does it take to learn car driving in Ramamurthy Nagar?",
@@ -606,7 +1284,7 @@ const locationContent = {
       },
       {
         q: "Can beginners join your driving classes in Ramamurthy Nagar?",
-        a: "Absolutely. Our beginner course in Ramamurthy Nagar is designed for first-time drivers, including residents from Horamavu, Avalahalli, Nagareshwara Nagenahalli, and apartment communities along the Main Road.",
+        a: "Absolutely. Our beginner course in Ramamurthy Nagar is designed for first-time drivers, including residents from Nagareshwara Nagenahalli, Geddalahalli, and apartment communities along the Main Road.",
       },
       {
         q: "Do you help with driving license process for Ramamurthy Nagar residents?",
@@ -619,11 +1297,224 @@ const locationContent = {
         href: "/driving-school-in/banaswadi",
       },
       {
-        text: "Driving School in Thanisandra",
-        href: "/driving-school-in/thanisandra",
+        text: "Driving School in Kasturi Nagar",
+        href: "/driving-school-in/kasturi-nagar",
+      },
+      {
+        text: "Driving School in TC Palya",
+        href: "/driving-school-in/tc-palya",
+      },
+      {
+        text: "Driving School in Horamavu",
+        href: "/driving-school-in/horamavu",
       },
     ],
   },
+
+  "Kasturi Nagar": {
+    region: "EAST BANGALORE",
+    heroTagline: "Learn Car Driving in Kasturi Nagar with Expert Trainers",
+    intro:
+      "Looking for the best car driving school in Kasturi Nagar? InLane offers professional 4-wheeler driving courses in Kasturi Nagar designed for beginners and working professionals. Whether you're near Kasturi Nagar Main Road, HRBR Layout extension, or the Outer Ring Road junction, our certified instructors ensure you learn driving safely and confidently.",
+
+    whyChoose: [
+      "Certified and experienced instructors",
+      "Flexible batch timings (weekdays & weekends)",
+      "Doorstep pickup & drop available",
+      "Training on real Bangalore traffic conditions",
+      "Assistance with driving license process",
+    ],
+
+    courseTiers: {
+      beginner: [
+        "Basics of car control",
+        "Clutch, gear, braking techniques",
+        "Traffic rules and safety",
+      ],
+      intermediate: [
+        "City driving practice",
+        "Parking techniques",
+        "Lane discipline",
+      ],
+      advanced: [
+        "Highway driving",
+        "Night driving",
+        "Defensive driving skills",
+      ],
+    },
+
+    practiceRoutes:
+      "Kasturi Nagar Main Road, Outer Ring Road (ORR) – Kasturi Nagar Stretch, NGEF Layout Roads",
+
+    areasCovered: [
+      "Kasturi Nagar Main Road",
+      "Kasturi Nagar 1st Main & 2nd Main",
+      "HRBR Layout extension",
+      "HBR Layout (Kasturi Nagar side)",
+      "Babusapalya",
+      "Subbayyanapalya",
+      "East of NGEF Layout",
+      "Apartment clusters around Kasturi Nagar",
+    ],
+
+    reviews: [
+      "Great experience learning car driving in Kasturi Nagar. The trainer was patient and helped me build confidence before handling the Outer Ring Road junction.",
+      "Best driving school near Kasturi Nagar Main Road. Flexible timings made it easy to fit classes around my work schedule.",
+    ],
+
+    pricingNote:
+      "Our pricing is affordable and transparent. Contact us to get the latest car driving course fees in Kasturi Nagar based on your requirement.",
+
+    cta: "Start your journey with the top driving school in Kasturi Nagar. Whether you're a beginner or want to improve your skills, InLane has the right course for you.",
+
+    aboutDriving:
+      "Kasturi Nagar is a well-planned East Bangalore residential locality that sits right next to the Outer Ring Road, giving learners exposure to both calm internal layout roads and one of the city's busiest arterial stretches. Driving here means adapting to organized grid-style lanes inside the layout, and then the high-speed, multi-lane ORR traffic at the Kasturi Nagar junction. Our trainers begin learners on the quieter 1st and 2nd Main stretches before gradually introducing the Main Road and ORR merging points. This builds practical confidence for both local and city-wide driving.",
+
+    faqs: [
+      {
+        q: "How much does a car driving course cost in Kasturi Nagar?",
+        a: "Fees for our car driving classes in Kasturi Nagar vary depending on the course type and duration. Contact us for exact pricing.",
+      },
+      {
+        q: "Do you provide doorstep pickup in Kasturi Nagar?",
+        a: "Yes, we offer pickup and drop across most parts of Kasturi Nagar including Main Road, 1st Main, 2nd Main, HRBR Layout extension, Babusapalya, and Subbayyanapalya.",
+      },
+      {
+        q: "How many days does it take to learn car driving in Kasturi Nagar?",
+        a: "Typically, 15–30 days depending on the course and learner's progress. Most of our Kasturi Nagar students complete training within a month.",
+      },
+      {
+        q: "Can beginners join your driving classes in Kasturi Nagar?",
+        a: "Absolutely. Our beginner course in Kasturi Nagar is designed for first-time drivers, including residents from HBR Layout (Kasturi Nagar side), Subbayyanapalya, and apartment communities around the Main Road.",
+      },
+      {
+        q: "Do you help with driving license process for Kasturi Nagar residents?",
+        a: "Yes, we assist learners from Kasturi Nagar and surrounding localities with the complete driving license application process, including RTO documentation and test preparation.",
+      },
+    ],
+
+    internalLinks: [
+      {
+        text: "Driving School in Banaswadi",
+        href: "/driving-school-in/banaswadi",
+      },
+      {
+        text: "Driving School in Baiyappanahalli",
+        href: "/driving-school-in/baiyappanahalli",
+      },
+      {
+        text: "Driving School in Vivekananda Road",
+        href: "/driving-school-in/swami-vivekananda-road",
+      },
+      {
+        text: "Driving School in Indira Nagar",
+        href: "/driving-school-in/indiranagar",
+      },
+    ],
+  },
+
+  Horamavu: {
+    region: "NORTH-EAST BANGALORE",
+    heroTagline: "Learn Car Driving in Horamavu with Expert Trainers",
+    intro:
+      "Looking for the best car driving school in Horamavu? InLane offers professional 4-wheeler driving courses in Horamavu designed for beginners and working professionals. Whether you're near Horamavu Main Road, Horamavu Agara, or Horamavu Lake, our certified instructors ensure you learn driving safely and confidently.",
+
+    whyChoose: [
+      "Certified and experienced instructors",
+      "Flexible batch timings (weekdays & weekends)",
+      "Doorstep pickup & drop available",
+      "Training on real Bangalore traffic conditions",
+      "Assistance with driving license process",
+    ],
+
+    courseTiers: {
+      beginner: [
+        "Basics of car control",
+        "Clutch, gear, braking techniques",
+        "Traffic rules and safety",
+      ],
+      intermediate: [
+        "City driving practice",
+        "Parking techniques",
+        "Lane discipline",
+      ],
+      advanced: [
+        "Highway driving",
+        "Night driving",
+        "Defensive driving skills",
+      ],
+    },
+
+    practiceRoutes:
+      "Horamavu Main Road, Outer Ring Road (ORR), Horamavu-Agara Road",
+
+    areasCovered: [
+      "Horamavu Main Road",
+      "Horamavu Agara",
+      "Horamavu Lake area",
+      "Sai Layout",
+      "Kalkere (Horamavu side)",
+      "Bhattarahalli (Horamavu side)",
+      "Nandini Layout (Horamavu)",
+      "Apartment clusters around Horamavu",
+    ],
+
+    reviews: [
+      "Great experience learning car driving in Horamavu. The trainer was patient and helped me gain confidence on the narrow layout roads before moving to the main road.",
+      "Best driving school near Horamavu Agara. Flexible timings made it easy to fit classes around my work schedule.",
+    ],
+
+    pricingNote:
+      "Our pricing is affordable and transparent. Contact us to get the latest car driving course fees in Horamavu based on your requirement.",
+
+    cta: "Start your journey with the top driving school in Horamavu. Whether you're a beginner or want to improve your skills, InLane has the right course for you.",
+
+    aboutDriving:
+      "Horamavu is a rapidly developing North-East Bangalore locality with a mix of older village lanes, newer layout roads, and large apartment communities. Driving here means navigating narrow inner streets around Horamavu Agara and Sai Layout, along with the busier Horamavu Main Road that connects toward Banaswadi and Hennur. Our trainers begin learners on the calmer layout roads before progressing to the main road traffic. This step-by-step approach helps Horamavu students handle both residential and arterial driving conditions with confidence.",
+
+    faqs: [
+      {
+        q: "How much does a car driving course cost in Horamavu?",
+        a: "Fees for our car driving classes in Horamavu vary depending on the course type and duration. Contact us for exact pricing.",
+      },
+      {
+        q: "Do you provide doorstep pickup in Horamavu?",
+        a: "Yes, we offer pickup and drop across most parts of Horamavu including Horamavu Main Road, Horamavu Agara, Sai Layout, Nandini Layout, and areas near Horamavu Lake.",
+      },
+      {
+        q: "How many days does it take to learn car driving in Horamavu?",
+        a: "Typically, 15–30 days depending on the course and learner's progress. Most of our Horamavu students complete training within a month.",
+      },
+      {
+        q: "Can beginners join your driving classes in Horamavu?",
+        a: "Absolutely. Our beginner course in Horamavu is designed for first-time drivers, including residents from Sai Layout, Nandini Layout, and apartment communities around Horamavu Agara.",
+      },
+      {
+        q: "Do you help with driving license process for Horamavu residents?",
+        a: "Yes, we assist learners from Horamavu and surrounding localities with the complete driving license application process, including RTO documentation and test preparation.",
+      },
+    ],
+
+    internalLinks: [
+      {
+        text: "Driving School in Ramamurthy Nagar",
+        href: "/driving-school-in/ramamurthy-nagar",
+      },
+      {
+        text: "Driving School in Banaswadi",
+        href: "/driving-school-in/banaswadi",
+      },
+      {
+        text: "Driving School in Thanisandra",
+        href: "/driving-school-in/thanisandra",
+      },
+      {
+        text: "Driving School in TC Palya",
+        href: "/driving-school-in/tc-palya",
+      },
+    ],
+  },
+
   Banaswadi: {
     region: "NORTH-EAST BANGALORE",
     heroTagline: "Learn Car Driving in Banaswadi with Expert Trainers",
@@ -715,8 +1606,16 @@ const locationContent = {
         href: "/driving-school-in/ramamurthy-nagar",
       },
       {
-        text: "Driving School in Thanisandra",
-        href: "/driving-school-in/thanisandra",
+        text: "Driving School in Kasturi Nagar",
+        href: "/driving-school-in/kasturi-nagar",
+      },
+      {
+        text: "Driving School in Horamavu",
+        href: "/driving-school-in/horamavu",
+      },
+      {
+        text: "Driving School in Baiyappanahalli",
+        href: "/driving-school-in/baiyappanahalli",
       },
     ],
   },
@@ -805,6 +1704,14 @@ const locationContent = {
       },
     ],
     internalLinks: [
+      {
+        text: "Driving School in Hebbal",
+        href: "/driving-school-in/hebbal",
+      },
+      {
+        text: "Driving School in Horamavu",
+        href: "/driving-school-in/horamavu",
+      },
       {
         text: "Driving School in Ramamurthy Nagar",
         href: "/driving-school-in/ramamurthy-nagar",
@@ -907,6 +1814,10 @@ const locationContent = {
       {
         text: "Driving School in Malleshwaram",
         href: "/driving-school-in/malleshwaram",
+      },
+      {
+        text: "Driving School in Thanisandra",
+        href: "/driving-school-in/thanisandra",
       },
     ],
   },
@@ -1877,7 +2788,7 @@ const locationContent = {
     region: "SOUTH-EAST BANGALORE",
     heroTagline: "Learn Car Driving in HSR Layout with Expert Trainers",
     intro:
-      "Looking for the best car driving school in HSR Layout? InLane offers professional 4-wheeler driving courses in HSR Layout designed for beginners and working professionals. Whether you're near Agara Lake, Sector 2, or HSR Sector 7, our certified instructors ensure you learn to drive safely and confidently.",
+      "Looking for the best car driving school in HSR Layout? InLane offers professional 4-wheeler driving courses in HSR Layout designed for beginners and working professionals. Whether you're near Agara Lake, Sector 2, or Sarjapur Road, our certified instructors ensure you learn driving safely and confidently.",
     whyChoose: [
       "Certified and experienced instructors",
       "Flexible batch timings (weekdays & weekends)",
@@ -1894,10 +2805,10 @@ const locationContent = {
       "HSR Sector 6",
       "HSR Sector 7",
       "Agara",
-      "Agara Lake area",
-      "Somasundarapalya",
-      "27th Main stretch",
-      "Apartment clusters across HSR Layout",
+      "BTM Layout",
+      "Koramangala",
+      "Bellandur",
+      "Sarjapur Road",
     ],
     reviews: [
       "Great experience learning car driving in HSR Layout. The trainer was patient and professional.",
@@ -1933,7 +2844,7 @@ const locationContent = {
       },
     ],
     aboutDriving:
-      "HSR Layout is a well-planned South-East Bangalore neighborhood laid out in sectors, with wide internal roads that are ideal for beginners. However, the perimeter roads connecting to Agara, the Outer Ring Road, and Sarjapur Road see heavy peak-hour traffic. Our trainers start you on the quieter sector roads before easing you into the busier junctions around Agara Lake and the main arterial stretches. This makes HSR Layout one of the more beginner-friendly areas to learn driving in Bangalore.",
+      "HSR Layout is a well-planned South-East Bangalore neighborhood laid out in sectors, with wide internal roads that are ideal for beginners. However, the perimeter roads connecting to Agara, Sarjapur Road, and the Outer Ring Road see heavy peak-hour traffic. Our trainers start you on the quieter sector roads before easing you into the busier junctions around Agara Lake and the main arterial stretches. This makes HSR Layout one of the more beginner-friendly areas to learn driving in Bangalore.",
     faqs: [
       {
         q: "How much does a car driving course cost in HSR Layout?",
@@ -1941,7 +2852,7 @@ const locationContent = {
       },
       {
         q: "Do you provide doorstep pickup in HSR Layout?",
-        a: "Yes, we offer pickup and drop across most parts of HSR Layout including all sectors (1, 2, 3, 4, 6, 7), Agara, Somasundarapalya, and areas along 27th Main.",
+        a: "Yes, we offer pickup and drop across most parts of HSR Layout including Sector 1, Sector 2, Agara, and nearby areas like BTM Layout and Koramangala.",
       },
       {
         q: "How many days does it take to learn car driving in HSR Layout?",
@@ -1949,17 +2860,21 @@ const locationContent = {
       },
       {
         q: "Can beginners join your driving classes in HSR Layout?",
-        a: "Absolutely. Our beginner course in HSR Layout is designed for first-time drivers, including residents from Agara, Somasundarapalya, and apartment communities across the sectors.",
+        a: "Absolutely. Our beginner course in HSR Layout is designed for first-time drivers, including residents from Bellandur and Sarjapur Road.",
       },
       {
-        q: "Do you help with driving license process for HSR Layout residents?",
-        a: "Yes, we assist learners from HSR Layout and surrounding localities with the complete driving license application process, including RTO documentation and test preparation.",
+        q: "Do you help with the driving license process for HSR Layout residents?",
+        a: "Yes, we assist learners from HSR Layout, Koramangala, and surrounding areas with the complete driving license application process.",
       },
     ],
     internalLinks: [
       {
         text: "Driving School in Koramangala",
         href: "/driving-school-in/koramangala",
+      },
+      {
+        text: "Driving School in BTM Layout",
+        href: "/driving-school-in/btm-layout",
       },
       {
         text: "Driving School in Sarjapur Road",
@@ -1985,7 +2900,7 @@ const locationContent = {
       "Assistance with driving license process",
     ],
 
-    courses: {
+    courseTiers: {
       beginner: [
         "Basics of car control",
         "Clutch, gear, braking techniques",
@@ -2002,6 +2917,10 @@ const locationContent = {
         "Defensive driving skills",
       ],
     },
+
+    practiceRoutes: [
+      "80 Feet Road, Inner Ring Road, Sony World Junction, Forum Mall area",
+    ],
 
     areasCovered: [
       "Koramangala 1st Block to 8th Block",
@@ -2025,7 +2944,7 @@ const locationContent = {
 
     cta: "Start your journey with the top driving school in Koramangala. Whether you're a beginner or want to improve your skills, InLane has the right course for you.",
 
-    about:
+    aboutDriving:
       "Koramangala is one of Bangalore's most vibrant commercial and residential neighborhoods, home to countless startups, cafes, and shopping hubs. Driving here means handling constant cab movement, tight parallel parking, pedestrian-heavy stretches near Forum Mall, and busy signal junctions along 80 Feet Road and Inner Ring Road. Our trainers begin learners on the calmer inner block streets before introducing the main commercial stretches. This prepares Koramangala students — especially startup professionals — for real daily-driving conditions in one of the city's busiest zones.",
 
     faqs: [
@@ -2086,7 +3005,7 @@ const locationContent = {
       "Assistance with driving license process",
     ],
 
-    courses: {
+    courseTiers: {
       beginner: [
         "Basics of car control",
         "Clutch, gear, braking techniques",
@@ -2103,6 +3022,8 @@ const locationContent = {
         "Defensive driving skills",
       ],
     },
+
+    practiceRoutes: "Sarjapur Main Road, Outer Ring Road (ORR), Haralur Road",
 
     areasCovered: [
       "Bellandur",
@@ -2127,7 +3048,7 @@ const locationContent = {
 
     cta: "Start your journey with the top driving school on Sarjapur Road. Whether you're a beginner or want to improve your skills, InLane has the right course for you.",
 
-    about:
+    aboutDriving:
       "Sarjapur Road is one of East Bangalore's fastest-growing IT and residential corridors, stretching from the Outer Ring Road junction at Bellandur all the way to Sarjapur town. Driving here means handling high-speed ORR merges near Bellandur, heavy peak-hour IT traffic, and narrower inner lanes feeding into large apartment communities. Our trainers begin learners on the calmer internal layout roads of Kasavanahalli and Haralur before introducing the main Sarjapur Road stretch and ORR. This prepares Sarjapur Road students — especially IT professionals — for the demanding tech-corridor commute.",
 
     faqs: [
@@ -2165,12 +3086,12 @@ const locationContent = {
         href: "/driving-school-in/hsr-layout",
       },
       {
-        text: "Driving School in Koramangala",
-        href: "/driving-school-in/koramangala",
-      },
-      {
         text: "Driving School in Electronic City",
         href: "/driving-school-in/electronic-city",
+      },
+      {
+        text: "Driving School in Marathahalli",
+        href: "/driving-school-in/marathahalli",
       },
     ],
   },
@@ -2188,7 +3109,7 @@ const locationContent = {
       "Assistance with driving license process",
     ],
 
-    courses: {
+    courseTiers: {
       beginner: [
         "Basics of car control",
         "Clutch, gear, braking techniques",
@@ -2205,6 +3126,8 @@ const locationContent = {
         "Defensive driving skills",
       ],
     },
+
+    practiceRoutes: "Electronic City Flyover, Hosur Road, Neeladri Road",
 
     areasCovered: [
       "Electronic City Phase 1",
@@ -2229,7 +3152,7 @@ const locationContent = {
 
     cta: "Start your journey with the top driving school in Electronic City. Whether you're a beginner or want to improve your skills, InLane has the right course for you.",
 
-    about:
+    aboutDriving:
       "Electronic City is one of Bangalore's largest tech hubs, with the Electronic City Elevated Expressway, Hosur Road, and a dense network of internal tech-park roads. Driving here means learning to handle expressway-speed merging, heavy cab and shuttle traffic, and tight campus-entrance navigation. Our trainers begin learners on the quieter stretches near Neeladri Nagar and Hebbagodi before introducing Hosur Road and the elevated expressway entry points. This prepares Electronic City students — especially IT professionals — for real daily tech-corridor driving.",
 
     faqs: [
@@ -2263,12 +3186,16 @@ const locationContent = {
     ],
     internalLinks: [
       {
-        text: "Driving School in HSR Layout",
-        href: "/driving-school-in/hsr-layout",
+        text: "Driving School in Bannerghatta Road",
+        href: "/driving-school-in/bannerghatta-road",
       },
       {
-        text: "Driving School in Koramangala",
-        href: "/driving-school-in/koramangala",
+        text: "Driving School in Begur",
+        href: "/driving-school-in/begur",
+      },
+      {
+        text: "Driving School in Kudlu",
+        href: "/driving-school-in/kudlu",
       },
       {
         text: "Driving School in Sarjapur Road",
@@ -2280,7 +3207,7 @@ const locationContent = {
     region: "SOUTH / HOSUR ROAD BELT",
     heroTagline: "Learn Car Driving in Kudlu Gate with Expert Trainers",
     intro:
-      "Looking for the best car driving school in Kudlu Gate? InLane offers professional 4-wheeler driving courses in Kudlu Gate designed for beginners and working professionals. Whether you're near Kudlu Gate Junction, Kudlu Village, or Singasandra, our certified instructors ensure you learn to drive safely and confidently.",
+      "Looking for the best car driving school in Kudlu Gate? InLane offers professional 4-wheeler driving courses in Kudlu Gate designed for beginners and working professionals. Whether you're near Kudlu Gate Junction, Hosa Road, or Singasandra, our certified instructors ensure you learn driving safely and confidently.",
 
     whyChoose: [
       "Certified and experienced instructors",
@@ -2290,7 +3217,7 @@ const locationContent = {
       "Assistance with driving license process",
     ],
 
-    courses: {
+    courseTiers: {
       beginner: [
         "Basics of car control",
         "Clutch, gear, braking techniques",
@@ -2308,24 +3235,21 @@ const locationContent = {
       ],
     },
 
+    practiceRoutes: "Hosur Road (NH44), Kudlu Main Road, Begur Road",
+
     areasCovered: [
       "Kudlu Gate Junction",
       "Kudlu Main Road",
-      "Kudlu Village",
-      "Kudlu Lake area",
       "Parappana Agrahara",
       "Singasandra",
       "Hosa Road",
       "Muneshwara Nagar",
       "Vinayaka Layout",
-      "Gowdanapalya",
-      "Sompura Gate",
-      "Koli Farm Gate",
-      "Akshayanagar",
+      "Hosur Road stretch near Kudlu Gate",
     ],
 
     reviews: [
-      "Great experience learning car driving in Kudlu Gate. The trainer was patient and helped me handle the Hosur Road traffic and Kudlu Village inner lanes confidently.",
+      "Great experience learning car driving in Kudlu Gate. The trainer was patient and helped me handle the Hosur Road traffic confidently.",
       "Best driving school near Singasandra. Flexible timings made it easy to fit classes around my work schedule.",
     ],
 
@@ -2334,8 +3258,8 @@ const locationContent = {
 
     cta: "Start your journey with the top driving school in Kudlu Gate. Whether you're a beginner or want to improve your skills, InLane has the right course for you.",
 
-    about:
-      "Kudlu Gate and the surrounding Kudlu belt form a key South-East Bangalore zone on Hosur Road, with constant heavy-vehicle traffic flowing between Electronic City and Central Bangalore. Learning to drive here means handling high-speed highway merges, busy Hosur Road service lanes, and narrow residential lanes around Kudlu Village and Kudlu Lake. Our trainers begin learners on the calmer inner stretches near Kudlu Village, Gowdanapalya, and Singasandra before moving to the main junction and Hosur Road. This prepares Kudlu Gate students for both everyday city driving and the highway-style conditions on Hosur Road.",
+    aboutDriving:
+      "Kudlu Gate is a key junction on Hosur Road, with constant heavy-vehicle traffic flowing between Electronic City and Central Bangalore. Learning to drive here means handling high-speed highway merges, frequent signal stops, and the busy Hosur Road service lanes. Our trainers begin with quieter internal stretches near Singasandra and Parappana Agrahara before moving to the main junction. This prepares Kudlu Gate learners for both everyday city driving and the highway-style conditions on Hosur Road.",
 
     faqs: [
       {
@@ -2346,7 +3270,7 @@ const locationContent = {
       {
         question: "Do you provide doorstep pickup in Kudlu Gate?",
         answer:
-          "Yes, we offer pickup and drop across most parts of Kudlu Gate including Kudlu Main Road, Kudlu Village, Parappana Agrahara, Singasandra, Hosa Road, Muneshwara Nagar, and areas near Kudlu Lake.",
+          "Yes, we offer pickup and drop across most parts of Kudlu Gate including Parappana Agrahara, Singasandra, Hosa Road, Muneshwara Nagar, and areas along Kudlu Main Road.",
       },
       {
         question:
@@ -2357,7 +3281,7 @@ const locationContent = {
       {
         question: "Can beginners join your driving classes in Kudlu Gate?",
         answer:
-          "Absolutely. Our beginner course in Kudlu Gate is designed for first-time drivers, including residents from Kudlu Village, Vinayaka Layout, Akshayanagar, and localities along the Hosur Road stretch.",
+          "Absolutely. Our beginner course in Kudlu Gate is designed for first-time drivers, including residents from Vinayaka Layout, Hosa Road, and localities along the Hosur Road stretch.",
       },
       {
         question:
@@ -2371,8 +3295,113 @@ const locationContent = {
         text: "Driving School in Begur",
         href: "/driving-school-in/begur",
       },
+      {
+        text: "Driving School in BTM Layout",
+        href: "/driving-school-in/btm-layout",
+      },
+      {
+        text: "Driving School in Kudlu",
+        href: "/driving-school-in/kudlu",
+      },
     ],
   },
+
+  Kudlu: {
+    region: "SOUTH / HOSUR ROAD BELT",
+    heroTagline: "Learn Car Driving in Kudlu with Expert Trainers",
+    intro:
+      "Looking for the best car driving school in Kudlu? InLane offers professional 4-wheeler driving courses in Kudlu designed for beginners and working professionals. Whether you're near Kudlu Village, Kudlu Lake, or Akshayanagar, our certified instructors ensure you learn driving safely and confidently.",
+
+    whyChoose: [
+      "Certified and experienced instructors",
+      "Flexible batch timings (weekdays & weekends)",
+      "Doorstep pickup & drop available",
+      "Training on real Bangalore traffic conditions",
+      "Assistance with driving license process",
+    ],
+
+    courseTiers: {
+      beginner: [
+        "Basics of car control",
+        "Clutch, gear, braking techniques",
+        "Traffic rules and safety",
+      ],
+      intermediate: [
+        "City driving practice",
+        "Parking techniques",
+        "Lane discipline",
+      ],
+      advanced: [
+        "Highway driving",
+        "Night driving",
+        "Defensive driving skills",
+      ],
+    },
+
+    practiceRoutes: "Haralur Road, Singasandra Main Road, Hosa Road",
+    areasCovered: [
+      "Kudlu Village",
+      "Kudlu Main Road",
+      "Kudlu Lake area",
+      "Gowdanapalya",
+      "AECS Layout (Kudlu)",
+      "Sompura Gate",
+      "Koli Farm Gate",
+      "Akshayanagar",
+    ],
+
+    reviews: [
+      "Great experience learning car driving in Kudlu. The trainer was patient and made me comfortable on the narrow inner roads before taking on the main junctions.",
+      "Best driving school near Kudlu Main Road. Flexible timings made it easy to fit classes around my work schedule.",
+    ],
+
+    pricingNote:
+      "Our pricing is affordable and transparent. Contact us to get the latest car driving course fees in Kudlu based on your requirement.",
+
+    cta: "Start your journey with the top driving school in Kudlu. Whether you're a beginner or want to improve your skills, InLane has the right course for you.",
+
+    aboutDriving:
+      "Kudlu is a predominantly residential pocket in South-East Bangalore, with a mix of narrow village roads, newer apartment complexes, and connecting roads to Hosur Road. The tight inner streets make it an ideal area for beginners to build basic control before tackling main-road traffic. Our trainers start learners on calmer stretches near Kudlu Village and Kudlu Lake before progressing to the busier Kudlu Main Road. This step-by-step approach suits first-time drivers and working professionals from the area.",
+
+    faqs: [
+      {
+        q: "How much does a car driving course cost in Kudlu?",
+        a: "Fees for our car driving classes in Kudlu vary depending on the course type and duration. Contact us for exact pricing.",
+      },
+      {
+        q: "Do you provide doorstep pickup in Kudlu?",
+        a: "Yes, we offer pickup and drop across most parts of Kudlu including Kudlu Village, Gowdanapalya, Sompura Gate, Koli Farm Gate, and areas near Kudlu Lake.",
+      },
+      {
+        q: "How many days does it take to learn car driving in Kudlu?",
+        a: "Typically, 15–30 days depending on the course and learner's progress. Most of our Kudlu students complete training within a month.",
+      },
+      {
+        q: "Can beginners join your driving classes in Kudlu?",
+        a: "Absolutely. Our beginner course in Kudlu is designed for first-time drivers, including residents from AECS Layout, Akshayanagar, and localities along Kudlu Main Road.",
+      },
+      {
+        q: "Do you help with driving license process for Kudlu residents?",
+        a: "Yes, we assist learners from Kudlu and surrounding localities with the complete driving license application process, including RTO documentation and test preparation.",
+      },
+    ],
+
+    internalLinks: [
+      {
+        text: "Driving School in Kudlu Gate",
+        href: "/driving-school-in/kudlu-gate",
+      },
+      {
+        text: "Driving School in BTM Layout",
+        href: "/driving-school-in/btm-layout",
+      },
+      {
+        text: "Driving School in Begur",
+        href: "/driving-school-in/begur",
+      },
+    ],
+  },
+
   Begur: {
     region: "SOUTH / HOSUR ROAD BELT",
     heroTagline: "Learn Car Driving in Begur with Expert Trainers",
@@ -2387,7 +3416,7 @@ const locationContent = {
       "Assistance with driving license process",
     ],
 
-    courses: {
+    courseTiers: {
       beginner: [
         "Basics of car control",
         "Clutch, gear, braking techniques",
@@ -2405,6 +3434,8 @@ const locationContent = {
       ],
     },
 
+    practiceRoutes: "Begur Main Road, Begur-Koppa Road, Hulimavu-Begur Road",
+
     areasCovered: [
       "Begur Village",
       "Begur Main Road",
@@ -2414,8 +3445,6 @@ const locationContent = {
       "Kodichikkanahalli",
       "Garvebhavipalya",
       "Roopena Agrahara",
-      "Bommanahalli (Begur side)",
-      "Apartment clusters around Begur",
     ],
 
     reviews: [
@@ -2428,8 +3457,8 @@ const locationContent = {
 
     cta: "Start your journey with the top driving school in Begur. Whether you're a beginner or want to improve your skills, InLane has the right course for you.",
 
-    about:
-      "Begur is a historic South Bangalore locality that blends old village roads with fast-growing residential pockets along Hosur Road, extending toward Hongasandra and Bommanahalli. Driving here involves handling narrow, older streets near Begur Lake and the Begur temple area, along with busier stretches around Hongasandra and Begur Main Road. Our trainers begin learners on the quieter village roads before easing them into main-road traffic. This mix gives Begur students practical exposure to both old-Bangalore and modern traffic conditions.",
+    aboutDriving:
+      "Begur is a historic South Bangalore locality that blends old village roads with fast-growing residential pockets along Hosur Road. Driving here involves handling narrow, older streets near Begur Lake and the Begur temple area, along with busier stretches around Hongasandra and Begur Main Road. Our trainers begin learners on the quieter village roads before easing them into main-road traffic. This mix gives Begur students practical exposure to both old-Bangalore and modern traffic conditions.",
 
     faqs: [
       {
@@ -2438,7 +3467,7 @@ const locationContent = {
       },
       {
         q: "Do you provide doorstep pickup in Begur?",
-        a: "Yes, we offer pickup and drop across most parts of Begur including Begur Village, Begur Main Road, Hongasandra, Yelenahalli, Kodichikkanahalli, Garvebhavipalya, and areas near Begur Lake.",
+        a: "Yes, we offer pickup and drop across most parts of Begur including Begur Village, Hongasandra, Yelenahalli, Kodichikkanahalli, and areas near Begur Lake.",
       },
       {
         q: "How many days does it take to learn car driving in Begur?",
@@ -2446,17 +3475,22 @@ const locationContent = {
       },
       {
         q: "Can beginners join your driving classes in Begur?",
-        a: "Absolutely. Our beginner course in Begur is designed for first-time drivers, including residents from Garvebhavipalya, Roopena Agrahara, Bommanahalli (Begur side), and localities along Begur Main Road.",
+        a: "Absolutely. Our beginner course in Begur is designed for first-time drivers, including residents from Garvebhavipalya, Roopena Agrahara, and localities along Begur Main Road.",
       },
       {
         q: "Do you help with driving license process for Begur residents?",
         a: "Yes, we assist learners from Begur and surrounding localities with the complete driving license application process, including RTO documentation and test preparation.",
       },
     ],
+
     internalLinks: [
       {
         text: "Driving School in Kudlu Gate",
         href: "/driving-school-in/kudlu-gate",
+      },
+      {
+        text: "Driving School in Kudlu",
+        href: "/driving-school-in/kudlu",
       },
     ],
   },
