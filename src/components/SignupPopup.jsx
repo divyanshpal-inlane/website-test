@@ -14,6 +14,10 @@ import {
 import { APIProvider } from "@vis.gl/react-google-maps";
 import LocationSelector from "./locationSelector";
 import { supabase } from "../supabaseClient";
+import {
+  resolveUTMsForSubmission,
+  buildLeadSource,
+} from "../utils/utmTracking";
 
 // Fetch country codes
 const fetchCountryCodes = async () => {
@@ -127,10 +131,9 @@ const SignupPopup = () => {
 
       setIsSubmitting(true);
 
-      // Debug: Log UTM params at submission time
-      console.log("🔍 DEBUG: utmParams at form submission:");
       console.log(
-        "🔍 DEBUG: utm_source: website, utm_medium: popup, utm_campaign: signup_popup, utm_content: homepage_popup",
+        "🔍 DEBUG: utmParams at form submission:",
+        resolveUTMsForSubmission(),
       );
 
       try {
@@ -144,20 +147,7 @@ const SignupPopup = () => {
         //   utm_campaign: "signup_popup",
         //   utm_content: "homepage_popup",
         // };
-        const params = new URLSearchParams(window.location.search);
-
-        const stored = JSON.parse(localStorage.getItem("utm_params") || "{}");
-
-        const utmParams = {
-          utm_source:
-            params.get("utm_source") || stored.utm_source || "website",
-          utm_medium: params.get("utm_medium") || stored.utm_medium || "popup",
-          utm_campaign:
-            params.get("utm_campaign") || stored.utm_campaign || "signup_popup",
-          utm_content:
-            params.get("utm_content") || stored.utm_content || "homepage_popup",
-        };
-
+        const utmParams = resolveUTMsForSubmission();
         console.log("📤 Submitting form with UTM parameters:", utmParams);
 
         const payload = {
@@ -167,14 +157,14 @@ const SignupPopup = () => {
           license: formData.license === "yes" ? "yes" : "no",
           locality: `${formData?.city || ""}, ${formData?.area || ""}`,
           adName: "Popup Signup Form",
-          leadSource: `Website-${utmParams.utm_source}`,
+          leadSource: buildLeadSource(utmParams, "popup"),
         };
 
         console.log("📊 Google Sheets Payload:", payload);
 
         // Cratio payload mirrors Signup.jsx: spread utmParams first, then payload fields
         const cratioPayload = {
-          ...utmParams,
+          ...utmParams, // includes both last-touch and first_* fields
           ...payload,
           timestamp: new Date().toISOString(),
         };

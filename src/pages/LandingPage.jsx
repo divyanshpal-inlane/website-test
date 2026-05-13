@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import Testimonial from "../components/Testimonial";
 import Rocket from "../components/SVGs/Rocket";
 import { Helmet } from "react-helmet-async";
+import { captureUTMsOnLoad } from "../utils/utmTracking";
 
 const LandingPage = () => {
   const theme = useTheme();
@@ -49,21 +50,14 @@ const LandingPage = () => {
     });
 
     // Capture URL parameters
+    captureUTMsOnLoad();
+
+    // Capture URL parameters for query string
     const params = new URLSearchParams(window.location.search);
     const result = {};
+
     for (const [key, value] of params.entries()) {
       result[key] = value;
-    }
-
-    if (result.utm_source) {
-      localStorage.setItem(
-        "utm_params",
-        JSON.stringify({
-          utm_source: result.utm_source,
-          utm_medium: result.utm_medium,
-          utm_campaign: result.utm_campaign,
-        }),
-      );
     }
 
     // Build query string

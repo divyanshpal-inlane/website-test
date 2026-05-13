@@ -28,6 +28,10 @@ import { useLocation } from "react-router-dom";
 import LocationSelector from "../components/locationSelector";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { supabase } from "../supabaseClient";
+import {
+  resolveUTMsForSubmission,
+  buildLeadSource,
+} from "../utils/utmTracking";
 
 // Fetch country codes and flags
 const fetchCountryCodes = async () => {
@@ -204,90 +208,6 @@ const Signup = () => {
         : iconStyles.large;
   }, [isSmallScreen, isMediumScreen, iconStyles]);
 
-  // Extract UTM source from URL params or detect from referrer
-  const [queryParams, setQueryParams] = useState({});
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const result = {};
-
-    for (const [key, value] of params.entries()) {
-      result[key] = value;
-    }
-
-    // If no UTM parameters in URL, try to detect from referrer
-    if (!result.utm_source && !result.utm_medium && !result.utm_campaign) {
-      const referrer = document.referrer;
-
-      if (referrer) {
-        try {
-          const referrerUrl = new URL(referrer);
-          const referrerHostname = referrerUrl.hostname.toLowerCase();
-
-          // Detect Google
-          if (referrerHostname.includes("google")) {
-            result.utm_source = "google";
-            result.utm_medium = "organic";
-            result.utm_campaign = "seo";
-          }
-          // Detect Facebook
-          else if (
-            referrerHostname.includes("facebook") ||
-            referrerHostname.includes("fb.com")
-          ) {
-            result.utm_source = "facebook";
-            result.utm_medium = "social";
-            result.utm_campaign = "organic";
-          }
-          // Detect Instagram
-          else if (referrerHostname.includes("instagram")) {
-            result.utm_source = "instagram";
-            result.utm_medium = "social";
-            result.utm_campaign = "organic";
-          }
-          // Detect LinkedIn
-          else if (referrerHostname.includes("linkedin")) {
-            result.utm_source = "linkedin";
-            result.utm_medium = "social";
-            result.utm_campaign = "organic";
-          }
-          // Detect Twitter/X
-          else if (
-            referrerHostname.includes("twitter") ||
-            referrerHostname.includes("t.co")
-          ) {
-            result.utm_source = "twitter";
-            result.utm_medium = "social";
-            result.utm_campaign = "organic";
-          }
-          // Other referrers
-          else {
-            result.utm_source = referrerHostname;
-            result.utm_medium = "referral";
-            result.utm_campaign = "organic";
-          }
-        } catch (error) {
-          console.warn("Error parsing referrer:", error);
-        }
-      } else {
-        // No referrer = direct traffic
-        result.utm_source = "direct";
-        result.utm_medium = "none";
-        result.utm_campaign = "direct";
-      }
-    }
-
-    setQueryParams(result);
-
-    // Console log for debugging UTM parameters
-    console.log("=== UTM Tracking Debug ===");
-    console.log("All Query Parameters:", result);
-    console.log("UTM Source:", result.utm_source || "Not provided");
-    console.log("UTM Medium:", result.utm_medium || "Not provided");
-    console.log("UTM Campaign:", result.utm_campaign || "Not provided");
-    console.log("Referrer:", document.referrer || "No referrer");
-    console.log("========================");
-  }, [location.search]);
-
   // Load country codes on component mount
   useEffect(() => {
     let isMounted = true;
@@ -391,8 +311,11 @@ const Signup = () => {
       e.preventDefault();
       if (isSubmitting) return;
 
-      // Debug: Log queryParams at submission time
-      console.log("🔍 DEBUG: queryParams at form submission:", queryParams);
+      // Debug: Log utmParams at submission time
+      console.log(
+        "🔍 DEBUG: utmParams at form submission:",
+        resolveUTMsForSubmission(),
+      );
       console.log("🔍 DEBUG: location.search:", location.search);
 
       // Validation
@@ -431,7 +354,7 @@ const Signup = () => {
         setIsSubmitting(false);
       }
     },
-    [formData, isSubmitting, isPhoneValid, navigate, queryParams],
+    [formData, isSubmitting, isPhoneValid, navigate],
   );
 
   function getOrCreateClientId() {
@@ -447,79 +370,77 @@ const Signup = () => {
   }
 
   // Optimized form submission function
-  const submitToGoogleSheets = useCallback(
-    async (formData) => {
-      try {
-        console.log("📤 Submitting form with UTM parameters:", queryParams);
+  const submitToGoogleSheets = useCallback(async (formData) => {
+    try {
+      const utmParams = resolveUTMsForSubmission();
+      console.log("📤 Submitting form with UTM parameters:", utmParams);
 
-        const googleSheetsUrl =
-          "https://script.google.com/macros/s/AKfycbz45poihO1GSt_f-UxHHWltKWHh8mDNyaXPcFzbIURMvTVKj1qPn9STBILUaMiGme7r/exec";
-        const payload = {
-          email: formData.email,
-          name: formData.name,
-          phone: `${formData.countryCode}${formData.phone}`,
-          license: formData.license === "yes" ? "yes" : "no",
-          locality: `${formData?.city || ""}, ${formData?.area || ""}`,
-          marketingConsent: formData.marketingConsent ? "yes" : "no",
-          adName: "Signup Form",
-          leadSource: `Website-${queryParams.utm_source || "Direct"}`,
-        };
+      const googleSheetsUrl =
+        "https://script.google.com/macros/s/AKfycbz45poihO1GSt_f-UxHHWltKWHh8mDNyaXPcFzbIURMvTVKj1qPn9STBILUaMiGme7r/exec";
+      const payload = {
+        email: formData.email,
+        name: formData.name,
+        phone: `${formData.countryCode}${formData.phone}`,
+        license: formData.license === "yes" ? "yes" : "no",
+        locality: `${formData?.city?.label || ""}, ${formData?.area?.label || ""}`,
+        marketingConsent: formData.marketingConsent ? "yes" : "no",
+        adName: "Signup Form",
+        leadSource: buildLeadSource(utmParams, "landing"),
+      };
 
-        console.log("📊 Google Sheets Payload:", payload);
+      console.log("📊 Google Sheets Payload:", payload);
 
-        // Submit to Google Sheets
-        const googleSheetsPromise = fetch(googleSheetsUrl, {
-          method: "POST",
-          mode: "no-cors",
-          cache: "no-cache",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
+      // Submit to Google Sheets
+      const googleSheetsPromise = fetch(googleSheetsUrl, {
+        method: "POST",
+        mode: "no-cors",
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-        // Submit to Cratio webhook
-        const cratioPayload = {
-          ...queryParams, // Spread query params first so they don't overwrite payload
-          ...payload,
-          timestamp: new Date().toISOString(),
-        };
+      // Submit to Cratio webhook
+      const cratioPayload = {
+        ...utmParams,
+        ...payload,
+        timestamp: new Date().toISOString(),
+      };
 
-        console.log(
-          "🎯 Cratio Webhook Payload (includes all UTM params):",
-          cratioPayload,
-        );
+      console.log(
+        "🎯 Cratio Webhook Payload (includes all UTM params):",
+        cratioPayload,
+      );
 
-        const cratioPromise = fetch(import.meta.env.VITE_CRATIO_WEBHOOK_URL, {
-          method: "POST",
-          mode: "no-cors",
-          cache: "no-cache",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(cratioPayload),
-        });
+      const cratioPromise = fetch(import.meta.env.VITE_CRATIO_WEBHOOK_URL, {
+        method: "POST",
+        mode: "no-cors",
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(cratioPayload),
+      });
 
-        // Execute both requests in parallel for better performance
-        const [googleResponse, cratioResponse] = await Promise.all([
-          googleSheetsPromise,
-          cratioPromise,
-        ]);
+      // Execute both requests in parallel for better performance
+      const [googleResponse, cratioResponse] = await Promise.all([
+        googleSheetsPromise,
+        cratioPromise,
+      ]);
 
-        if (cratioResponse.type === "opaque") {
-          console.log("✅ Cratio webhook request sent successfully");
-        }
-
-        console.log("✅ Form submission completed successfully");
-        return { status: "success" };
-      } catch (error) {
-        console.error("❌ Form submission error:", error);
-        throw error;
+      if (cratioResponse.type === "opaque") {
+        console.log("✅ Cratio webhook request sent successfully");
       }
-    },
-    [queryParams],
-  );
+
+      console.log("✅ Form submission completed successfully");
+      return { status: "success" };
+    } catch (error) {
+      console.error("❌ Form submission error:", error);
+      throw error;
+    }
+  }, []);
 
   // Send GA event - non-blocking, errors won't prevent form submission
   async function sendEventToGA(_eventName, _phone) {
@@ -631,7 +552,7 @@ const Signup = () => {
           onSubmit={handleSubmit}
         >
           {/* Hidden UTM Fields */}
-          <input
+          {/* <input
             type="hidden"
             name="utm_source"
             value={queryParams.utm_source || ""}
@@ -645,7 +566,7 @@ const Signup = () => {
             type="hidden"
             name="utm_campaign"
             value={queryParams.utm_campaign || ""}
-          />
+          /> */}
 
           <div className="my-8 space-y-4 md:space-y-6 md:my-16">
             {/* Email Field */}
