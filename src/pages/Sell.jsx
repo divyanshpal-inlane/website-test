@@ -1291,11 +1291,7 @@ const Sell = () => {
     // setShowResult(true);
     setIsModalOpen(false);
 
-    navigate("/thank-you", {
-      state: {
-        name: userName,
-      },
-    });
+    window.location.href = "/thank-you";
   };
 
   const testimonials = [
