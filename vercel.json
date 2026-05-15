@@ -120,5 +120,10 @@
       "permanent": true
     }
   ],
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+  "rewrites": [
+    {
+      "source": "/((?!api|assets|.*\\..*).*)",
+      "destination": "/"
+    }
+  ]
 }
