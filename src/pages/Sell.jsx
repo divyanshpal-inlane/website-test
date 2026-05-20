@@ -1042,6 +1042,8 @@ const Sell = () => {
   const [userName, setUserName] = useState("");
   const [userPhone, setUserPhone] = useState("");
   const [showResult, setShowResult] = useState(false);
+  const [showThankYou, setShowThankYou] = useState(false);
+  const [showValuationPopup, setShowValuationPopup] = useState(false);
   const [estimatedOffer, setEstimatedOffer] = useState("");
 
   const [formData, setFormData] = useState({
@@ -1110,6 +1112,7 @@ const Sell = () => {
       return;
     }
 
+    setShowThankYou(false);
     setIsModalOpen(true);
   };
 
@@ -1287,11 +1290,10 @@ const Sell = () => {
       `₹${formatLakhs(minimumAcceptablePrice)} - ₹${formatLakhs(suggestedListingPrice)} Lakhs`,
     );
 
-    // setIsModalOpen(false);
-    // setShowResult(true);
     setIsModalOpen(false);
-
-    window.location.href = "/thank-you";
+    setShowThankYou(false);
+    setShowResult(true);
+    setShowValuationPopup(true);
   };
 
   const testimonials = [
@@ -1436,36 +1438,27 @@ const Sell = () => {
         <div className="relative md:absolute order-3 md:order-none -mt-4 sm:-mt-8 md:mt-0 md:top-[48%] md:-translate-y-1/2 right-0 left-0 md:left-auto md:right-12 lg:right-[8%] z-10 w-[94%] sm:w-[88%] mx-auto md:mx-0 md:w-[48%] lg:w-[42%] max-w-[540px] drop-shadow-2xl">
           <div className="bg-[#FCFCFC] rounded-[20px] md:rounded-[24px] p-6 sm:p-7 md:p-8 lg:p-10 shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-gray-200">
             {showResult ? (
-              <div className="flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-500 py-4">
+              /* THANK YOU STATE */
+              <div className="flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-500 py-8">
                 <div className="w-16 h-16 bg-[#00CE84]/10 rounded-full flex items-center justify-center mb-6">
                   <span className="text-3xl">🎉</span>
                 </div>
+
                 <h3 className="font-['Bricolage_Grotesque'] text-[24px] font-extrabold text-black mb-3">
-                  Your Valuation Is Ready!
+                  Thank You!
                 </h3>
-                <p className="font-['Bricolage_Grotesque'] text-gray-600 text-[14px] leading-relaxed mb-6">
-                  Based on the details provided, here is the estimated market
-                  value for your {formData.year} {formData.make}{" "}
-                  {formData.model}
-                  {formData.trim && formData.trim !== "Other"
-                    ? ` (${formData.trim})`
-                    : ""}
-                  :
+
+                <p className="font-['Bricolage_Grotesque'] text-gray-600 text-[14px] leading-relaxed mb-8 px-2">
+                  Your details have been submitted successfully. Our execution
+                  expert will contact you shortly to proceed further.
                 </p>
-                <div className="w-full bg-[#F3FFB6] rounded-[16px] py-6 px-4 mb-6 border border-[#00CE84]/30 shadow-[inset_0_2px_10px_rgba(0,0,0,0.02)]">
-                  <p className="font-['Bricolage_Grotesque'] text-[#00CE84] font-black text-2xl md:text-3xl tracking-tight leading-none">
-                    {estimatedOffer}
-                  </p>
-                </div>
-                <p className="font-['Bricolage_Grotesque'] text-[13px] text-gray-400 mb-8 px-2 leading-relaxed">
-                  Our execution expert will call you at{" "}
-                  <span className="text-black font-semibold">{userPhone}</span>{" "}
-                  shortly to schedule a free doorstep inspection and finalize
-                  your offer!
-                </p>
+
                 <button
                   onClick={() => {
                     setShowResult(false);
+                    setShowThankYou(false);
+                    setIsModalOpen(false);
+
                     setFormData({
                       registrationNumber: "",
                       make: "",
@@ -1479,6 +1472,7 @@ const Sell = () => {
                       condition: "",
                       accidentType: "",
                     });
+
                     setUserName("");
                     setUserPhone("");
                   }}
@@ -2242,6 +2236,53 @@ const Sell = () => {
                 Get My Valuation Now
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Valuation Popup Modal */}
+      {showValuationPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-[24px] p-8 w-full max-w-md shadow-2xl relative animate-in fade-in zoom-in duration-300 text-center">
+            {/* CLOSE BUTTON */}
+            <button
+              onClick={() => {
+                setShowValuationPopup(false);
+                setShowThankYou(true);
+              }}
+              className="absolute top-4 right-4 text-gray-400 hover:text-black transition-colors text-2xl"
+            >
+              ×
+            </button>
+
+            <div className="w-16 h-16 bg-[#00CE84]/10 rounded-full flex items-center justify-center mb-6 mx-auto">
+              <span className="text-3xl">🎉</span>
+            </div>
+
+            <h3 className="font-['Bricolage_Grotesque'] text-[24px] font-extrabold text-black mb-3">
+              Your Valuation Is Ready!
+            </h3>
+
+            <p className="font-['Bricolage_Grotesque'] text-gray-600 text-[14px] leading-relaxed mb-6">
+              Based on the details provided, here is the estimated market value
+              for your {formData.year} {formData.make} {formData.model}
+              {formData.trim && formData.trim !== "Other"
+                ? ` (${formData.trim})`
+                : ""}
+              :
+            </p>
+
+            <div className="w-full bg-[#F3FFB6] rounded-[16px] py-6 px-4 mb-6 border border-[#00CE84]/30">
+              <p className="font-['Bricolage_Grotesque'] text-[#00CE84] font-black text-2xl md:text-3xl tracking-tight leading-none">
+                {estimatedOffer}
+              </p>
+            </div>
+
+            <p className="font-['Bricolage_Grotesque'] text-[13px] text-gray-400 px-2 leading-relaxed">
+              Our execution expert will call you at{" "}
+              <span className="text-black font-semibold">{userPhone}</span>{" "}
+              shortly to schedule a free doorstep inspection.
+            </p>
           </div>
         </div>
       )}
