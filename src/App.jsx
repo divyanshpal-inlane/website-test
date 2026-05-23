@@ -35,6 +35,7 @@ import Page from "./pages/SignupForm";
 import Sell from "./pages/Sell";
 import Reviews from "./pages/Reviews";
 import Admin from "./pages/Admin";
+import Buyer from "./pages/Buyer";
 
 const Layout = () => {
   return (
@@ -170,6 +171,10 @@ const router = createBrowserRouter(
     {
       path: "/admin",
       element: <Admin />,
+    },
+    {
+      path: "/buyer",
+      element: <Buyer />,
     },
   ],
   {
