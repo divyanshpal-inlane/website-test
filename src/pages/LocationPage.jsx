@@ -316,7 +316,7 @@ const Locations = () => {
                     </span>
                     <div className="flex items-baseline gap-1">
                       <p className="text-xl md:text-2xl font-semibold">
-                        ₹10,000
+                        ₹10,500
                       </p>
                       {/* <span className="text-xs align-top">*</span> */}
                     </div>
