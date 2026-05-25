@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 const NewCoursePage = () => {
   const [expandedHour, setExpandedHour] = useState(null);
   const [scrollPosition, setScrollPosition] = useState(0);
-  const seo = seoData['/courses'];
+  const seo = seoData["/courses"];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,7 +32,7 @@ const NewCoursePage = () => {
 
   return (
     <>
-      <SEOHead 
+      <SEOHead
         title={seo.title}
         description={seo.description}
         keywords={seo.keywords}
@@ -53,7 +53,8 @@ const NewCoursePage = () => {
             {/* Mobile view cars (3 cars) */}
             <div className="flex justify-center items-center gap-2 md:hidden">
               <img src="/svg/course_car.svg" alt="car" className="w-24" />
-              <div className="w-24 min-w-[96px]" /> {/* Reduced space for yellow car */}
+              <div className="w-24 min-w-[96px]" />{" "}
+              {/* Reduced space for yellow car */}
               <img src="/svg/course_car.svg" alt="car" className="w-24" />
             </div>
 
@@ -69,7 +70,7 @@ const NewCoursePage = () => {
                   />
                 ) : (
                   <div key={i} className="w-auto min-w-[128px]" />
-                )
+                ),
               )}
             </div>
 
@@ -121,8 +122,10 @@ const NewCoursePage = () => {
       </div> */}
 
         {/* Beginner Course Section */}
-        <div className="max-w-5xl mb-12 md:mx-auto mx-4 md:mb-24 mt-14 md:mt-60
-         bg-[#D9FF7A] rounded-[2rem] p-4 md:p-8 shadow-sm relative">
+        <div
+          className="max-w-5xl mb-12 md:mx-auto mx-4 md:mb-24 mt-14 md:mt-60
+         bg-[#D9FF7A] rounded-[2rem] p-4 md:p-8 shadow-sm relative"
+        >
           <div className="flex items-center gap-3 mb-6 md:mb-6 mx-3 mt-4 md:mt-0">
             <img
               src="/course/arrow.svg"
@@ -140,18 +143,26 @@ const NewCoursePage = () => {
               {beginnerCourseHours.map((hour, index) => (
                 <div key={index} className="relative">
                   <button
-                    onClick={() => setExpandedHour(expandedHour === index ? null : index)}
+                    onClick={() =>
+                      setExpandedHour(expandedHour === index ? null : index)
+                    }
                     className={`w-full flex items-center justify-between transition-colors rounded-[1rem] px-2 md:px-6 py-1 border border-black 
-                      ${expandedHour === index 
-                        ? 'bg-[#F1FFCF] rounded-b-none border-b-0 ' 
-                        : 'bg-[#D9FF7A]'
+                      ${
+                        expandedHour === index
+                          ? "bg-[#F1FFCF] rounded-b-none border-b-0 "
+                          : "bg-[#D9FF7A]"
                       }`}
                   >
                     <div className="flex items-start gap-1 md:gap-4 flex-1 min-w-0">
-                      <span className="font-semibold text-sm md:text-xl whitespace-nowrap text-start"> 
-                        <span className="md:hidden">Hr</span><span className="hidden md:inline">Hour</span> {hour.hour}</span>
+                      <span className="font-semibold text-sm md:text-xl whitespace-nowrap text-start">
+                        <span className="md:hidden">Hr</span>
+                        <span className="hidden md:inline">Hour</span>{" "}
+                        {hour.hour}
+                      </span>
                       <span className="text-black/50 hidden md:inline">|</span>
-                      <span className={`font-semibold text-sm md:text-lg  text-start ${expandedHour === index ? 'whitespace-normal' : 'truncate'}`}>
+                      <span
+                        className={`font-semibold text-sm md:text-lg  text-start ${expandedHour === index ? "whitespace-normal" : "truncate"}`}
+                      >
                         {hour.title}
                       </span>
                     </div>
@@ -191,7 +202,11 @@ const NewCoursePage = () => {
             {/* Right side - Course details */}
             <div className="w-full md:w-[30%] space-y-4 md:space-y-6 p-2 md:p-0">
               <div className="flex items-center gap-3">
-                <img src="/course/timer.svg" alt="duration" className="w-8 md:w-auto" />
+                <img
+                  src="/course/timer.svg"
+                  alt="duration"
+                  className="w-8 md:w-auto"
+                />
                 <div className="flex flex-col items-start text-xl md:text-2xl">
                   <span className="font-semibold">Duration:</span>
                   <p className="font-semibold">10 hours</p>
@@ -199,64 +214,88 @@ const NewCoursePage = () => {
               </div>
 
               <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-3">
-        <img src="/course/coin.svg" alt="price" className="w-8 md:w-auto" />
-        <div className="flex flex-col">
-          <span className="text-xl md:text-2xl font-semibold">Price:</span>
-          <div className="flex items-baseline gap-1">
-            <p className="text-xl md:text-2xl font-semibold">₹10,000</p>
-            {/* <span className="text-xs align-top">*</span> */}
-          </div>
-      <p className="text-xs">* with license assistance</p>
-        </div>
-      </div>
-    </div>
+                <div className="flex items-center gap-3">
+                  <img
+                    src="/course/coin.svg"
+                    alt="price"
+                    className="w-8 md:w-auto"
+                  />
+                  <div className="flex flex-col">
+                    <span className="text-xl md:text-2xl font-semibold">
+                      Price:
+                    </span>
+                    <div className="flex items-baseline gap-1">
+                      <p className="text-xl md:text-2xl font-semibold">
+                        ₹10,500
+                      </p>
+                      {/* <span className="text-xs align-top">*</span> */}
+                    </div>
+                    <p className="text-xs">* with license assistance</p>
+                  </div>
+                </div>
+              </div>
 
               <div className="flex items-start gap-3">
-                <img src="/course/calculator.svg" alt="value" className="w-8 md:w-auto" />
+                <img
+                  src="/course/calculator.svg"
+                  alt="value"
+                  className="w-8 md:w-auto"
+                />
                 <div>
-                  <span className="text-xl md:text-2xl font-semibold">Value Added</span>
+                  <span className="text-xl md:text-2xl font-semibold">
+                    Value Added
+                  </span>
                   <p className="text-base md:text-md ">
-                    We offer a vehicle  <br />for the Driver's <br /> License test day  <br />at an additional cost.
+                    We offer a vehicle <br />
+                    for the Driver's <br /> License test day <br />
+                    at an additional cost.
                   </p>
                 </div>
               </div>
 
               {/* <div className="flex flex-row items-center justify-center w-full mt-6 md:mt-8"> */}
-                <div className="flex items-center justify-center md:w-auto">
-                  <Link to="/signup">
-                        <Button
-                                    variant="contained"
-                                    startIcon={<img src="/course/rocket.svg" alt="rocket" className="w-6 h-6" />}
-                                    sx={{
-                                      background: "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
-                                      "&:hover": {
-                                        background: "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
-                                        backgroundColor: "#00CE84",
-                                      },
-                                      color: "white",
-                                      fontWeight: "bold",
-                                      textDecoration: "none",
-                                      textTransform: "none",
-                                      border: "2px solid white",
-                                      borderRadius: "50px",
-                                      padding: {
-                                        xs: "4px 24px",
-                                        sm: "10px 20px",
-                                        md: "1px 25px",
-                                      },
-                                      fontFamily: "Bricolage Grotesque",
-                                      fontSize: {
-                                        xs: "1rem",
-                                        sm: "1.125rem",
-                                        md: "1.5rem",
-                                      },
-                                    }}
-                                  >
-                                    Sign Up
-                                  </Button>
-                        </Link>
-                </div>
+              <div className="flex items-center justify-center md:w-auto">
+                <Link to="/signup">
+                  <Button
+                    variant="contained"
+                    startIcon={
+                      <img
+                        src="/course/rocket.svg"
+                        alt="rocket"
+                        className="w-6 h-6"
+                      />
+                    }
+                    sx={{
+                      background:
+                        "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
+                      "&:hover": {
+                        background:
+                          "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
+                        backgroundColor: "#00CE84",
+                      },
+                      color: "white",
+                      fontWeight: "bold",
+                      textDecoration: "none",
+                      textTransform: "none",
+                      border: "2px solid white",
+                      borderRadius: "50px",
+                      padding: {
+                        xs: "4px 24px",
+                        sm: "10px 20px",
+                        md: "1px 25px",
+                      },
+                      fontFamily: "Bricolage Grotesque",
+                      fontSize: {
+                        xs: "1rem",
+                        sm: "1.125rem",
+                        md: "1.5rem",
+                      },
+                    }}
+                  >
+                    Sign Up
+                  </Button>
+                </Link>
+              </div>
               {/* </div> */}
             </div>
           </div>
@@ -264,9 +303,9 @@ const NewCoursePage = () => {
 
         {/* Mini Course Tag - Positioned between sections */}
         <div className="relative -mb-10 md:-mb-16 z-10">
-          <img 
-            src="course/minicoursetag.svg" 
-            alt="Mini Courses" 
+          <img
+            src="course/minicoursetag.svg"
+            alt="Mini Courses"
             className="mx-auto w-[300px] md:w-[600px]"
           />
         </div>
@@ -283,4 +322,3 @@ const NewCoursePage = () => {
 };
 
 export default NewCoursePage;
-
