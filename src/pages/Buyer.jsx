@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import BuyerNavbar from "../components/BuyerNavbar";
+import LetsChatModal from "../components/LetsChatModal";
 
 /**
  * BuyerHeroSection
@@ -54,6 +55,13 @@ const services = [
 ];
 
 export default function BuyerHeroSection() {
+  // Controls the "Let's Chat" pop-up form
+  const [chatOpen, setChatOpen] = useState(false);
+
+  const handleChatSubmit = (data) => {
+    // Hook this up to your lead API / analytics as needed.
+    console.log("Lets Chat lead submitted:", data);
+  };
   return (
     <section className="relative w-full overflow-x-hidden bg-[#F5F5F5]">
       {/* ================= NAVBAR ================= */}
@@ -194,6 +202,7 @@ export default function BuyerHeroSection() {
 
           {/* Let's Chat */}
           <button
+            onClick={() => setChatOpen(true)}
             className="flex items-center justify-center rounded-full
                        border-[3px] border-white bg-white
                        shadow-[0_10px_28px_rgba(0,0,0,0.12)]
@@ -265,6 +274,13 @@ export default function BuyerHeroSection() {
 
       {/* ================= BOTTOM ACCENT BLOCK ================= */}
       <div className="h-[36px] w-full bg-[#D9FF7A] sm:h-[45px] md:h-[60px] lg:h-[80px] xl:h-[100px]" />
+
+      {/* ================= LET'S CHAT POP-UP ================= */}
+      <LetsChatModal
+        open={chatOpen}
+        onClose={() => setChatOpen(false)}
+        onSubmit={handleChatSubmit}
+      />
     </section>
   );
 }
