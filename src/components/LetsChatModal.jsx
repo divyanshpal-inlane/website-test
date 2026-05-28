@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { X, ArrowRight } from "lucide-react";
-
+import { supabase } from "../supabaseClient";
 /**
  * LetsChatModal
  * --------------------------------------------------------------------------
@@ -38,7 +38,9 @@ export default function LetsChatModal({ open, onClose, onSubmit }) {
   const [bodyTypes, setBodyTypes] = useState([]);
   const [fuel, setFuel] = useState("Any");
   const [transmission, setTransmission] = useState("Any");
+  const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const dialogRef = useRef(null);
 
@@ -63,6 +65,7 @@ export default function LetsChatModal({ open, onClose, onSubmit }) {
   useEffect(() => {
     if (open) {
       setSubmitted(false);
+      setErrors({});
     }
   }, [open]);
 
@@ -74,10 +77,80 @@ export default function LetsChatModal({ open, onClose, onSubmit }) {
     );
   };
 
-  const handleSubmit = () => {
-    const data = { name, phone, budget, bodyTypes, fuel, transmission };
-    onSubmit?.(data);
-    setSubmitted(true);
+  const handleSubmit = async () => {
+    const newErrors = {};
+
+    // Name Validation
+    if (!name.trim()) {
+      newErrors.name = "Name is required";
+    }
+
+    // Phone Validation
+    if (!phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!/^[6-9]\d{9}$/.test(phone.replace(/\s/g, ""))) {
+      newErrors.phone = "Enter a valid 10-digit phone number";
+    }
+
+    // Budget Validation
+    if (!budget) {
+      newErrors.budget = "Please select your budget";
+    }
+
+    // IF Errors Exist → Stop Submit
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    try {
+      // Start Loading
+      setLoading(true);
+      // Clear Errors
+      setErrors({});
+
+      // Insert into Supabase
+      // const data = { name, phone, budget, bodyTypes, fuel, transmission };
+      const { error } = await supabase.from("buyer_request").insert([
+        {
+          name,
+          phone,
+          budget,
+          body_types: bodyTypes,
+          fuel,
+          transmission,
+        },
+      ]);
+
+      // Handle Error
+      if (error) {
+        console.error("Supabase Error:", error);
+        // alert("Something went wrong");
+        return;
+      }
+
+      // Success
+      //   alert("Lead submitted successfully");
+      setSubmitted(true);
+
+      // Reset Form
+      setName("");
+      setPhone("");
+      setBudget("");
+      setBodyTypes([]);
+      setFuel("Any");
+      setTransmission("Any");
+      setShowMore(false);
+    } catch (err) {
+      console.error("Submission Error:", err);
+      alert("Oops! Unexpected error occurred");
+    } finally {
+      // Stop Loading
+      setLoading(false);
+    }
+
+    // onSubmit?.(data);
+    // Success State
   };
 
   const handleBackdropClick = (e) => {
@@ -176,9 +249,19 @@ export default function LetsChatModal({ open, onClose, onSubmit }) {
                 type="text"
                 placeholder="Your name"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
-                className={inputClass}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  setErrors((prev) => ({ ...prev, name: "" }));
+                }}
+                className={`${inputClass} ${
+                  errors.name ? "border-red-500" : ""
+                }`}
               />
+              {errors.name && (
+                <p className="mt-1 text-[12px] font-medium text-red-500">
+                  {errors.name}
+                </p>
+              )}
             </div>
 
             {/* PHONE */}
@@ -189,11 +272,22 @@ export default function LetsChatModal({ open, onClose, onSubmit }) {
               <input
                 id="lcm-phone"
                 type="tel"
-                placeholder="+91 98XXX XXXXX"
+                placeholder="98XXX XXXXX"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className={inputClass}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, "");
+                  setPhone(value);
+                  setErrors((prev) => ({ ...prev, phone: "" }));
+                }}
+                className={`${inputClass} ${
+                  errors.phone ? "border-red-500" : ""
+                }`}
               />
+              {errors.phone && (
+                <p className="mt-1 text-[12px] font-medium text-red-500">
+                  {errors.phone}
+                </p>
+              )}
             </div>
 
             {/* BUDGET */}
@@ -204,8 +298,13 @@ export default function LetsChatModal({ open, onClose, onSubmit }) {
               <select
                 id="lcm-budget"
                 value={budget}
-                onChange={(e) => setBudget(e.target.value)}
-                className={inputClass}
+                onChange={(e) => {
+                  setBudget(e.target.value);
+                  setErrors((prev) => ({ ...prev, budget: "" }));
+                }}
+                className={`${inputClass} ${
+                  errors.budget ? "border-red-500" : ""
+                }`}
               >
                 <option value="">What's your range?</option>
                 {BUDGET_OPTIONS.map((opt) => (
@@ -214,6 +313,11 @@ export default function LetsChatModal({ open, onClose, onSubmit }) {
                   </option>
                 ))}
               </select>
+              {errors.budget && (
+                <p className="mt-1 text-[12px] font-medium text-red-500">
+                  {errors.budget}
+                </p>
+              )}
             </div>
 
             {/* ADD MORE DETAILS (collapsible) */}
@@ -302,10 +406,10 @@ export default function LetsChatModal({ open, onClose, onSubmit }) {
               className="mt-4 flex w-full items-center justify-center gap-2
                          rounded-[12px] bg-[#00CE84] py-[13px]
                          font-['Bricolage_Grotesque'] text-[15px] font-bold
-                         text-white transition-colors hover:bg-[#00b574]"
+                         text-white transition-colors hover:bg-[#00b574] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Submit
-              <ArrowRight className="h-4 w-4" strokeWidth={3} />
+              {loading ? "Submitting..." : "Submit"}
+              {!loading && <ArrowRight className="h-4 w-4" strokeWidth={3} />}
             </button>
 
             <p
