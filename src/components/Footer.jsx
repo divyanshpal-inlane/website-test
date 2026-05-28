@@ -52,6 +52,15 @@ const Footer = () => {
       text: "WhatsApp",
       href: "https://wa.me/917338098798",
     },
+
+    // NEW SUPPORT EMAIL
+    {
+      Icon: EmailIcon,
+      text: "support@inlane.in",
+      href: "mailto:support@inlane.in",
+    },
+    // Customer Support Phone Number
+    { Icon: PhoneIcon, text: "+91 63607 39863", href: "tel:+916360739863" },
     {
       Icon: LocationIcon,
       text: "3rd floor, Akruti Chambers, Stage 2, Hoysala Nagar, Indiranagar, Bengaluru, Karnataka 560038",
@@ -489,6 +498,21 @@ const Footer = () => {
             }}
           >
             CIN: U62099WB2024PTC269670
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              fontFamily: "Bricolage Grotesque",
+              fontSize: { xs: "11px", sm: "12px", md: "12px" },
+              color: "#666666",
+              textAlign: "center",
+              mt: 1,
+              maxWidth: "900px",
+              lineHeight: 1.6,
+            }}
+          >
+            INLANE MOTOR DRIVING SCHOOL is authorized to impart motor vehicle
+            driving instruction under License No. KA032026DSL00004.
           </Typography>
         </Box>
       </Box>
