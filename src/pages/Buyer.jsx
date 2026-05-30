@@ -1,5 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ArrowRight } from "lucide-react";
+import {
+  FaInstagram,
+  FaXTwitter,
+  FaLinkedinIn,
+  FaWhatsapp,
+  FaPhone,
+  FaEnvelope,
+} from "react-icons/fa6";
 import BuyerNavbar from "../components/BuyerNavbar";
 import LetsChatModal from "../components/LetsChatModal";
 
@@ -53,6 +61,84 @@ const services = [
     description: "FASTag, dashcam, sensors",
   },
 ];
+
+/* ===================== FOOTER DATA ===================== */
+
+const socialLinks = [
+  {
+    Icon: FaInstagram,
+    href: "https://www.instagram.com/inlane.in/",
+    label: "Instagram",
+  },
+  { Icon: FaXTwitter, href: "https://x.com/inlane_in/", label: "X" },
+  {
+    Icon: FaLinkedinIn,
+    href: "https://www.linkedin.com/company/in-lane/",
+    label: "LinkedIn",
+  },
+];
+
+const footerColumns = [
+  {
+    title: "Information",
+    links: [
+      { text: "About Us", href: "/about-us" },
+      { text: "Courses", href: "/courses" },
+      { text: "FAQs", href: "/faqs" },
+      { text: "Lane Journal", href: "/blog" },
+    ],
+  },
+  {
+    title: "Quick Links",
+    links: [
+      { text: "Support", href: "/support" },
+      { text: "Privacy Policy", href: "/privacy-policy" },
+      { text: "Terms & Conditions", href: "/terms-and-conditions" },
+    ],
+  },
+];
+
+const contactLinks = [
+  { Icon: FaPhone, text: "+91 9748439881", href: "tel:+919748439881" },
+  { Icon: FaEnvelope, text: "info@inlane.in", href: "mailto:info@inlane.in" },
+  {
+    Icon: FaWhatsapp,
+    text: "WhatsApp",
+    href: "https://wa.me/919748439881",
+    external: true,
+  },
+];
+
+/**
+ * FooterHeading
+ * Column title with Tag5.svg as a background image behind the text (per Figma).
+ */
+function FooterHeading({ children }) {
+  return (
+    <h3 className="relative mb-3 md:mb-5 inline-block md:mb-5">
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-[-12px] bottom-[-4px] top-[-4px] -z-0"
+        style={{
+          backgroundImage: "url('/Tag5.svg')",
+          backgroundSize: "100% 100%",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+        }}
+      />
+      <span
+        className="relative z-10 font-['Bricolage_Grotesque'] font-bold tracking-[-0.01em]
+                   text-[#111111]
+                   text-[16px]
+sm:text-[18px]
+md:text-[1.4vw]
+xl:text-[22px]"
+      >
+        {children}
+      </span>
+    </h3>
+  );
+}
 
 export default function BuyerHeroSection() {
   // Controls the "Let's Chat" pop-up form
@@ -274,6 +360,166 @@ export default function BuyerHeroSection() {
 
       {/* ================= BOTTOM ACCENT BLOCK ================= */}
       <div className="h-[36px] w-full bg-[#D9FF7A] sm:h-[45px] md:h-[60px] lg:h-[80px] xl:h-[100px]" />
+
+      {/* ================= FOOTER ================= */}
+      {/*
+        Footer with NavbarRoad.svg as top background image (same as Footer.jsx).
+        Car animation matches Footer.jsx: car starts at right off-screen, moves
+        left across the full viewport width.
+      */}
+
+      {/* ---------- CAR ANIMATION KEYFRAMES ---------- */}
+      <style>{`
+        @keyframes buyerCarMove {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(calc(-110vw - 100px)); }
+        }
+      `}</style>
+
+      <footer
+        className="relative w-full bg-white"
+        style={{
+          backgroundImage: "url('/NavbarRoad.svg')",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "100% auto",
+          backgroundPosition: "top center",
+        }}
+      >
+        {/* Animated car running on the road — positioned above the road SVG */}
+        <img
+          src="/svg/car.png"
+          alt="Moving car"
+          aria-hidden="true"
+          className="w-[30px] h-[30px] md:w-[60px] md:h-[60px]
+                     top-[-25px] right-[-100px] md:top-[-50px] md:right-[-100px]"
+          style={{
+            position: "absolute",
+            animation: "buyerCarMove 4s linear infinite",
+            transform: "scaleX(-1)",
+            zIndex: 30,
+          }}
+        />
+        {/* ---------- FOOTER CONTENT ---------- */}
+        <div
+          className="mx-auto w-full max-w-[1280px] px-5 py-6
+sm:py-8
+md:py-14 md:pl-[9%]
+
+    lg:pl-[6%]"
+        >
+          <div
+            className="
+    grid
+    grid-cols-1
+gap-6
+
+    md:grid-cols-2
+    md:gap-x-10
+
+    lg:grid-cols-[1.6fr_1fr_1fr_1fr]
+    lg:gap-x-6
+  "
+          >
+            {/* Brand block */}
+            <div className="flex flex-col items-center text-center md:items-start md:text-left sm:col-span-2 lg:col-span-1">
+              <img
+                src="/Lane_Footer_Logo.svg"
+                alt="LANE — By Your Side, Every Ride"
+                className="h-auto w-[120px] sm:w-[140px] md:w-[12vw] xl:w-[200px]"
+              />
+              <div className="mt-5 flex justify-center md:justify-start items-center gap-3 md:mt-6">
+                {socialLinks.map(({ Icon, href, label }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="
+flex items-center justify-center
+rounded-full
+bg-black text-white
+transition-transform duration-300 hover:scale-110
+
+h-[34px] w-[34px]
+sm:h-[38px] sm:w-[38px]
+md:h-[2.9vw] md:w-[2.9vw]
+md:min-h-[40px] md:min-w-[40px]
+xl:h-[44px] xl:w-[44px]
+"
+                  >
+                    <Icon className="text-[15px] sm:text-[17px] xl:text-[20px]" />
+                  </a>
+                ))}
+              </div>
+              <p
+                className="mt-5 font-['Bricolage_Grotesque'] font-semibold text-black md:mt-6
+                           text-[18px] sm:text-[20px] md:text-[1.4vw] xl:text-[22px]"
+              >
+                We do cool things here!
+              </p>
+            </div>
+
+            {/* Link columns: Information, Quick Links */}
+            {footerColumns.map((col) => (
+              <div key={col.title} className="text-center md:text-left">
+                <FooterHeading>{col.title}</FooterHeading>
+                <ul className="flex flex-col gap-3 md:gap-3.5">
+                  {col.links.map((link) => (
+                    <li key={link.text}>
+                      <a
+                        href={link.href}
+                        className="font-['Bricolage_Grotesque'] font-medium text-black
+                                   transition-colors duration-200 hover:text-[#00CE84]
+                                   text-[15px] sm:text-[16px] md:text-[1.05vw] xl:text-[16px]"
+                      >
+                        {link.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+
+            {/* Contact Us column */}
+            <div className="text-center md:text-left">
+              <FooterHeading>Contact Us</FooterHeading>
+              <ul className="flex flex-col gap-3 md:gap-3.5">
+                {contactLinks.map(({ Icon, text, href, external }) => (
+                  <li key={text}>
+                    <a
+                      href={href}
+                      target={external ? "_blank" : "_self"}
+                      rel={external ? "noopener noreferrer" : undefined}
+                      className="
+    group
+    flex
+    justify-center
+    md:justify-start
+    items-center
+    gap-2.5
+    font-['Bricolage_Grotesque']
+    font-medium
+    text-black
+    transition-colors
+    duration-200
+    hover:text-[#00CE84]
+    text-[15px]
+    sm:text-[16px]
+    md:text-[1.05vw]
+    xl:text-[16px]
+  "
+                    >
+                      <Icon className="shrink-0 text-[16px] text-[#00CE84] xl:text-[18px]" />
+                      {text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </footer>
 
       {/* ================= LET'S CHAT POP-UP ================= */}
       <LetsChatModal
