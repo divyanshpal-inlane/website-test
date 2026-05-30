@@ -115,7 +115,7 @@ const contactLinks = [
  */
 function FooterHeading({ children }) {
   return (
-    <h3 className="relative mb-4 inline-block md:mb-5">
+    <h3 className="relative mb-3 md:mb-5 inline-block md:mb-5">
       <span
         aria-hidden="true"
         className="absolute inset-x-[-12px] bottom-[-4px] top-[-4px] -z-0"
@@ -129,7 +129,10 @@ function FooterHeading({ children }) {
       <span
         className="relative z-10 font-['Bricolage_Grotesque'] font-bold tracking-[-0.01em]
                    text-[#111111]
-                   text-[18px] sm:text-[20px] md:text-[1.4vw] xl:text-[22px]"
+                   text-[16px]
+sm:text-[18px]
+md:text-[1.4vw]
+xl:text-[22px]"
       >
         {children}
       </span>
@@ -397,20 +400,34 @@ export default function BuyerHeroSection() {
           }}
         />
         {/* ---------- FOOTER CONTENT ---------- */}
-        <div className="mx-auto w-full max-w-[1280px] px-5 py-10 sm:px-8 md:px-[7.4%] md:py-14 lg:py-16">
+        <div
+          className="mx-auto w-full max-w-[1280px] px-5 py-6
+sm:py-8
+md:py-14 md:pl-[9%]
+
+    lg:pl-[6%]"
+        >
           <div
-            className="grid grid-cols-1 gap-10
-                       sm:grid-cols-2 sm:gap-x-8 sm:gap-y-10
-                       lg:grid-cols-[1.6fr_1fr_1fr_1fr] lg:gap-x-6"
+            className="
+    grid
+    grid-cols-1
+gap-6
+
+    md:grid-cols-2
+    md:gap-x-10
+
+    lg:grid-cols-[1.6fr_1fr_1fr_1fr]
+    lg:gap-x-6
+  "
           >
             {/* Brand block */}
-            <div className="sm:col-span-2 lg:col-span-1">
+            <div className="flex flex-col items-center text-center md:items-start md:text-left sm:col-span-2 lg:col-span-1">
               <img
                 src="/Lane_Footer_Logo.svg"
                 alt="LANE — By Your Side, Every Ride"
-                className="h-auto w-[160px] md:w-[12vw] xl:w-[200px]"
+                className="h-auto w-[120px] sm:w-[140px] md:w-[12vw] xl:w-[200px]"
               />
-              <div className="mt-5 flex items-center gap-3 md:mt-6">
+              <div className="mt-5 flex justify-center md:justify-start items-center gap-3 md:mt-6">
                 {socialLinks.map(({ Icon, href, label }) => (
                   <a
                     key={label}
@@ -418,11 +435,20 @@ export default function BuyerHeroSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="flex h-[40px] w-[40px] items-center justify-center rounded-full
-                               bg-black text-white transition-transform duration-300 hover:scale-110
-                               md:h-[2.9vw] md:w-[2.9vw] md:min-h-[40px] md:min-w-[40px] xl:h-[44px] xl:w-[44px]"
+                    className="
+flex items-center justify-center
+rounded-full
+bg-black text-white
+transition-transform duration-300 hover:scale-110
+
+h-[34px] w-[34px]
+sm:h-[38px] sm:w-[38px]
+md:h-[2.9vw] md:w-[2.9vw]
+md:min-h-[40px] md:min-w-[40px]
+xl:h-[44px] xl:w-[44px]
+"
                   >
-                    <Icon className="text-[18px] xl:text-[20px]" />
+                    <Icon className="text-[15px] sm:text-[17px] xl:text-[20px]" />
                   </a>
                 ))}
               </div>
@@ -436,7 +462,7 @@ export default function BuyerHeroSection() {
 
             {/* Link columns: Information, Quick Links */}
             {footerColumns.map((col) => (
-              <div key={col.title}>
+              <div key={col.title} className="text-center md:text-left">
                 <FooterHeading>{col.title}</FooterHeading>
                 <ul className="flex flex-col gap-3 md:gap-3.5">
                   {col.links.map((link) => (
@@ -456,7 +482,7 @@ export default function BuyerHeroSection() {
             ))}
 
             {/* Contact Us column */}
-            <div>
+            <div className="text-center md:text-left">
               <FooterHeading>Contact Us</FooterHeading>
               <ul className="flex flex-col gap-3 md:gap-3.5">
                 {contactLinks.map(({ Icon, text, href, external }) => (
@@ -465,9 +491,24 @@ export default function BuyerHeroSection() {
                       href={href}
                       target={external ? "_blank" : "_self"}
                       rel={external ? "noopener noreferrer" : undefined}
-                      className="group flex items-center gap-2.5 font-['Bricolage_Grotesque'] font-medium text-black
-                                 transition-colors duration-200 hover:text-[#00CE84]
-                                 text-[15px] sm:text-[16px] md:text-[1.05vw] xl:text-[16px]"
+                      className="
+    group
+    flex
+    justify-center
+    md:justify-start
+    items-center
+    gap-2.5
+    font-['Bricolage_Grotesque']
+    font-medium
+    text-black
+    transition-colors
+    duration-200
+    hover:text-[#00CE84]
+    text-[15px]
+    sm:text-[16px]
+    md:text-[1.05vw]
+    xl:text-[16px]
+  "
                     >
                       <Icon className="shrink-0 text-[16px] text-[#00CE84] xl:text-[18px]" />
                       {text}
