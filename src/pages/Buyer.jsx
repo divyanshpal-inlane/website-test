@@ -66,29 +66,55 @@ const services = [
 
 const faqs = [
   {
-    question: "I just got my licence. What car should I buy first?",
+    question: "Q- Where do Lane's cars come from?",
     answer:
-      "For first-time buyers we usually recommend a compact, easy-to-drive hatchback with a strong safety rating and low running costs. Tell us your budget and daily use, and we'll shortlist the right options for you.",
+      "A- Every car on Lane comes directly from its owner — not dealers, not auctions. Owners either respond to our Meta ads or list their car themselves through our sell page on Lane's website. That means you're getting real cars with real histories, not lot cars that have been sitting around.",
   },
   {
-    question: "How does the financing work?",
+    question: "Q- Who handles the RC transfer from seller to buyer?",
     answer:
-      "We partner with HDFC Bank to get you the best loan rate based on your profile. You pick the down payment and tenure that suit you, and we handle the paperwork end to end.",
+      "A- Lane does. This is one of the things we take off your plate entirely — RC transfer, Form 29/30 filing, and all RTO submissions are handled by our team.",
   },
   {
-    question: "What documents do I need?",
+    question: "Q- Can I get a loan for a used car through Lane?",
     answer:
-      "Typically your licence, PAN, Aadhaar, address proof, and recent income proof for financing. We'll share an exact checklist once we know your chosen car and loan.",
+      "A- Yes. Lane works with lending partners for used car financing. We'll submit your profile and get you a pre-approval. Rates typically range from 10–18% for used cars depending on your profile.",
   },
   {
-    question: "Is buying used risky?",
+    question: "Q- What documents do I need for a used car loan?",
     answer:
-      "Not when it's inspected properly. Every used car we recommend goes through a thorough multi-point inspection and history check, so you know exactly what you're getting.",
+      "A- Driving Licence, Aadhaar Card, PAN Card, Address Proof, Latest 3–6 months bank statements, Income proof (salary slips or ITR), Lane will guide you through exactly what's needed for your specific case.",
   },
   {
-    question: "Do I really need comprehensive insurance?",
+    question: "Q- Are Lane car prices fixed or negotiable?",
     answer:
-      "For a new or near-new car, comprehensive cover is worth it — it protects against damage, theft, and third-party liability. We'll find you the right cover at the lowest premium.",
+      "A-  Prices are set by the owner. There is room to negotiate in most cases — Lane can advise you on whether the asking price is fair for that car's age, condition, and market value.",
+  },
+  {
+    question: "Q- Will I need to visit the RTO office?",
+    answer:
+      "A- In most cases, no. Lane manages the paperwork on your behalf. You may need to be present for signature in some cases— we'll tell you in advance.",
+  },
+
+  {
+    question: "Q- Can I see the seller's details?",
+    answer:
+      "A- We keep seller contact private until both sides are ready to connect. Lane handles the introduction once there's a serious buyer intent, to protect both parties.",
+  },
+  {
+    question: "Q- Has the car been inspected before listing?",
+    answer:
+      "A- We collect and verify the information submitted by the seller — including ownership details, registration, and basic specs. For buyers, we strongly recommend (and can arrange) a physical inspection before finalising.",
+  },
+  {
+    question: "Q- Are accident history or previous repairs disclosed?",
+    answer:
+      "A- Sellers are required to disclose this when submitting. If you spot a discrepancy during inspection, let us know — we take listing accuracy seriously.",
+  },
+  {
+    question: "Q- How do I know Lane is legitimate?",
+    answer:
+      "A- Lane is the same company behind Lane Driving School — with 28,000+ hours of student experience in Bangalore. Our car service is an extension of helping people through the full first-car journey.",
   },
 ];
 
@@ -160,9 +186,9 @@ function FooterHeading({ children }) {
         className="relative z-10 font-['Bricolage_Grotesque'] font-bold tracking-[-0.01em]
                    text-[#111111]
                    text-[16px]
-sm:text-[18px]
-md:text-[1.4vw]
-xl:text-[22px]"
+                   sm:text-[18px]
+                   md:text-[1.4vw]
+                   xl:text-[22px]"
       >
         {children}
       </span>
@@ -225,7 +251,12 @@ export default function BuyerHeroSection() {
   const [chatOpen, setChatOpen] = useState(false);
 
   // Controls which FAQ accordion row is open (first row open by default, per Figma)
-  const [openFaq, setOpenFaq] = useState(0);
+  const [openFaq, setOpenFaq] = useState(null);
+
+  const midpoint = Math.ceil(faqs.length / 2);
+
+  const faqsLeft = faqs.slice(0, midpoint);
+  const faqsRight = faqs.slice(midpoint);
 
   const handleChatSubmit = (data) => {
     // Hook this up to your lead API / analytics as needed.
@@ -441,13 +472,16 @@ export default function BuyerHeroSection() {
         <div className="h-6 md:h-8 lg:h-10" />
       </div>
 
+      {/* ================= BOTTOM ACCENT BLOCK ================= */}
+      <div className="h-[36px] w-full bg-[#D9FF7A] sm:h-[45px] md:h-[60px] lg:h-[80px] xl:h-[100px]" />
+
       {/* ================= FAQ SECTION ================= */}
       {/*
         Figma node 1791:41 — "Frequently Asked Questions".
         A white rounded card (16px radius, soft shadow) sitting on the page bg,
         with a left-aligned heading and a stack of black-bordered accordion rows.
       */}
-      <div className="mx-auto w-full max-w-6xl px-5 py-10 md:px-8 md:py-14 lg:py-16">
+      <div className="mx-auto w-full max-w-6xl px-5 py-7 md:px-5 md:py-11 lg:py-13">
         <div className="rounded-[20px] bg-white p-6 shadow-[0_4px_4px_rgba(0,0,0,0.25)] md:rounded-[2.5rem] md:p-12 lg:p-16">
           <h2
             className="font-['Bricolage_Grotesque'] font-semibold leading-tight text-black
@@ -456,22 +490,86 @@ export default function BuyerHeroSection() {
             Frequently Asked Questions
           </h2>
 
-          <div className="mt-6 flex flex-col gap-3 md:gap-4">
-            {faqs.map((faq, index) => (
-              <FAQItem
-                key={index}
-                question={faq.question}
-                answer={faq.answer}
-                isOpen={openFaq === index}
-                onToggle={() => setOpenFaq(openFaq === index ? -1 : index)}
-              />
-            ))}
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
+            {/* Left Column */}
+            <div className="flex flex-col gap-3 md:gap-4">
+              {faqsLeft.map((faq, index) => {
+                const faqId = `left-${index}`;
+
+                return (
+                  <FAQItem
+                    key={faqId}
+                    question={faq.question}
+                    answer={faq.answer}
+                    isOpen={openFaq === faqId}
+                    onToggle={() => setOpenFaq(openFaq === faqId ? -1 : faqId)}
+                  />
+                );
+              })}
+            </div>
+
+            {/* Right Column */}
+            <div className="flex flex-col gap-3 md:gap-4">
+              {faqsRight.map((faq, index) => {
+                const faqId = `right-${index}`;
+
+                return (
+                  <FAQItem
+                    key={faqId}
+                    question={faq.question}
+                    answer={faq.answer}
+                    isOpen={openFaq === faqId}
+                    onToggle={() => setOpenFaq(openFaq === faqId ? -1 : faqId)}
+                  />
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* ================= BOTTOM ACCENT BLOCK ================= */}
-      <div className="h-[36px] w-full bg-[#D9FF7A] sm:h-[45px] md:h-[60px] lg:h-[80px] xl:h-[100px]" />
+      {/* ================= FOOTER CTA ================= */}
+      {/*
+        Figma node 1748:1421 — "FOOTER CTA".
+        A green (#00CE84) rounded banner sitting just above the footer, with a
+        black headline on the left and a white "Let's Chat →" pill on the right.
+        The button opens the same Let's Chat modal as the hero CTA.
+      */}
+      <div className="mx-auto w-full max-w-6xl px-5 pb-10 md:px-12 md:pb-18 lg:pb-20">
+        <div
+          className="flex flex-col items-center gap-5 rounded-[16px] bg-[#00CE84]
+                     px-6 py-7 text-center
+                     sm:flex-row sm:justify-between sm:text-left sm:gap-6
+                     md:px-11 md:py-8"
+        >
+          <p
+            className="max-w-[522px] font-['Bricolage_Grotesque'] font-light leading-[110%]
+                       text-black
+                       text-[16px] sm:text-[18px] md:text-[1.7vw] xl:text-[28px]"
+          >
+            Got more Questions ? Don't worry we got them covered.
+          </p>
+
+          <button
+            onClick={() => setChatOpen(true)}
+            className="flex shrink-0 items-center justify-center gap-1.5 rounded-[12px]
+                       bg-white px-2.5 py-1.5 shadow-sm
+                       transition-transform duration-300 hover:scale-[1.03]
+                       md:px-3.5 md:py-2.5"
+          >
+            <span
+              className="font-['Bricolage_Grotesque'] font-bold text-black
+                         text-[14px] sm:text-[16px] md:text-[1.5vw] xl:text-[18px]"
+            >
+              See more
+            </span>
+            <ArrowRight
+              className="h-5 w-5 text-black md:h-6 md:w-6"
+              strokeWidth={3}
+            />
+          </button>
+        </div>
+      </div>
 
       {/* ================= FOOTER ================= */}
       {/*
@@ -512,26 +610,8 @@ export default function BuyerHeroSection() {
           }}
         />
         {/* ---------- FOOTER CONTENT ---------- */}
-        <div
-          className="mx-auto w-full max-w-[1280px] px-5 py-6
-sm:py-8
-md:py-14 md:pl-[9%]
-
-    lg:pl-[6%]"
-        >
-          <div
-            className="
-    grid
-    grid-cols-1
-gap-6
-
-    md:grid-cols-2
-    md:gap-x-10
-
-    lg:grid-cols-[1.6fr_1fr_1fr_1fr]
-    lg:gap-x-6
-  "
-          >
+        <div className="mx-auto w-full max-w-[1280px] px-5 py-6 sm:py-8 md:py-14 md:pl-[9%] lg:pl-[6%]">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-x-10 lg:grid-cols-[1.6fr_1fr_1fr_1fr] lg:gap-x-6">
             {/* Brand block */}
             <div className="flex flex-col items-center text-center md:items-start md:text-left sm:col-span-2 lg:col-span-1">
               <img
@@ -547,18 +627,7 @@ gap-6
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="
-flex items-center justify-center
-rounded-full
-bg-black text-white
-transition-transform duration-300 hover:scale-110
-
-h-[34px] w-[34px]
-sm:h-[38px] sm:w-[38px]
-md:h-[2.9vw] md:w-[2.9vw]
-md:min-h-[40px] md:min-w-[40px]
-xl:h-[44px] xl:w-[44px]
-"
+                    className="flex items-center justify-center rounded-full bg-black text-white transition-transform duration-300 hover:scale-110 h-[34px] w-[34px] sm:h-[38px] sm:w-[38px] md:h-[2.9vw] md:w-[2.9vw] md:min-h-[40px] md:min-w-[40px] xl:h-[44px] xl:w-[44px]"
                   >
                     <Icon className="text-[15px] sm:text-[17px] xl:text-[20px]" />
                   </a>
@@ -603,24 +672,7 @@ xl:h-[44px] xl:w-[44px]
                       href={href}
                       target={external ? "_blank" : "_self"}
                       rel={external ? "noopener noreferrer" : undefined}
-                      className="
-    group
-    flex
-    justify-center
-    md:justify-start
-    items-center
-    gap-2.5
-    font-['Bricolage_Grotesque']
-    font-medium
-    text-black
-    transition-colors
-    duration-200
-    hover:text-[#00CE84]
-    text-[15px]
-    sm:text-[16px]
-    md:text-[1.05vw]
-    xl:text-[16px]
-  "
+                      className="group flex justify-center md:justify-start items-center gap-2.5 font-['Bricolage_Grotesque'] font-medium text-black transition-colors duration-200 hover:text-[#00CE84] text-[15px] sm:text-[16px] md:text-[1.05vw] xl:text-[16px]"
                     >
                       <Icon className="shrink-0 text-[16px] text-[#00CE84] xl:text-[18px]" />
                       {text}
