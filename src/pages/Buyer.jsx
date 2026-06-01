@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 import {
   FaInstagram,
   FaXTwitter,
@@ -59,6 +59,36 @@ const services = [
     icon: "🔧",
     title: "Parts & Accessories",
     description: "FASTag, dashcam, sensors",
+  },
+];
+
+/* ===================== FAQ DATA ===================== */
+
+const faqs = [
+  {
+    question: "I just got my licence. What car should I buy first?",
+    answer:
+      "For first-time buyers we usually recommend a compact, easy-to-drive hatchback with a strong safety rating and low running costs. Tell us your budget and daily use, and we'll shortlist the right options for you.",
+  },
+  {
+    question: "How does the financing work?",
+    answer:
+      "We partner with HDFC Bank to get you the best loan rate based on your profile. You pick the down payment and tenure that suit you, and we handle the paperwork end to end.",
+  },
+  {
+    question: "What documents do I need?",
+    answer:
+      "Typically your licence, PAN, Aadhaar, address proof, and recent income proof for financing. We'll share an exact checklist once we know your chosen car and loan.",
+  },
+  {
+    question: "Is buying used risky?",
+    answer:
+      "Not when it's inspected properly. Every used car we recommend goes through a thorough multi-point inspection and history check, so you know exactly what you're getting.",
+  },
+  {
+    question: "Do I really need comprehensive insurance?",
+    answer:
+      "For a new or near-new car, comprehensive cover is worth it — it protects against damage, theft, and third-party liability. We'll find you the right cover at the lowest premium.",
   },
 ];
 
@@ -140,9 +170,62 @@ xl:text-[22px]"
   );
 }
 
+/**
+ * FAQItem
+ * A single collapsible accordion row. The black-bordered pill expands to
+ * reveal its answer with a smooth grid-rows height transition (per Figma:
+ * rounded-[20px] border, Bricolage Grotesque SemiBold question, chevron).
+ */
+function FAQItem({ question, answer, isOpen, onToggle }) {
+  return (
+    <div className="overflow-hidden rounded-[20px] border border-black bg-white transition-shadow duration-300">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className="flex w-full items-center justify-between gap-4
+                   px-4 py-3 text-left
+                   md:px-6 md:py-3.5"
+      >
+        <span
+          className="font-['Bricolage_Grotesque'] font-semibold leading-snug text-black
+                     text-sm md:text-base"
+        >
+          {question}
+        </span>
+        <ChevronDown
+          className={`h-5 w-5 shrink-0 text-black transition-transform duration-300
+                      ${isOpen ? "rotate-180" : ""}`}
+          strokeWidth={2.5}
+        />
+      </button>
+
+      {/* Answer — grid-rows trick gives a smooth open/close without measuring height */}
+      <div
+        className={`grid transition-all duration-300 ease-in-out
+                    ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
+      >
+        <div className="overflow-hidden">
+          <p
+            className="px-4 pb-3 pt-0 font-['Bricolage_Grotesque'] font-medium text-[#5A5F55]
+                       leading-[150%]
+                       text-sm md:text-base
+                       md:px-6 md:pb-4"
+          >
+            {answer}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function BuyerHeroSection() {
   // Controls the "Let's Chat" pop-up form
   const [chatOpen, setChatOpen] = useState(false);
+
+  // Controls which FAQ accordion row is open (first row open by default, per Figma)
+  const [openFaq, setOpenFaq] = useState(0);
 
   const handleChatSubmit = (data) => {
     // Hook this up to your lead API / analytics as needed.
@@ -356,6 +439,35 @@ export default function BuyerHeroSection() {
 
         {/* Bottom padding inside the capped container */}
         <div className="h-6 md:h-8 lg:h-10" />
+      </div>
+
+      {/* ================= FAQ SECTION ================= */}
+      {/*
+        Figma node 1791:41 — "Frequently Asked Questions".
+        A white rounded card (16px radius, soft shadow) sitting on the page bg,
+        with a left-aligned heading and a stack of black-bordered accordion rows.
+      */}
+      <div className="mx-auto w-full max-w-6xl px-5 py-10 md:px-8 md:py-14 lg:py-16">
+        <div className="rounded-[20px] bg-white p-6 shadow-[0_4px_4px_rgba(0,0,0,0.25)] md:rounded-[2.5rem] md:p-12 lg:p-16">
+          <h2
+            className="font-['Bricolage_Grotesque'] font-semibold leading-tight text-black
+                       text-2xl md:text-3xl"
+          >
+            Frequently Asked Questions
+          </h2>
+
+          <div className="mt-6 flex flex-col gap-3 md:gap-4">
+            {faqs.map((faq, index) => (
+              <FAQItem
+                key={index}
+                question={faq.question}
+                answer={faq.answer}
+                isOpen={openFaq === index}
+                onToggle={() => setOpenFaq(openFaq === index ? -1 : index)}
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* ================= BOTTOM ACCENT BLOCK ================= */}
