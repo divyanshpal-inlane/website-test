@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa6";
 import BuyerNavbar from "../components/BuyerNavbar";
 import LetsChatModal from "../components/LetsChatModal";
+import { useNavigate } from "react-router-dom";
 
 /**
  * BuyerHeroSection
@@ -257,6 +258,8 @@ export default function BuyerHeroSection() {
 
   const faqsLeft = faqs.slice(0, midpoint);
   const faqsRight = faqs.slice(midpoint);
+
+  const navigate = useNavigate();
 
   const handleChatSubmit = (data) => {
     // Hook this up to your lead API / analytics as needed.
@@ -551,7 +554,7 @@ export default function BuyerHeroSection() {
           </p>
 
           <button
-            onClick={() => setChatOpen(true)}
+            onClick={() => navigate("/buyer/faqs")}
             className="flex shrink-0 items-center justify-center gap-1.5 rounded-[12px]
                        bg-white px-2.5 py-1.5 shadow-sm
                        transition-transform duration-300 hover:scale-[1.03]
