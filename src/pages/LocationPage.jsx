@@ -337,8 +337,7 @@ const Locations = () => {
                   </span>
                   <p className="text-base md:text-md ">
                     We offer a vehicle <br />
-                    for the Driver's <br /> License test day <br />
-                    at an additional cost.
+                    for the Driver's <br /> License test day.
                   </p>
                 </div>
               </div>
