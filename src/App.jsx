@@ -24,6 +24,7 @@ import BlogPage from "./blog/BlogPage";
 import NewCoursePage from "./components/Courses/NewCoursePage";
 import { HelmetProvider } from "react-helmet-async";
 import SignupPopup from "./components/SignupPopup";
+import BuyerFAQs from "./components/FAQ/BuyerFAQs";
 
 import FAQPage from "./components/FAQ/FAQPage"; // Fixed casing to match actual file
 
@@ -88,6 +89,10 @@ const router = createBrowserRouter(
     {
       path: "/faqs", // Standalone route with integrated header/footer
       element: <FAQPage />,
+    },
+    {
+      path: "/buyer/faqs",
+      element: <BuyerFAQs />,
     },
     {
       path: "/thank-you",
