@@ -63,6 +63,51 @@ const services = [
   },
 ];
 
+/* ===================== "EVERYTHING ELSE" DATA ===================== */
+/*
+  Six things Lane handles beyond finding the car. Rendered in a 3-column
+  checkerboard on desktop: even indices get a sky-blue card, odd indices a
+  lime card (per Figma node 2274:2).
+*/
+
+const handledServices = [
+  {
+    icon: "🏦",
+    title: "Financing",
+    description:
+      "HDFC Bank pre-approval. We push for the best rate for your profile, not the bank's default offer.",
+  },
+  {
+    icon: "🛡️",
+    title: "Insurance",
+    description:
+      "Comprehensive, third-party, zero-dep — we compare and get you the lowest premium for the right coverage.",
+  },
+  {
+    icon: "📋",
+    title: "RTO & Paperwork",
+    description:
+      "Registration, transfer, NOC, hypothecation removal. All the stuff you don't want to deal with.",
+  },
+  {
+    icon: "🏷️",
+    title: "FASTag",
+    description: "Activated instantly. No bank visits, no waiting in line.",
+  },
+  {
+    icon: "📹",
+    title: "Dashcam",
+    description:
+      "Record every drive. Essential for insurance claims and your peace of mind.",
+  },
+  {
+    icon: "🅿️",
+    title: "Parking Sensors",
+    description:
+      "Tight spots, no stress. You'll thank us in Koramangala traffic.",
+  },
+];
+
 /* ===================== FAQ DATA ===================== */
 
 const faqs = [
@@ -477,6 +522,111 @@ export default function BuyerHeroSection() {
 
       {/* ================= BOTTOM ACCENT BLOCK ================= */}
       <div className="h-[36px] w-full bg-[#D9FF7A] sm:h-[45px] md:h-[60px] lg:h-[80px] xl:h-[100px]" />
+
+      {/* ================= "EVERYTHING ELSE" SECTION ================= */}
+      {/*
+        Figma node 2274:2 — a full-bleed green band introducing the six
+        post-purchase services Lane handles. The title sits over a lime brush
+        highlight (Tag5.svg), and the cards alternate sky-blue / lime in a
+        checkerboard on desktop.
+      */}
+      <div className="w-full bg-[#20CD86]">
+        <div className="mx-auto w-full max-w-6xl px-5 py-14 md:px-8 md:py-16 lg:py-20">
+          {/* ---------- HEADING BLOCK ---------- */}
+          <div className="text-center">
+            <span className="relative inline-block">
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-[-18px] bottom-[-10px] top-[-10px] -z-0 sm:inset-x-[-24px] sm:bottom-[-13px] sm:top-[-13px] md:inset-x-[-34px] md:bottom-[-18px] md:top-[-18px] translate-y-2"
+                style={{
+                  backgroundImage: "url('/Tag5.svg')",
+                  backgroundSize: "100% 100%",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center",
+                }}
+              />
+              <h2
+                className="relative z-10 font-['glancyr'] font-medium leading-none text-black
+                           text-[30px] sm:text-[35px] md:text-[3.5vw] xl:text-[48px]"
+              >
+                Everything Else?
+              </h2>
+            </span>
+
+            <p
+              className="mt-6 font-['Bricolage_Grotesque'] font-medium leading-none text-black
+                         text-[16px] sm:text-[22px] md:text-[3.0vw] xl:text-[34px]"
+            >
+              We Handle It.
+            </p>
+
+            <p
+              className="mx-auto mt-3 max-w-[640px] font-['Bricolage_Grotesque'] font-medium text-black
+                         text-[14px] sm:text-[16px] md:text-[1.5vw] xl:text-[20px]"
+            >
+              You focus on picking a colour. We'll sort the rest.
+            </p>
+          </div>
+
+          {/* ---------- CARD GRID ---------- */}
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:mt-5 sm:grid-cols-2 sm:gap-5 md:mt-7 md:grid-cols-2 md:gap-x-12 md:gap-y-9 lg:grid-cols-3">
+            {handledServices.map((service, index) => {
+              // Even cards = sky-blue, odd cards = lime (checkerboard per Figma)
+              const cardBg = index % 2 === 0 ? "bg-[#71ECFD]" : "bg-[#DAFD82]";
+
+              return (
+                <div
+                  key={service.title}
+                  className={`group flex flex-col rounded-[16px] px-5 py-5 sm:rounded-[20px] sm:px-7 sm:py-6 md:px-9 md:py-7 ${cardBg}
+                              min-h-[130px] sm:min-h-[160px] md:min-h-[196px]
+                              border-2 border-transparent
+                              transition-all duration-300 ease-out
+                              hover:-translate-y-1.5 hover:border-[#00CE84] hover:bg-white
+                              hover:shadow-[0_12px_28px_rgba(0,0,0,0.12)]`}
+                >
+                  <div className="mb-2.5 text-[20px] leading-none sm:mb-5 sm:text-[24px] md:text-[30px]">
+                    {service.icon}
+                  </div>
+                  <h3
+                    className="font-bold leading-tight text-black
+                               text-[16px] sm:text-[18px] md:text-[1.9vw] xl:text-[26px]"
+                  >
+                    {service.title}
+                  </h3>
+                  <p
+                    className="mt-1.5 font-medium leading-[140%] text-black
+                               text-[12px] sm:text-[13px] md:text-[1.2vw] xl:text-[16px]"
+                  >
+                    {service.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* ---------- "LET'S CHAT" CTA ---------- */}
+          <div className="mt-8 flex justify-center md:mt-12">
+            <button
+              onClick={() => setChatOpen(true)}
+              className="flex shrink-0 items-center justify-center gap-1.5 rounded-[12px]
+                         bg-white px-4 py-2.5 shadow-sm
+                         transition-transform duration-300 hover:scale-[1.03]
+                         md:px-6 md:py-3.5"
+            >
+              <span
+                className="font-['Bricolage_Grotesque'] font-bold text-black
+                           text-[14px] sm:text-[16px] md:text-[1.5vw] xl:text-[18px]"
+              >
+                Let's Chat
+              </span>
+              <ArrowRight
+                className="h-5 w-5 text-black md:h-6 md:w-6"
+                strokeWidth={3}
+              />
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* ================= FAQ SECTION ================= */}
       {/*
