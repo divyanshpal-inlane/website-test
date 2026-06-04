@@ -292,10 +292,7 @@ function FooterHeading({ children }) {
       <span
         className="relative z-10 font-['Bricolage_Grotesque'] font-bold tracking-[-0.01em]
                    text-[#111111]
-                   text-[16px]
-                   sm:text-[18px]
-                   md:text-[1.4vw]
-                   xl:text-[22px]"
+                   text-[clamp(16px,1.7vw,22px)]"
       >
         {children}
       </span>
@@ -544,7 +541,7 @@ export default function BuyerHeroSection() {
               <h1
                 className="mt-0.5 font-['Bricolage_Grotesque'] font-semibold leading-[94%]
                            text-[#00CE84] drop-shadow-sm
-                           text-[32px] sm:text-[40px] md:text-[3.8vw] xl:text-[54px]"
+                           text-[clamp(32px,4.2vw,54px)]"
               >
                 Now let's find your car.
               </h1>
@@ -582,7 +579,7 @@ export default function BuyerHeroSection() {
               <p
                 className="font-['Bricolage_Grotesque'] font-medium text-black
                            leading-[140%] md:leading-[130%]
-                           text-[13px] sm:text-[15px] md:text-[1.4vw] xl:text-[20px]"
+                           text-[clamp(15px,1.55vw,20px)]"
               >
                 Think of us as that friend who's obsessed with cars. We'll help
                 you pick the right one, get you the best loan rate, sort your
@@ -678,22 +675,21 @@ export default function BuyerHeroSection() {
                            min-h-[105px] sm:min-h-[115px] md:min-h-[120px] lg:min-h-[135px]"
               >
                 <div
-                  className="mb-1.5 text-[24px] leading-none
-                             sm:mb-2 sm:text-[26px]
-                             md:text-[2vw] xl:text-[34px]"
+                  className="mb-1.5 leading-none text-[clamp(24px,2.65vw,34px)]
+                             sm:mb-2"
                 >
                   {service.icon}
                 </div>
                 <h3
                   className="font-['Bricolage_Grotesque'] font-bold leading-[120%]
                              text-[#111111]
-                             text-[12px] sm:text-[13px] md:text-[1vw] xl:text-[16px]"
+                             text-[clamp(14px,1.3vw,16px)]"
                 >
                   {service.title}
                 </h3>
                 <p
                   className="mt-1.5 leading-[125%] text-[#7A7F75]
-                             text-[12px] sm:text-[13px] md:text-[1vw] xl:text-[16px]
+                             text-[clamp(14px,1.3vw,16px)]
                              md:mt-2"
                 >
                   {service.description}
@@ -1161,7 +1157,7 @@ export default function BuyerHeroSection() {
                   </h3>
                   <p
                     className="mt-1.5 font-medium leading-[140%] text-black
-                               text-[12px] sm:text-[13px] md:text-[1.2vw] xl:text-[16px]"
+                               text-[clamp(14px,1.3vw,16px)]"
                   >
                     {service.description}
                   </p>
@@ -1264,7 +1260,7 @@ export default function BuyerHeroSection() {
           <p
             className="max-w-[522px] font-['Bricolage_Grotesque'] font-light leading-[110%]
                        text-black
-                       text-[16px] sm:text-[18px] md:text-[1.7vw] xl:text-[28px]"
+                       text-[clamp(16px,2.2vw,28px)]"
           >
             Got more Questions ? Don't worry we got them covered.
           </p>
@@ -1278,7 +1274,7 @@ export default function BuyerHeroSection() {
           >
             <span
               className="font-['Bricolage_Grotesque'] font-bold text-black
-                         text-[14px] sm:text-[16px] md:text-[1.5vw] xl:text-[18px]"
+                         text-[clamp(14px,1.4vw,18px)]"
             >
               See more
             </span>
@@ -1336,7 +1332,7 @@ export default function BuyerHeroSection() {
               <img
                 src="/Lane_Footer_Logo.svg"
                 alt="LANE — By Your Side, Every Ride"
-                className="h-auto w-[120px] sm:w-[140px] md:w-[12vw] xl:w-[200px]"
+                className="h-auto w-[clamp(120px,15.6vw,200px)]"
               />
               <div className="mt-5 flex justify-center md:justify-start items-center gap-3 md:mt-6">
                 {socialLinks.map(({ Icon, href, label }) => (
@@ -1354,7 +1350,7 @@ export default function BuyerHeroSection() {
               </div>
               <p
                 className="mt-5 font-['Bricolage_Grotesque'] font-semibold text-black md:mt-6
-                           text-[18px] sm:text-[20px] md:text-[1.4vw] xl:text-[22px]"
+                           text-[clamp(18px,1.72vw,22px)]"
               >
                 We do cool things here!
               </p>
@@ -1371,7 +1367,7 @@ export default function BuyerHeroSection() {
                         href={link.href}
                         className="font-['Bricolage_Grotesque'] font-medium text-black
                                    transition-colors duration-200 hover:text-[#00CE84]
-                                   text-[15px] sm:text-[16px] md:text-[1.05vw] xl:text-[16px]"
+                                   text-[clamp(15px,1.25vw,16px)]"
                       >
                         {link.text}
                       </a>
@@ -1391,7 +1387,7 @@ export default function BuyerHeroSection() {
                       href={href}
                       target={external ? "_blank" : "_self"}
                       rel={external ? "noopener noreferrer" : undefined}
-                      className="group flex justify-center md:justify-start items-center gap-2.5 font-['Bricolage_Grotesque'] font-medium text-black transition-colors duration-200 hover:text-[#00CE84] text-[15px] sm:text-[16px] md:text-[1.05vw] xl:text-[16px]"
+                      className="group flex justify-center md:justify-start items-center gap-2.5 font-['Bricolage_Grotesque'] font-medium text-black transition-colors duration-200 hover:text-[#00CE84] text-[clamp(15px,1.25vw,16px)]"
                     >
                       <Icon className="shrink-0 text-[16px] text-[#00CE84] xl:text-[18px]" />
                       {text}
