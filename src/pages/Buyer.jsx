@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight, ArrowLeft, ChevronDown } from "lucide-react";
 import {
   FaInstagram,
   FaXTwitter,
@@ -11,6 +11,7 @@ import {
 import BuyerNavbar from "../components/BuyerNavbar";
 import LetsChatModal from "../components/LetsChatModal";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 
 /**
  * BuyerHeroSection
@@ -60,6 +61,66 @@ const services = [
     icon: "🔧",
     title: "Parts & Accessories",
     description: "FASTag, dashcam, sensors",
+  },
+];
+
+/* ===================== CAR FINDER (QUIZ + LEAD FORM) DATA ===================== */
+/*
+  Inlined from the former BuyerCarFinder component (Figma node 2315:2).
+  Budget labels are shared by the quiz and the form's <select> so the values
+  line up when the quiz pre-fills the form.
+*/
+const BUDGET_OPTIONS = [
+  "Under ₹5 Lakh",
+  "₹5–10 Lakh",
+  "₹10–20 Lakh",
+  "₹20 Lakh+",
+];
+const BODY_TYPES = ["Hatchback", "SUV", "Sedan", "MUV"];
+const FUEL_OPTIONS = ["Any", "Petrol", "Diesel", "CNG", "Electric"];
+const TRANSMISSION_OPTIONS = ["Any", "Automatic", "Manual"];
+
+/* The 4 quiz steps. Each `key` maps onto a form field so answers transfer
+   straight across. Transmission's "Either works" maps back to "Any". */
+const QUIZ_STEPS = [
+  {
+    key: "budget",
+    title: "What's your budget for a car?",
+    options: [
+      { icon: "💰", label: "Under ₹5 Lakh" },
+      { icon: "🎯", label: "₹5–10 Lakh" },
+      { icon: "✨", label: "₹10–20 Lakh" },
+      { icon: "🏎️", label: "₹20 Lakh+" },
+    ],
+  },
+  {
+    key: "bodyType",
+    title: "How long have you been driving?",
+    options: [
+      { icon: "🎓", label: "Just got my licence" },
+      { icon: "🌱", label: "Under a year" },
+      { icon: "🚗", label: "1–3 years" },
+      { icon: "🏆", label: "3+ years" },
+    ],
+  },
+  {
+    key: "fuel",
+    title: "How would minor scratches make you feel?",
+    options: [
+      { icon: "😎", label: "Cars get scratches, whatever" },
+      { icon: "😕", label: "I'd be annoyed but fine" },
+      { icon: "😤", label: "Would ruin my week" },
+    ],
+  },
+  {
+    key: "transmission",
+    title: "What matters most?",
+    options: [
+      { icon: "🏦", label: "Saving money" },
+      { icon: "🛡️", label: "Latest safety tech" },
+      { icon: "✅", label: "Warranty & peace of mind" },
+      { icon: "🔧", label: "Low maintenance hassle" },
+    ],
   },
 ];
 
@@ -310,6 +371,132 @@ export default function BuyerHeroSection() {
     // Hook this up to your lead API / analytics as needed.
     console.log("Lets Chat lead submitted:", data);
   };
+
+  /* ============ CAR FINDER STATE (quiz + lead form) ============ */
+  /* QUIZ */
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [quizDone, setQuizDone] = useState(false);
+
+  /* FORM */
+  const [cfName, setCfName] = useState("");
+  const [cfPhone, setCfPhone] = useState("");
+  const [cfBudget, setCfBudget] = useState("");
+  const [showMore, setShowMore] = useState(false);
+  const [bodyTypes, setBodyTypes] = useState([]);
+  const [fuel, setFuel] = useState("Any");
+  const [transmission, setTransmission] = useState("Any");
+  const [cfLoading, setCfLoading] = useState(false);
+  const [cfSubmitted, setCfSubmitted] = useState(false);
+  const [cfErrors, setCfErrors] = useState({});
+
+  const nameRef = useRef(null);
+
+  /* QUIZ LOGIC */
+  const handleSelect = (option) => {
+    const current = QUIZ_STEPS[step];
+    const next = { ...answers, [current.key]: option.label };
+    setAnswers(next);
+
+    if (step < QUIZ_STEPS.length - 1) {
+      setStep((s) => s + 1);
+      return;
+    }
+
+    // Last question answered → push everything into the contact form.
+    setCfBudget(next.budget || "");
+    if (next.bodyType) setBodyTypes([next.bodyType]);
+    if (next.fuel) setFuel(next.fuel);
+    if (next.transmission) {
+      setTransmission(
+        next.transmission === "Either works" ? "Any" : next.transmission,
+      );
+    }
+    setShowMore(true);
+    setQuizDone(true);
+
+    // Nudge the user to the contact form to finish.
+    requestAnimationFrame(() => nameRef.current?.focus());
+  };
+
+  const restartQuiz = () => {
+    setStep(0);
+    setAnswers({});
+    setQuizDone(false);
+  };
+
+  /* FORM LOGIC */
+  const toggleBodyType = (type) => {
+    setBodyTypes((prev) =>
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
+    );
+  };
+
+  const handleCarFinderSubmit = async () => {
+    const newErrors = {};
+
+    if (!cfName.trim()) newErrors.name = "Name is required";
+
+    if (!cfPhone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!/^[6-9]\d{9}$/.test(cfPhone.replace(/\s/g, ""))) {
+      newErrors.phone = "Enter a valid 10-digit phone number";
+    }
+
+    if (!cfBudget) newErrors.budget = "Please select your budget";
+
+    if (Object.keys(newErrors).length > 0) {
+      setCfErrors(newErrors);
+      return;
+    }
+
+    try {
+      setCfLoading(true);
+      setCfErrors({});
+
+      const { error } = await supabase.from("buyer_request").insert([
+        {
+          name: cfName,
+          phone: cfPhone,
+          budget: cfBudget,
+          body_types: bodyTypes,
+          fuel,
+          transmission,
+        },
+      ]);
+
+      if (error) {
+        console.error("Supabase Error:", error);
+        return;
+      }
+
+      setCfSubmitted(true);
+      setCfName("");
+      setCfPhone("");
+      setCfBudget("");
+      setBodyTypes([]);
+      setFuel("Any");
+      setTransmission("Any");
+      setShowMore(false);
+    } catch (err) {
+      console.error("Submission Error:", err);
+      alert("Oops! Unexpected error occurred");
+    } finally {
+      setCfLoading(false);
+    }
+  };
+
+  /* SHARED FIELD CLASSES */
+  const cfInputClass =
+    "w-full rounded-[10px] border-[1.5px] border-[#EDEFEB] bg-white " +
+    "px-[13px] py-[10px] font-['Bricolage_Grotesque'] font-medium " +
+    "text-[#111] outline-none transition-colors focus:border-[#00CE84] " +
+    "text-[14px] md:text-[15px]";
+
+  const cfLabelClass =
+    "mb-1 block font-['Bricolage_Grotesque'] font-semibold uppercase " +
+    "tracking-[0.06em] text-[#3D4038] text-[12px] md:text-[13px]";
+
   return (
     <section className="relative w-full overflow-x-hidden bg-[#F5F5F5]">
       {/* ================= NAVBAR ================= */}
@@ -350,7 +537,7 @@ export default function BuyerHeroSection() {
               <h2
                 className="font-['Bricolage_Grotesque'] font-semibold leading-[106%]
                            text-black drop-shadow-sm
-                           text-[22px] sm:text-[26px] md:text-[2.2vw] xl:text-[32px]"
+                           text-[clamp(22px,2.6vw,32px)]"
               >
                 You learned to drive.
               </h2>
@@ -522,6 +709,385 @@ export default function BuyerHeroSection() {
 
       {/* ================= BOTTOM ACCENT BLOCK ================= */}
       <div className="h-[36px] w-full bg-[#D9FF7A] sm:h-[45px] md:h-[60px] lg:h-[80px] xl:h-[100px]" />
+
+      {/* ================= CAR FINDER (QUIZ + LEAD FORM) ================= */}
+      {/*
+        Figma node 2315:2 — two-column section (inlined from the former
+        BuyerCarFinder component): a 4-step budget/preferences quiz on the left
+        and a quick contact form on the right.
+
+        Sizing is normalised to the rest of the page: same max-w-6xl canvas and
+        px/py rhythm as the "Everything Else" / FAQ sections, scaling in
+        proportion with their neighbours via the page's vw-based type scale.
+
+        Columns are top-aligned (items-start) and each card sizes to its OWN
+        content, so expanding the form's "Add more details" grows ONLY the green
+        card — the purple quiz card keeps its natural dimensions.
+      */}
+      <div className="mx-auto w-full max-w-6xl px-5 py-12 md:px-8 md:py-16 lg:py-20">
+        <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-2 md:gap-8 lg:gap-12">
+          {/* ============================================================
+              LEFT COLUMN — QUIZ
+             ============================================================ */}
+          <div className="flex flex-col items-center gap-4">
+            <div className="text-center">
+              <h2
+                className="font-['Bricolage_Grotesque'] font-semibold tracking-[-0.015em]
+                           text-[#111] leading-[1.05]
+                           text-[clamp(22px,2.6vw,32px)]"
+              >
+                New or used? Let's figure it out.
+              </h2>
+              <p
+                className="mx-auto mt-2 max-w-[430px] font-['Bricolage_Grotesque']
+                           font-medium text-black leading-[140%] md:leading-[130%]
+                           text-[clamp(14px,1.7vw,20px)]"
+              >
+                4 quick questions. No right answer — just what works for you.
+              </p>
+            </div>
+
+            {/* Purple quiz card */}
+            <div
+              className="flex w-full flex-col rounded-[16px] border border-[rgba(209,179,255,0.3)]
+                         bg-[#f3edff] p-5 sm:p-6 md:p-7"
+            >
+              {/* Progress bar */}
+              <div className="mb-5 flex gap-[6px]">
+                {QUIZ_STEPS.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`h-[3px] flex-1 rounded-[3px] transition-colors duration-300 ${
+                      quizDone || i <= step ? "bg-[#00CE84]" : "bg-[#edefeb]"
+                    }`}
+                  />
+                ))}
+              </div>
+
+              {!quizDone ? (
+                <>
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <h3
+                      className="font-['Bricolage_Grotesque'] font-semibold text-[#111]
+                                 leading-[1.1]
+                                 text-[clamp(18px,2.1vw,24px)]"
+                    >
+                      {QUIZ_STEPS[step].title}
+                    </h3>
+                    {step > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setStep((s) => s - 1)}
+                        className="flex shrink-0 items-center gap-1 font-['Bricolage_Grotesque']
+                                   text-[12px] font-semibold text-[#6b5fa0]
+                                   transition-colors hover:text-[#111]"
+                      >
+                        <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2.5} />
+                        Back
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col gap-[14px]">
+                    {QUIZ_STEPS[step].options.map((option) => {
+                      const active =
+                        answers[QUIZ_STEPS[step].key] === option.label;
+                      return (
+                        <button
+                          key={option.label}
+                          type="button"
+                          onClick={() => handleSelect(option)}
+                          className={`flex w-full items-center gap-3 rounded-[10px] border-[1.5px]
+                                      bg-white px-4 text-left transition-all duration-200
+                                      h-[54px] md:h-[58px]
+                                      hover:border-[#00CE84] hover:bg-[#7bf1a8]/25
+                                      hover:shadow-sm
+                                      ${active ? "border-[#00CE84] ring-1 ring-[#00CE84]" : "border-[#edefeb]"}`}
+                        >
+                          <span className="text-[20px] leading-none">
+                            {option.icon}
+                          </span>
+                          <span
+                            className="font-['Bricolage_Grotesque'] font-medium text-[#111]
+                                       text-[clamp(14px,1.4vw,16px)]"
+                          >
+                            {option.label}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              ) : (
+                /* Completion recap */
+                <div className="py-2">
+                  <div className="mb-3 text-[34px] leading-none">✅</div>
+                  <h3
+                    className="font-['Bricolage_Grotesque'] font-semibold text-[#111]
+                               text-[clamp(18px,2.1vw,24px)]"
+                  >
+                    Got your preferences!
+                  </h3>
+                  <p className="mt-2 font-['Bricolage_Grotesque'] text-[14px] font-medium text-[#6b5fa0]">
+                    We've filled them into the form — just add your name and
+                    number and we'll take it from here.
+                  </p>
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {Object.values(answers).map((value) => (
+                      <span
+                        key={value}
+                        className="rounded-full bg-white px-3 py-1.5 font-['Bricolage_Grotesque']
+                                   text-[13px] font-semibold text-[#111]"
+                      >
+                        {value}
+                      </span>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={restartQuiz}
+                    className="mt-5 font-['Bricolage_Grotesque'] text-[13px] font-semibold
+                               text-[#6b5fa0] transition-colors hover:text-[#111]"
+                  >
+                    ↺ Start over
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* ============================================================
+              RIGHT COLUMN — CONTACT FORM
+             ============================================================ */}
+          <div className="flex flex-col items-center gap-4">
+            <div className="text-center">
+              <h2
+                className="font-['Bricolage_Grotesque'] font-semibold tracking-[-0.015em]
+                           text-[#111] leading-[1.05]
+                           text-[clamp(22px,2.6vw,32px)]"
+              >
+                Or just tell us what you need
+              </h2>
+              <p
+                className="mx-auto mt-2 max-w-[410px] font-['Bricolage_Grotesque']
+                           font-medium text-black leading-[140%] md:leading-[130%]
+                           text-[clamp(14px,1.7vw,20px)]"
+              >
+                Name, number, budget — that's enough to get started. We'll call
+                you.
+              </p>
+            </div>
+
+            {/* Green form card */}
+            <div
+              className="flex w-full flex-col rounded-[16px] border border-[rgba(217,255,122,0.4)]
+                         bg-[#f2ffd9] p-5 sm:p-6 md:p-7"
+            >
+              {cfSubmitted ? (
+                /* Inline success state */
+                <div className="flex flex-1 flex-col items-center justify-center py-8 text-center">
+                  <div className="mb-3 text-[40px] leading-none">🎉</div>
+                  <h3 className="font-['Bricolage_Grotesque'] text-[20px] font-extrabold text-[#111]">
+                    Got it!
+                  </h3>
+                  <p className="mx-auto mt-2 max-w-[320px] font-['Bricolage_Grotesque'] text-[14px] font-medium leading-[1.5] text-[#7A7F75]">
+                    We'll call you within 24 hours with car picks that match
+                    your budget. No pressure, just options.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setCfSubmitted(false)}
+                    className="mt-5 inline-flex items-center justify-center rounded-[12px]
+                               bg-[#00CE84] px-7 py-3 font-['Bricolage_Grotesque']
+                               text-[15px] font-bold text-white transition-colors hover:bg-[#00b574]"
+                  >
+                    Done
+                  </button>
+                </div>
+              ) : (
+                <>
+                  {/* NAME */}
+                  <div className="mb-4">
+                    <label className={cfLabelClass} htmlFor="cf-name">
+                      Name
+                    </label>
+                    <input
+                      id="cf-name"
+                      ref={nameRef}
+                      type="text"
+                      placeholder="Your name"
+                      value={cfName}
+                      onChange={(e) => {
+                        setCfName(e.target.value);
+                        setCfErrors((prev) => ({ ...prev, name: "" }));
+                      }}
+                      className={`${cfInputClass} ${cfErrors.name ? "border-red-500" : ""}`}
+                    />
+                    {cfErrors.name && (
+                      <p className="mt-1 text-[12px] font-medium text-red-500">
+                        {cfErrors.name}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* PHONE */}
+                  <div className="mb-4">
+                    <label className={cfLabelClass} htmlFor="cf-phone">
+                      Phone
+                    </label>
+                    <input
+                      id="cf-phone"
+                      type="tel"
+                      placeholder="+91 98XXX XXXXX"
+                      value={cfPhone}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, "");
+                        setCfPhone(value);
+                        setCfErrors((prev) => ({ ...prev, phone: "" }));
+                      }}
+                      className={`${cfInputClass} ${cfErrors.phone ? "border-red-500" : ""}`}
+                    />
+                    {cfErrors.phone && (
+                      <p className="mt-1 text-[12px] font-medium text-red-500">
+                        {cfErrors.phone}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* BUDGET */}
+                  <div className="mb-3">
+                    <label className={cfLabelClass} htmlFor="cf-budget">
+                      Budget
+                    </label>
+                    <select
+                      id="cf-budget"
+                      value={cfBudget}
+                      onChange={(e) => {
+                        setCfBudget(e.target.value);
+                        setCfErrors((prev) => ({ ...prev, budget: "" }));
+                      }}
+                      className={`${cfInputClass} ${cfErrors.budget ? "border-red-500" : ""}`}
+                    >
+                      <option value="">What's your range?</option>
+                      {BUDGET_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                    {cfErrors.budget && (
+                      <p className="mt-1 text-[12px] font-medium text-red-500">
+                        {cfErrors.budget}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* ADD MORE DETAILS (collapsible) */}
+                  <button
+                    type="button"
+                    onClick={() => setShowMore((s) => !s)}
+                    className="mb-3 mt-1 self-start font-['Bricolage_Grotesque'] text-[13px]
+                               font-semibold text-[#00b574]"
+                  >
+                    {showMore ? "−" : "+"} Add more details (optional)
+                  </button>
+
+                  {showMore && (
+                    <div className="mb-1">
+                      {/* BODY TYPE */}
+                      <div className="mb-3">
+                        <label className={cfLabelClass}>Body Type</label>
+                        <div className="flex flex-wrap gap-[5px]">
+                          {BODY_TYPES.map((type) => {
+                            const active = bodyTypes.includes(type);
+                            return (
+                              <button
+                                key={type}
+                                type="button"
+                                onClick={() => toggleBodyType(type)}
+                                className={
+                                  "rounded-full border-[1.5px] px-[14px] py-[6px] " +
+                                  "font-['Bricolage_Grotesque'] text-[13px] font-semibold transition-colors " +
+                                  (active
+                                    ? "border-[#00CE84] bg-[#00CE84] text-white"
+                                    : "border-[#EDEFEB] bg-white text-[#111] hover:border-[#00CE84]")
+                                }
+                              >
+                                {type}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* FUEL + TRANSMISSION */}
+                      <div className="grid grid-cols-1 gap-[10px] sm:grid-cols-2">
+                        <div>
+                          <label className={cfLabelClass} htmlFor="cf-fuel">
+                            Fuel
+                          </label>
+                          <select
+                            id="cf-fuel"
+                            value={fuel}
+                            onChange={(e) => setFuel(e.target.value)}
+                            className={cfInputClass}
+                          >
+                            {FUEL_OPTIONS.map((opt) => (
+                              <option key={opt} value={opt}>
+                                {opt}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className={cfLabelClass} htmlFor="cf-trans">
+                            Transmission
+                          </label>
+                          <select
+                            id="cf-trans"
+                            value={transmission}
+                            onChange={(e) => setTransmission(e.target.value)}
+                            className={cfInputClass}
+                          >
+                            {TRANSMISSION_OPTIONS.map((opt) => (
+                              <option key={opt} value={opt}>
+                                {opt}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* SUBMIT */}
+                  <button
+                    type="button"
+                    onClick={handleCarFinderSubmit}
+                    disabled={cfLoading}
+                    className="mt-4 flex w-full items-center justify-center gap-2
+                               rounded-[12px] bg-[#00CE84] py-[12px]
+                               font-['Bricolage_Grotesque'] text-[15px] font-bold text-white
+                               transition-colors hover:bg-[#00b574]
+                               disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {cfLoading ? "Submitting..." : "Let's Talk"}
+                    {!cfLoading && (
+                      <ArrowRight className="h-4 w-4" strokeWidth={3} />
+                    )}
+                  </button>
+
+                  <p className="mt-[6px] font-['Bricolage_Grotesque'] text-[12px] text-[#7A7F75]">
+                    We'll call within 24 hours. No spam, no pressure.
+                  </p>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* ================= "EVERYTHING ELSE" SECTION ================= */}
       {/*
