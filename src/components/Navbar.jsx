@@ -174,7 +174,7 @@ const Navbar2 = ({
           <ListItem
             button
             component={Link}
-            to="/sell-your-car"
+            to="/sell-used-car"
             onClick={handleClose}
           >
             <ListItemText
