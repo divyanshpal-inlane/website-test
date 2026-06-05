@@ -750,13 +750,6 @@ export default function BuyerHeroSection() {
       setCfLoading(true);
       setCfErrors({});
 
-      // Derive a verdict string to store alongside the lead, if the quiz was taken.
-      let recommendation = null;
-      if (quizDone) {
-        recommendation =
-          usedScore > newScore ? "used" : newScore > usedScore ? "new" : "tie";
-      }
-
       const { error } = await supabase.from("buyer_request").insert([
         {
           name: cfName,
@@ -765,12 +758,12 @@ export default function BuyerHeroSection() {
           body_types: bodyTypes,
           fuel,
           transmission,
-          recommendation, // requires a nullable "recommendation" text column; safe to drop if not present
         },
       ]);
 
       if (error) {
         console.error("Supabase Error:", error);
+        setCfErrors({ submit: "Something went wrong. Please try again." });
         return;
       }
 
@@ -982,344 +975,349 @@ export default function BuyerHeroSection() {
       <div className="h-[36px] w-full bg-[#D9FF7A] sm:h-[45px] md:h-[60px] lg:h-[80px] xl:h-[100px]" />
 
       {/* ================= CAR FINDER (QUIZ + LEAD FORM) ================= */}
-      <div className="mx-auto w-full max-w-6xl px-5 py-12 md:px-8 md:py-16 lg:py-20">
-        <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-2 md:gap-8 lg:gap-12">
-          {/* ============================================================
+      <div className="w-full bg-[#D1B3FF]">
+        <div className="mx-auto w-full max-w-6xl px-5 py-12 md:px-8 md:py-16 lg:py-20">
+          <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-2 md:gap-8 lg:gap-12">
+            {/* ============================================================
               LEFT COLUMN — QUIZ
              ============================================================ */}
-          <div className="flex flex-col items-center gap-4">
-            <div className="text-center">
-              <h2
-                className="font-['Bricolage_Grotesque'] font-semibold tracking-[-0.015em]
+            <div className="flex flex-col items-center gap-4">
+              <div className="text-center">
+                <h2
+                  className="font-['Bricolage_Grotesque'] font-semibold tracking-[-0.015em]
                            text-[#111] leading-[1.05]
                            text-[clamp(22px,2.6vw,32px)]"
-              >
-                New or used? Let's figure it out.
-              </h2>
-              <p
-                className="mx-auto mt-2 max-w-[430px] font-['Bricolage_Grotesque']
+                >
+                  New or used? Let's figure it out.
+                </h2>
+                <p
+                  className="mx-auto mt-2 max-w-[430px] font-['Bricolage_Grotesque']
                            font-medium text-black leading-[140%] md:leading-[130%]
                            text-[clamp(14px,1.7vw,20px)]"
-              >
-                4 quick questions. No right answer — just what works for you.
-              </p>
-            </div>
-
-            {/* Purple quiz card */}
-            <div
-              className="flex w-full flex-col rounded-[16px] border border-[rgba(209,179,255,0.3)]
-                         bg-[#f3edff] p-5 sm:p-6 md:p-7"
-            >
-              {/* Progress bar */}
-              <div className="mb-5 flex gap-[6px]">
-                {QUIZ_STEPS.map((_, i) => (
-                  <span
-                    key={i}
-                    className={`h-[3px] flex-1 rounded-[3px] transition-colors duration-300 ${
-                      quizDone || i <= step ? "bg-[#00CE84]" : "bg-[#edefeb]"
-                    }`}
-                  />
-                ))}
+                >
+                  4 quick questions. No right answer — just what works for you.
+                </p>
               </div>
 
-              {!quizDone ? (
-                <>
-                  <div className="mb-4 flex items-center justify-between gap-3">
-                    <h3
-                      className="font-['Bricolage_Grotesque'] font-semibold text-[#111]
+              {/* Purple quiz card */}
+              <div
+                className="flex w-full flex-col rounded-[16px] border border-[rgba(209,179,255,0.3)]
+                         bg-[#f3edff] p-5 sm:p-6 md:p-7"
+              >
+                {/* Progress bar */}
+                <div className="mb-5 flex gap-[6px]">
+                  {QUIZ_STEPS.map((_, i) => (
+                    <span
+                      key={i}
+                      className={`h-[3px] flex-1 rounded-[3px] transition-colors duration-300 ${
+                        quizDone || i <= step ? "bg-[#00CE84]" : "bg-[#edefeb]"
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                {!quizDone ? (
+                  <>
+                    <div className="mb-4 flex items-center justify-between gap-3">
+                      <h3
+                        className="font-['Bricolage_Grotesque'] font-semibold text-[#111]
                                  leading-[1.1]
                                  text-[clamp(18px,2.1vw,24px)]"
-                    >
-                      {QUIZ_STEPS[step].title}
-                    </h3>
-                    {step > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => setStep((s) => s - 1)}
-                        className="flex shrink-0 items-center gap-1 font-['Bricolage_Grotesque']
+                      >
+                        {QUIZ_STEPS[step].title}
+                      </h3>
+                      {step > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => setStep((s) => s - 1)}
+                          className="flex shrink-0 items-center gap-1 font-['Bricolage_Grotesque']
                                    text-[12px] font-semibold text-[#6b5fa0]
                                    transition-colors hover:text-[#111]"
-                      >
-                        <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2.5} />
-                        Back
-                      </button>
-                    )}
-                  </div>
+                        >
+                          <ArrowLeft
+                            className="h-3.5 w-3.5"
+                            strokeWidth={2.5}
+                          />
+                          Back
+                        </button>
+                      )}
+                    </div>
 
-                  <div className="flex flex-col gap-[14px]">
-                    {QUIZ_STEPS[step].options.map((option) => {
-                      const active =
-                        answers[QUIZ_STEPS[step].key] === option.tag;
-                      return (
-                        <button
-                          key={option.label}
-                          type="button"
-                          onClick={() => handleSelect(option)}
-                          className={`flex w-full items-center gap-3 rounded-[10px] border-[1.5px]
+                    <div className="flex flex-col gap-[14px]">
+                      {QUIZ_STEPS[step].options.map((option) => {
+                        const active =
+                          answers[QUIZ_STEPS[step].key] === option.tag;
+                        return (
+                          <button
+                            key={option.label}
+                            type="button"
+                            onClick={() => handleSelect(option)}
+                            className={`flex w-full items-center gap-3 rounded-[10px] border-[1.5px]
                                       bg-white px-4 text-left transition-all duration-200
                                       h-[54px] md:h-[58px]
                                       hover:border-[#00CE84] hover:bg-[#7bf1a8]/25
                                       hover:shadow-sm
                                       ${active ? "border-[#00CE84] ring-1 ring-[#00CE84]" : "border-[#edefeb]"}`}
-                        >
-                          <span className="text-[20px] leading-none">
-                            {option.icon}
-                          </span>
-                          <span
-                            className="font-['Bricolage_Grotesque'] font-medium text-[#111]
-                                       text-[clamp(14px,1.4vw,16px)]"
                           >
-                            {option.label}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                            <span className="text-[20px] leading-none">
+                              {option.icon}
+                            </span>
+                            <span
+                              className="font-['Bricolage_Grotesque'] font-medium text-[#111]
+                                       text-[clamp(14px,1.4vw,16px)]"
+                            >
+                              {option.label}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
 
-                  <p className="mt-4 text-center font-['Bricolage_Grotesque'] text-[12px] font-medium text-[#6b5fa0]">
-                    {step < QUIZ_STEPS.length - 1
-                      ? `Question ${step + 1} of ${QUIZ_STEPS.length}`
-                      : "Last one — pick to see your result →"}
-                  </p>
-                </>
-              ) : (
-                /* RESULT SCREEN */
-                <QuizResult
-                  answers={answers}
-                  newScore={newScore}
-                  usedScore={usedScore}
-                  onTalkToLane={goToForm}
-                  onRetake={restartQuiz}
-                />
-              )}
+                    <p className="mt-4 text-center font-['Bricolage_Grotesque'] text-[12px] font-medium text-[#6b5fa0]">
+                      {step < QUIZ_STEPS.length - 1
+                        ? `Question ${step + 1} of ${QUIZ_STEPS.length}`
+                        : "Last one — pick to see your result →"}
+                    </p>
+                  </>
+                ) : (
+                  /* RESULT SCREEN */
+                  <QuizResult
+                    answers={answers}
+                    newScore={newScore}
+                    usedScore={usedScore}
+                    onTalkToLane={goToForm}
+                    onRetake={restartQuiz}
+                  />
+                )}
+              </div>
             </div>
-          </div>
 
-          {/* ============================================================
+            {/* ============================================================
               RIGHT COLUMN — CONTACT FORM
              ============================================================ */}
-          <div ref={formRef} className="flex flex-col items-center gap-4">
-            <div className="text-center">
-              <h2
-                className="font-['Bricolage_Grotesque'] font-semibold tracking-[-0.015em]
+            <div ref={formRef} className="flex flex-col items-center gap-4">
+              <div className="text-center">
+                <h2
+                  className="font-['Bricolage_Grotesque'] font-semibold tracking-[-0.015em]
                            text-[#111] leading-[1.05]
                            text-[clamp(22px,2.6vw,32px)]"
-              >
-                Or just tell us what you need
-              </h2>
-              <p
-                className="mx-auto mt-2 max-w-[410px] font-['Bricolage_Grotesque']
+                >
+                  Or just tell us what you need
+                </h2>
+                <p
+                  className="mx-auto mt-2 max-w-[410px] font-['Bricolage_Grotesque']
                            font-medium text-black leading-[140%] md:leading-[130%]
                            text-[clamp(14px,1.7vw,20px)]"
-              >
-                Name, number, budget — that's enough to get started. We'll call
-                you.
-              </p>
-            </div>
+                >
+                  Name, number, budget — that's enough to get started. We'll
+                  call you.
+                </p>
+              </div>
 
-            {/* Green form card */}
-            <div
-              className="flex w-full flex-col rounded-[16px] border border-[rgba(217,255,122,0.4)]
+              {/* Green form card */}
+              <div
+                className="flex w-full flex-col rounded-[16px] border border-[rgba(217,255,122,0.4)]
                          bg-[#f2ffd9] p-5 sm:p-6 md:p-7"
-            >
-              {cfSubmitted ? (
-                <div className="flex flex-1 flex-col items-center justify-center py-8 text-center">
-                  <div className="mb-3 text-[40px] leading-none">🎉</div>
-                  <h3 className="font-['Bricolage_Grotesque'] text-[20px] font-extrabold text-[#111]">
-                    Got it!
-                  </h3>
-                  <p className="mx-auto mt-2 max-w-[320px] font-['Bricolage_Grotesque'] text-[14px] font-medium leading-[1.5] text-[#7A7F75]">
-                    We'll call you within 24 hours with car picks that match
-                    your budget. No pressure, just options.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setCfSubmitted(false)}
-                    className="mt-5 inline-flex items-center justify-center rounded-[12px]
+              >
+                {cfSubmitted ? (
+                  <div className="flex flex-1 flex-col items-center justify-center py-8 text-center">
+                    <div className="mb-3 text-[40px] leading-none">🎉</div>
+                    <h3 className="font-['Bricolage_Grotesque'] text-[20px] font-extrabold text-[#111]">
+                      Got it!
+                    </h3>
+                    <p className="mx-auto mt-2 max-w-[320px] font-['Bricolage_Grotesque'] text-[14px] font-medium leading-[1.5] text-[#7A7F75]">
+                      We'll call you within 24 hours with car picks that match
+                      your budget. No pressure, just options.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setCfSubmitted(false)}
+                      className="mt-5 inline-flex items-center justify-center rounded-[12px]
                                bg-[#00CE84] px-7 py-3 font-['Bricolage_Grotesque']
                                text-[15px] font-bold text-white transition-colors hover:bg-[#00b574]"
-                  >
-                    Done
-                  </button>
-                </div>
-              ) : (
-                <>
-                  {/* NAME */}
-                  <div className="mb-4">
-                    <label className={cfLabelClass} htmlFor="cf-name">
-                      Name
-                    </label>
-                    <input
-                      id="cf-name"
-                      ref={nameRef}
-                      type="text"
-                      placeholder="Your name"
-                      value={cfName}
-                      onChange={(e) => {
-                        setCfName(e.target.value);
-                        setCfErrors((prev) => ({ ...prev, name: "" }));
-                      }}
-                      className={`${cfInputClass} ${cfErrors.name ? "border-red-500" : ""}`}
-                    />
-                    {cfErrors.name && (
-                      <p className="mt-1 text-[12px] font-medium text-red-500">
-                        {cfErrors.name}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* PHONE */}
-                  <div className="mb-4">
-                    <label className={cfLabelClass} htmlFor="cf-phone">
-                      Phone
-                    </label>
-                    <input
-                      id="cf-phone"
-                      type="tel"
-                      placeholder="+91 98XXX XXXXX"
-                      value={cfPhone}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, "");
-                        setCfPhone(value);
-                        setCfErrors((prev) => ({ ...prev, phone: "" }));
-                      }}
-                      className={`${cfInputClass} ${cfErrors.phone ? "border-red-500" : ""}`}
-                    />
-                    {cfErrors.phone && (
-                      <p className="mt-1 text-[12px] font-medium text-red-500">
-                        {cfErrors.phone}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* BUDGET */}
-                  <div className="mb-3">
-                    <label className={cfLabelClass} htmlFor="cf-budget">
-                      Budget
-                    </label>
-                    <select
-                      id="cf-budget"
-                      value={cfBudget}
-                      onChange={(e) => {
-                        setCfBudget(e.target.value);
-                        setCfErrors((prev) => ({ ...prev, budget: "" }));
-                      }}
-                      className={`${cfInputClass} ${cfErrors.budget ? "border-red-500" : ""}`}
                     >
-                      <option value="">What's your range?</option>
-                      {BUDGET_OPTIONS.map((opt) => (
-                        <option key={opt} value={opt}>
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
-                    {cfErrors.budget && (
-                      <p className="mt-1 text-[12px] font-medium text-red-500">
-                        {cfErrors.budget}
-                      </p>
-                    )}
+                      Done
+                    </button>
                   </div>
-
-                  {/* ADD MORE DETAILS (collapsible) */}
-                  <button
-                    type="button"
-                    onClick={() => setShowMore((s) => !s)}
-                    className="mb-3 mt-1 self-start font-['Bricolage_Grotesque'] text-[13px]
-                               font-semibold text-[#00b574]"
-                  >
-                    {showMore ? "−" : "+"} Add more details (optional)
-                  </button>
-
-                  {showMore && (
-                    <div className="mb-1">
-                      {/* BODY TYPE */}
-                      <div className="mb-3">
-                        <label className={cfLabelClass}>Body Type</label>
-                        <div className="flex flex-wrap gap-[5px]">
-                          {BODY_TYPES.map((type) => {
-                            const active = bodyTypes.includes(type);
-                            return (
-                              <button
-                                key={type}
-                                type="button"
-                                onClick={() => toggleBodyType(type)}
-                                className={
-                                  "rounded-full border-[1.5px] px-[14px] py-[6px] " +
-                                  "font-['Bricolage_Grotesque'] text-[13px] font-semibold transition-colors " +
-                                  (active
-                                    ? "border-[#00CE84] bg-[#00CE84] text-white"
-                                    : "border-[#EDEFEB] bg-white text-[#111] hover:border-[#00CE84]")
-                                }
-                              >
-                                {type}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-
-                      {/* FUEL + TRANSMISSION */}
-                      <div className="grid grid-cols-1 gap-[10px] sm:grid-cols-2">
-                        <div>
-                          <label className={cfLabelClass} htmlFor="cf-fuel">
-                            Fuel
-                          </label>
-                          <select
-                            id="cf-fuel"
-                            value={fuel}
-                            onChange={(e) => setFuel(e.target.value)}
-                            className={cfInputClass}
-                          >
-                            {FUEL_OPTIONS.map((opt) => (
-                              <option key={opt} value={opt}>
-                                {opt}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                        <div>
-                          <label className={cfLabelClass} htmlFor="cf-trans">
-                            Transmission
-                          </label>
-                          <select
-                            id="cf-trans"
-                            value={transmission}
-                            onChange={(e) => setTransmission(e.target.value)}
-                            className={cfInputClass}
-                          >
-                            {TRANSMISSION_OPTIONS.map((opt) => (
-                              <option key={opt} value={opt}>
-                                {opt}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
+                ) : (
+                  <>
+                    {/* NAME */}
+                    <div className="mb-4">
+                      <label className={cfLabelClass} htmlFor="cf-name">
+                        Name
+                      </label>
+                      <input
+                        id="cf-name"
+                        ref={nameRef}
+                        type="text"
+                        placeholder="Your name"
+                        value={cfName}
+                        onChange={(e) => {
+                          setCfName(e.target.value);
+                          setCfErrors((prev) => ({ ...prev, name: "" }));
+                        }}
+                        className={`${cfInputClass} ${cfErrors.name ? "border-red-500" : ""}`}
+                      />
+                      {cfErrors.name && (
+                        <p className="mt-1 text-[12px] font-medium text-red-500">
+                          {cfErrors.name}
+                        </p>
+                      )}
                     </div>
-                  )}
 
-                  {/* SUBMIT */}
-                  <button
-                    type="button"
-                    onClick={handleCarFinderSubmit}
-                    disabled={cfLoading}
-                    className="mt-4 flex w-full items-center justify-center gap-2
+                    {/* PHONE */}
+                    <div className="mb-4">
+                      <label className={cfLabelClass} htmlFor="cf-phone">
+                        Phone
+                      </label>
+                      <input
+                        id="cf-phone"
+                        type="tel"
+                        placeholder="98XXX XXXXX"
+                        value={cfPhone}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, "");
+                          setCfPhone(value);
+                          setCfErrors((prev) => ({ ...prev, phone: "" }));
+                        }}
+                        className={`${cfInputClass} ${cfErrors.phone ? "border-red-500" : ""}`}
+                      />
+                      {cfErrors.phone && (
+                        <p className="mt-1 text-[12px] font-medium text-red-500">
+                          {cfErrors.phone}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* BUDGET */}
+                    <div className="mb-3">
+                      <label className={cfLabelClass} htmlFor="cf-budget">
+                        Budget
+                      </label>
+                      <select
+                        id="cf-budget"
+                        value={cfBudget}
+                        onChange={(e) => {
+                          setCfBudget(e.target.value);
+                          setCfErrors((prev) => ({ ...prev, budget: "" }));
+                        }}
+                        className={`${cfInputClass} ${cfErrors.budget ? "border-red-500" : ""}`}
+                      >
+                        <option value="">What's your range?</option>
+                        {BUDGET_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                      {cfErrors.budget && (
+                        <p className="mt-1 text-[12px] font-medium text-red-500">
+                          {cfErrors.budget}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* ADD MORE DETAILS (collapsible) */}
+                    <button
+                      type="button"
+                      onClick={() => setShowMore((s) => !s)}
+                      className="mb-3 mt-1 self-start font-['Bricolage_Grotesque'] text-[13px]
+                               font-semibold text-[#00b574]"
+                    >
+                      {showMore ? "−" : "+"} Add more details (optional)
+                    </button>
+
+                    {showMore && (
+                      <div className="mb-1">
+                        {/* BODY TYPE */}
+                        <div className="mb-3">
+                          <label className={cfLabelClass}>Body Type</label>
+                          <div className="flex flex-wrap gap-[5px]">
+                            {BODY_TYPES.map((type) => {
+                              const active = bodyTypes.includes(type);
+                              return (
+                                <button
+                                  key={type}
+                                  type="button"
+                                  onClick={() => toggleBodyType(type)}
+                                  className={
+                                    "rounded-full border-[1.5px] px-[14px] py-[6px] " +
+                                    "font-['Bricolage_Grotesque'] text-[13px] font-semibold transition-colors " +
+                                    (active
+                                      ? "border-[#00CE84] bg-[#00CE84] text-white"
+                                      : "border-[#EDEFEB] bg-white text-[#111] hover:border-[#00CE84]")
+                                  }
+                                >
+                                  {type}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* FUEL + TRANSMISSION */}
+                        <div className="grid grid-cols-1 gap-[10px] sm:grid-cols-2">
+                          <div>
+                            <label className={cfLabelClass} htmlFor="cf-fuel">
+                              Fuel
+                            </label>
+                            <select
+                              id="cf-fuel"
+                              value={fuel}
+                              onChange={(e) => setFuel(e.target.value)}
+                              className={cfInputClass}
+                            >
+                              {FUEL_OPTIONS.map((opt) => (
+                                <option key={opt} value={opt}>
+                                  {opt}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <div>
+                            <label className={cfLabelClass} htmlFor="cf-trans">
+                              Transmission
+                            </label>
+                            <select
+                              id="cf-trans"
+                              value={transmission}
+                              onChange={(e) => setTransmission(e.target.value)}
+                              className={cfInputClass}
+                            >
+                              {TRANSMISSION_OPTIONS.map((opt) => (
+                                <option key={opt} value={opt}>
+                                  {opt}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* SUBMIT */}
+                    <button
+                      type="button"
+                      onClick={handleCarFinderSubmit}
+                      disabled={cfLoading}
+                      className="mt-4 flex w-full items-center justify-center gap-2
                                rounded-[12px] bg-[#00CE84] py-[12px]
                                font-['Bricolage_Grotesque'] text-[15px] font-bold text-white
                                transition-colors hover:bg-[#00b574]
                                disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {cfLoading ? "Submitting..." : "Let's Talk"}
-                    {!cfLoading && (
-                      <ArrowRight className="h-4 w-4" strokeWidth={3} />
-                    )}
-                  </button>
+                    >
+                      {cfLoading ? "Submitting..." : "Let's Talk"}
+                      {!cfLoading && (
+                        <ArrowRight className="h-4 w-4" strokeWidth={3} />
+                      )}
+                    </button>
 
-                  <p className="mt-[6px] font-['Bricolage_Grotesque'] text-[12px] text-[#7A7F75]">
-                    We'll call within 24 hours. No spam, no pressure.
-                  </p>
-                </>
-              )}
+                    <p className="mt-[6px] font-['Bricolage_Grotesque'] text-[12px] text-[#7A7F75]">
+                      We'll call within 24 hours. No spam, no pressure.
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
