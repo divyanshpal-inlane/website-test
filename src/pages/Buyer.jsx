@@ -262,6 +262,55 @@ function buildBreakdown(answers) {
   ];
 }
 
+/* ===================== "NEW vs USED — THE HONEST BREAKDOWN" DATA =====================
+   Static comparison table shown below the quiz. `winner` decides which side's
+   text is highlighted green/bold (the better option for that category).
+======================================================================================= */
+const HONEST_BREAKDOWN = [
+  {
+    category: "Price",
+    newText: "₹5L – ₹25L+",
+    usedText: "₹2L – ₹15L (30-50% less)",
+    winner: "used",
+  },
+  {
+    category: "Warranty",
+    newText: "2–5 yr manufacturer",
+    usedText: "Limited or none",
+    winner: "new",
+  },
+  {
+    category: "Insurance",
+    newText: "Higher",
+    usedText: "Lower premium",
+    winner: "used",
+  },
+  {
+    category: "Depreciation",
+    newText: "15–20% yr 1",
+    usedText: "Already past the big drop",
+    winner: "used",
+  },
+  {
+    category: "Safety Tech",
+    newText: "Latest NCAP, ADAS",
+    usedText: "Depends on year",
+    winner: "new",
+  },
+  {
+    category: "Loan Rates",
+    newText: "8.5–10%",
+    usedText: "10–14%",
+    winner: "new",
+  },
+  {
+    category: "First-timer Stress",
+    newText: "Every scratch hurts",
+    usedText: "It's fine, you're learning",
+    winner: "used",
+  },
+];
+
 /* ===================== "EVERYTHING ELSE" DATA ===================== */
 const handledServices = [
   {
@@ -1320,6 +1369,149 @@ export default function BuyerHeroSection() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* ================= NEW vs USED — THE HONEST BREAKDOWN ================= */}
+      <div className="mx-auto w-full max-w-6xl px-5 pb-12 pt-11 md:px-8 md:pt-15 md:pb-16 lg:pb-20 lg:pt-19">
+        {/* ---------- HEADER ---------- */}
+        <div className="text-center">
+          <span className="relative inline-block ">
+            <span
+              aria-hidden="true"
+              className="absolute inset-x-[-24px] bottom-[-13px] top-[-8px] -z-0
+                         sm:inset-x-[-34px] md:inset-x-[-44px] md:bottom-[-15px] md:top-[-12px]"
+              style={{
+                backgroundImage: "url('/Tag5.svg')",
+                backgroundSize: "100% 100%",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+              }}
+            />
+            <h2
+              className="relative z-10 font-['glancyr'] font-medium leading-none text-black
+                         text-[30px] sm:text-[35px] md:text-[3.5vw] xl:text-[48px]"
+            >
+              New vs Used
+            </h2>
+          </span>
+
+          <p
+            className="mt-6 font-['Bricolage_Grotesque'] font-medium capitalize leading-[1.18] text-black
+                       text-[16px] sm:text-[22px] md:text-[3.0vw] xl:text-[34px]"
+          >
+            The Honest Breakdown
+          </p>
+          <p
+            className="mx-auto mt-3 max-w-[640px] font-['Bricolage_Grotesque'] font-medium text-black
+                       text-[14px] sm:text-[16px] md:text-[1.5vw] xl:text-[20px]"
+          >
+            No agenda. Just the facts so you can decide.
+          </p>
+        </div>
+
+        {/* ---------- COMPARISON TABLE (tablet / desktop) ---------- */}
+        <div className="mt-8 hidden overflow-hidden rounded-[18px] border border-[#edefeb] bg-white md:mt-10 sm:block">
+          {/* Header row */}
+          <div className="grid grid-cols-[1fr_1.1fr_1.3fr] border-b border-[#edefeb] bg-[#f0faf5]">
+            <div className="px-3 py-3 md:px-6 md:py-4" />
+            <div
+              className="px-3 py-3 font-['Bricolage_Grotesque'] font-semibold uppercase tracking-[0.04em] text-[#00b574]
+                         text-[clamp(15px,1.4vw,18px)]
+                         md:px-6 md:py-4"
+            >
+              New Car
+            </div>
+            <div
+              className="px-3 py-3 font-['Bricolage_Grotesque'] font-semibold uppercase tracking-[0.04em] text-[#00b574]
+                         text-[clamp(15px,1.4vw,18px)]
+                         md:px-6 md:py-4"
+            >
+              Used Car
+            </div>
+          </div>
+
+          {/* Body rows */}
+          {HONEST_BREAKDOWN.map((row) => (
+            <div
+              key={row.category}
+              className="grid grid-cols-[1fr_1.1fr_1.3fr] border-b border-[#edefeb] last:border-b-0"
+            >
+              <div
+                className="px-3 py-3 font-['Bricolage_Grotesque'] font-bold text-[#111]
+                           text-[clamp(15px,1.4vw,18px)]
+                           md:px-6 md:py-4"
+              >
+                {row.category}
+              </div>
+              <div
+                className={`px-3 py-3 font-['Bricolage_Grotesque'] leading-snug
+                            text-[clamp(15px,1.4vw,18px)]
+                            md:px-6 md:py-4 ${
+                              row.winner === "new"
+                                ? "font-bold text-[#00b574]"
+                                : "font-normal text-[#111]"
+                            }`}
+              >
+                {row.newText}
+              </div>
+              <div
+                className={`px-3 py-3 font-['Bricolage_Grotesque'] leading-snug
+                            text-[clamp(15px,1.4vw,18px)]
+                            md:px-6 md:py-4 ${
+                              row.winner === "used"
+                                ? "font-bold text-[#00b574]"
+                                : "font-normal text-[#111]"
+                            }`}
+              >
+                {row.usedText}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ---------- COMPARISON CARDS (mobile) ---------- */}
+        <div className="mt-8 space-y-3 sm:hidden">
+          {HONEST_BREAKDOWN.map((row) => (
+            <div
+              key={row.category}
+              className="overflow-hidden rounded-[16px] border border-[#edefeb] bg-white"
+            >
+              <div className="border-b border-[#edefeb] bg-[#f0faf5] px-4 py-2.5 font-['Bricolage_Grotesque'] text-[15px] font-bold text-[#111]">
+                {row.category}
+              </div>
+              <div className="grid grid-cols-2 divide-x divide-[#edefeb]">
+                <div className="px-4 py-3">
+                  <div className="font-['Bricolage_Grotesque'] text-[12px] font-semibold uppercase tracking-[0.04em] text-[#00b574]">
+                    New Car
+                  </div>
+                  <div
+                    className={`mt-1 font-['Bricolage_Grotesque'] text-[15px] leading-snug ${
+                      row.winner === "new"
+                        ? "font-bold text-[#00b574]"
+                        : "font-normal text-[#111]"
+                    }`}
+                  >
+                    {row.newText}
+                  </div>
+                </div>
+                <div className="px-4 py-3">
+                  <div className="font-['Bricolage_Grotesque'] text-[12px] font-semibold uppercase tracking-[0.04em] text-[#00b574]">
+                    Used Car
+                  </div>
+                  <div
+                    className={`mt-1 font-['Bricolage_Grotesque'] text-[15px] leading-snug ${
+                      row.winner === "used"
+                        ? "font-bold text-[#00b574]"
+                        : "font-normal text-[#111]"
+                    }`}
+                  >
+                    {row.usedText}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
