@@ -46,27 +46,37 @@ const Footer = () => {
 
   const contactInfo = [
     { Icon: PhoneIcon, text: "+91 73380 98798", href: "tel:+917338098798" },
-    { Icon: EmailIcon, text: "team@inlane.in", href: "mailto:team@inlane.in" },
     {
       Icon: WhatsAppIcon,
       text: "WhatsApp",
       href: "https://wa.me/917338098798",
     },
+    { Icon: EmailIcon, text: "team@inlane.in", href: "mailto:team@inlane.in" },
+  ];
 
-    // NEW SUPPORT EMAIL
+  const contactSections = [
     {
-      Icon: EmailIcon,
-      text: "support@inlane.in",
-      href: "mailto:support@inlane.in",
+      title: "RTO Services",
+      items: [{ Icon: PhoneIcon, text: "9900047562", href: "tel:9900047562" }],
     },
-    // Customer Support Phone Number
-    { Icon: PhoneIcon, text: "+91 63607 39863", href: "tel:+916360739863" },
     {
-      Icon: LocationIcon,
-      text: "3rd floor, Akruti Chambers, Stage 2, Hoysala Nagar, Indiranagar, Bengaluru, Karnataka 560038",
-      href: "https://maps.google.com/?q=3rd+floor,+Akruti+Chambers,+Stage+2,+Hoysala+Nagar,+Indiranagar,+Bengaluru,+Karnataka+560038",
+      title: "Customer Support",
+      items: [
+        { Icon: PhoneIcon, text: "+91 63607 39863", href: "tel:+916360739863" },
+        {
+          Icon: EmailIcon,
+          text: "support@inlane.in",
+          href: "mailto:support@inlane.in",
+        },
+      ],
     },
   ];
+
+  const locationInfo = {
+    Icon: LocationIcon,
+    text: "3rd floor, Akruti Chambers, Stage 2, Hoysala Nagar, Indiranagar, Bengaluru, Karnataka 560038",
+    href: "https://maps.google.com/?q=3rd+floor,+Akruti+Chambers,+Stage+2,+Hoysala+Nagar,+Indiranagar,+Bengaluru,+Karnataka+560038",
+  };
 
   const companyLinks = [
     { text: "About us", href: "/about-us" },
@@ -171,7 +181,7 @@ const Footer = () => {
       backgroundSize: "100% auto",
       backgroundPosition: "top center",
       minHeight: isMobile ? "100%" : "470px",
-      paddingBottom: { xs: 3, sm: 4, md: 6 },
+      paddingBottom: { xs: 1.5, sm: 2, md: 2 },
     },
     footerSecondContainer: {
       display: "flex",
@@ -223,6 +233,14 @@ const Footer = () => {
       fontFamily: "Bricolage Grotesque",
       lineHeight: { xs: "26px", sm: "26px", md: "26px" },
     },
+    footerContactSubHeading: {
+      fontWeight: 600,
+      fontSize: { xs: "14px", sm: "15px", md: "15px" },
+      color: "#000000",
+      fontFamily: "Bricolage Grotesque",
+      mt: 1.5,
+      mb: 0.5,
+    },
     carAnimation: {
       position: "absolute",
       animation: isVisible ? "carMove 4s linear infinite" : "none",
@@ -236,6 +254,45 @@ const Footer = () => {
       100% { transform: translateX(${isMobile ? "calc(-100vw - 100px)" : "calc(-110vw - 100px)"}); }
     }
   `;
+
+  // Reusable contact item renderer
+  const ContactItem = ({ Icon, text, href }) => (
+    <Typography variant="body2" sx={styles.footerContact}>
+      <Icon sx={{ mr: 1, color: "#00CE84", mt: "4px", flexShrink: 0 }} />
+      <Link
+        sx={{ textDecoration: "none", color: "#000000" }}
+        href={href}
+        target={text === "WhatsApp" ? "_blank" : "_self"}
+        rel={text === "WhatsApp" ? "noopener noreferrer" : ""}
+      >
+        {text}
+      </Link>
+    </Typography>
+  );
+
+  // Reusable Contact Us content (shared by mobile & desktop layouts)
+  const ContactContent = () => (
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      {contactInfo.map((item, i) => (
+        <ContactItem key={i} {...item} />
+      ))}
+
+      {contactSections.map(({ title, items }, i) => (
+        <Box key={i}>
+          <Typography variant="subtitle2" sx={styles.footerContactSubHeading}>
+            {title}
+          </Typography>
+          {items.map((item, j) => (
+            <ContactItem key={j} {...item} />
+          ))}
+        </Box>
+      ))}
+
+      <Box sx={{ mt: 1.5 }}>
+        <ContactItem {...locationInfo} />
+      </Box>
+    </Box>
+  );
 
   // Reusable link column renderer
   const LinkColumn = ({ title, links, flex = 1 }) => (
@@ -363,23 +420,7 @@ const Footer = () => {
                   Contact Us
                 </Typography>
               </Box>
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                {contactInfo.map(({ Icon, text, href }, i) => (
-                  <Typography key={i} variant="body2" sx={styles.footerContact}>
-                    <Icon
-                      sx={{ mr: 1, color: "#00CE84", mt: "4px", flexShrink: 0 }}
-                    />
-                    <Link
-                      sx={{ textDecoration: "none", color: "#000000" }}
-                      href={href}
-                      target={text === "WhatsApp" ? "_blank" : "_self"}
-                      rel={text === "WhatsApp" ? "noopener noreferrer" : ""}
-                    >
-                      {text}
-                    </Link>
-                  </Typography>
-                ))}
-              </Box>
+              <ContactContent />
             </Box>
           </Box>
         ) : (
@@ -443,23 +484,7 @@ const Footer = () => {
                   Contact Us
                 </Typography>
               </Box>
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                {contactInfo.map(({ Icon, text, href }, i) => (
-                  <Typography key={i} variant="body2" sx={styles.footerContact}>
-                    <Icon
-                      sx={{ mr: 1, color: "#00CE84", mt: "4px", flexShrink: 0 }}
-                    />
-                    <Link
-                      sx={{ textDecoration: "none", color: "#000000" }}
-                      href={href}
-                      target={text === "WhatsApp" ? "_blank" : "_self"}
-                      rel={text === "WhatsApp" ? "noopener noreferrer" : ""}
-                    >
-                      {text}
-                    </Link>
-                  </Typography>
-                ))}
-              </Box>
+              <ContactContent />
             </Box>
           </Box>
         )}
@@ -470,8 +495,8 @@ const Footer = () => {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            mt: 4,
-            pt: 3,
+            mt: 2,
+            pt: 2,
             borderTop: "1px solid rgba(0, 0, 0, 0.1)",
             mx: { xs: 2, sm: 4, md: 12 },
           }}
