@@ -138,14 +138,14 @@ const aboutUsData = [
         // imagePosition: "-10px 30px",
         // imageScale: "150%",
       },
-      {
-        name: "Abdul Rahim",
-        role: "Sales Associate",
-        image: "/team/Abdul.jpeg",
-        linkedin: "https://www.linkedin.com/in/a-rahim-508576310",
-        // imagePosition: "-10px 30px",
-        // imageScale: "150%",
-      },
+      // {
+      //   name: "Abdul Rahim",
+      //   role: "Sales Associate",
+      //   image: "/team/Abdul.jpeg",
+      //   linkedin: "https://www.linkedin.com/in/a-rahim-508576310",
+      //   // imagePosition: "-10px 30px",
+      //   // imageScale: "150%",
+      // },
       {
         name: "Mahrin Ahmed",
         role: "Sales Associate",
@@ -247,13 +247,13 @@ const aboutUsData = [
         // imagePosition: "-10px 30px",
         // imageScale: "150%",
       },
-      {
-        name: "Syed Nayab",
-        role: "Customer Support Associate",
-        image: "/team/Nayab.jpeg",
-        // imagePosition: "-10px 30px",
-        // imageScale: "150%",
-      },
+      // {
+      //   name: "Syed Nayab",
+      //   role: "Customer Support Associate",
+      //   image: "/team/Nayab.jpeg",
+      //   // imagePosition: "-10px 30px",
+      //   // imageScale: "150%",
+      // },
     ],
   },
 ];
