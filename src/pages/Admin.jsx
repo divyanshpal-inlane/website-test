@@ -34,6 +34,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import DownloadIcon from "@mui/icons-material/Download";
 import TuneIcon from "@mui/icons-material/Tune";
 import PeopleIcon from "@mui/icons-material/People";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 
 const ADMIN_PHONE = "9438046114";
 const ADMIN_PASSWORD = "424614";
@@ -125,6 +128,15 @@ const Admin = () => {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState(0);
 
+  // Car inventory state
+  const [inventory, setInventory] = useState([]);
+  const [inventoryLoading, setInventoryLoading] = useState(true);
+  const [inventorySearch, setInventorySearch] = useState("");
+  const [importing, setImporting] = useState(false);
+  const [importMsg, setImportMsg] = useState(null); // { type: "success" | "error", text }
+  const [uploadingId, setUploadingId] = useState(null);
+  const csvInputRef = React.useRef(null);
+
   // Valuation tuner state
   const [config, setConfig] = useState(
     JSON.parse(JSON.stringify(DEFAULT_CONFIG)),
@@ -182,10 +194,26 @@ const Admin = () => {
     setBuyerLoading(false);
   };
 
+  const fetchInventory = async () => {
+    setInventoryLoading(true);
+    const { data, error } = await supabase
+      .from("car_inventory")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching car inventory:", error);
+    } else {
+      setInventory(data || []);
+    }
+    setInventoryLoading(false);
+  };
+
   useEffect(() => {
     if (isAuthenticated) {
       fetchLeads();
       fetchBuyerLeads();
+      fetchInventory();
     }
   }, [isAuthenticated]);
 
@@ -200,6 +228,26 @@ const Admin = () => {
     );
   });
 
+  // Search across every field of an inventory record (mirrors Sell Leads search)
+  const filteredInventory = inventory.filter((car) => {
+    const q = inventorySearch.trim().toLowerCase();
+    if (!q) return true;
+    return Object.entries(car).some(([key, val]) => {
+      if (key === "photos" || val == null) return false;
+      return String(val).toLowerCase().includes(q);
+    });
+  });
+
+  // Columns are derived from the data so we don't hard-code the CSV schema.
+  // "photos" is rendered separately as a dedicated upload/preview column.
+  const inventoryColumns =
+    inventory.length > 0
+      ? Object.keys(inventory[0]).filter((k) => k !== "photos")
+      : [];
+
+  const prettifyColumn = (col) =>
+    col.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
   const formatDate = (dateStr) => {
     if (!dateStr) return "—";
     const d = new Date(dateStr);
@@ -210,6 +258,15 @@ const Admin = () => {
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  // Render an inventory cell value generically (handles dates, arrays, blanks)
+  const renderInventoryCell = (val, col) => {
+    if (val == null || val === "") return "—";
+    if (col === "created_at" || col === "updated_at") return formatDate(val);
+    if (Array.isArray(val)) return val.join(", ");
+    if (typeof val === "object") return JSON.stringify(val);
+    return String(val);
   };
 
   // ===== EXPORT TO EXCEL (CSV) =====
@@ -354,6 +411,159 @@ const Admin = () => {
   const resetConfig = () => {
     setConfig(JSON.parse(JSON.stringify(DEFAULT_CONFIG)));
     setTestResult(null);
+  };
+
+  // ===== CSV IMPORT (car_inventory) =====
+  // Quote-aware parser: handles commas/newlines inside quotes and "" escapes.
+  const parseCSV = (text) => {
+    // Strip BOM and normalise line endings
+    const clean = text.replace(/^﻿/, "").replace(/\r\n/g, "\n");
+    const rows = [];
+    let field = "";
+    let row = [];
+    let inQuotes = false;
+
+    for (let i = 0; i < clean.length; i++) {
+      const ch = clean[i];
+      if (inQuotes) {
+        if (ch === '"') {
+          if (clean[i + 1] === '"') {
+            field += '"';
+            i++;
+          } else {
+            inQuotes = false;
+          }
+        } else {
+          field += ch;
+        }
+      } else if (ch === '"') {
+        inQuotes = true;
+      } else if (ch === ",") {
+        row.push(field);
+        field = "";
+      } else if (ch === "\n") {
+        row.push(field);
+        rows.push(row);
+        row = [];
+        field = "";
+      } else {
+        field += ch;
+      }
+    }
+    // Flush last field/row if file doesn't end with a newline
+    if (field.length > 0 || row.length > 0) {
+      row.push(field);
+      rows.push(row);
+    }
+    return rows;
+  };
+
+  const handleCsvImport = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImporting(true);
+    setImportMsg(null);
+
+    try {
+      const text = await file.text();
+      const rows = parseCSV(text).filter(
+        (r) => r.length > 1 || (r.length === 1 && r[0].trim() !== ""),
+      );
+      if (rows.length < 2) {
+        setImportMsg({
+          type: "error",
+          text: "CSV appears to be empty or has no data rows.",
+        });
+        return;
+      }
+
+      const headers = rows[0].map((h) => h.trim());
+      const records = rows.slice(1).map((cols) => {
+        const obj = {};
+        headers.forEach((h, idx) => {
+          const raw = (cols[idx] ?? "").trim();
+          // Empty cells -> null so numeric/array/default columns accept them
+          obj[h] = raw === "" ? null : raw;
+        });
+        return obj;
+      });
+
+      const { error } = await supabase.from("car_inventory").insert(records);
+      if (error) {
+        console.error("CSV import error:", error);
+        setImportMsg({
+          type: "error",
+          text: `Import failed: ${error.message}`,
+        });
+      } else {
+        setImportMsg({
+          type: "success",
+          text: `Imported ${records.length} record(s) successfully.`,
+        });
+        fetchInventory();
+      }
+    } catch (err) {
+      console.error("CSV parse error:", err);
+      setImportMsg({
+        type: "error",
+        text: `Could not read file: ${err.message}`,
+      });
+    } finally {
+      setImporting(false);
+      // Reset so the same file can be re-selected
+      if (csvInputRef.current) csvInputRef.current.value = "";
+    }
+  };
+
+  // ===== IMAGE UPLOAD (per inventory record -> car-images bucket) =====
+  const handleImageUpload = async (car, files) => {
+    if (!files || files.length === 0) return;
+    setUploadingId(car.id);
+    setImportMsg(null);
+
+    try {
+      const uploadedUrls = [];
+      for (const file of files) {
+        const ext = file.name.split(".").pop();
+        const path = `${car.id}/${Date.now()}-${Math.random()
+          .toString(36)
+          .slice(2, 8)}.${ext}`;
+        const { error: uploadError } = await supabase.storage
+          .from("car-images")
+          .upload(path, file, { cacheControl: "3600", upsert: false });
+        if (uploadError) throw uploadError;
+
+        const { data: urlData } = supabase.storage
+          .from("car-images")
+          .getPublicUrl(path);
+        uploadedUrls.push(urlData.publicUrl);
+      }
+
+      // Merge with any existing photo links on the record
+      const existing = Array.isArray(car.photos)
+        ? car.photos
+        : car.photos
+          ? [car.photos]
+          : [];
+      const merged = [...existing, ...uploadedUrls];
+
+      const { error: updateError } = await supabase
+        .from("car_inventory")
+        .update({ photos: merged })
+        .eq("id", car.id);
+      if (updateError) throw updateError;
+
+      setImportMsg({
+        type: "success",
+        text: `Uploaded ${uploadedUrls.length} image(s) to record #${car.id}.`,
+      });
+      fetchInventory();
+    } catch (err) {
+      console.error("Image upload error:", err);
+      setImportMsg({ type: "error", text: `Upload failed: ${err.message}` });
+    } finally {
+      setUploadingId(null);
+    }
   };
 
   // ===== SUB-COMPONENTS =====
@@ -785,6 +995,12 @@ const Admin = () => {
           <Tab icon={<PeopleIcon />} iconPosition="start" label="Buyer Leads" />
 
           <Tab
+            icon={<DirectionsCarIcon />}
+            iconPosition="start"
+            label="Car Inventory"
+          />
+
+          <Tab
             icon={<TuneIcon />}
             iconPosition="start"
             label="Valuation Tuner"
@@ -1083,8 +1299,294 @@ const Admin = () => {
         </Box>
       )}
 
-      {/* TAB 2: Valuation Tuner */}
+      {/* TAB 2: Car Inventory */}
       {activeTab === 2 && (
+        <>
+          {/* Controls */}
+          <Box
+            sx={{
+              px: isMobile ? 2 : 6,
+              py: 2,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 2,
+              flexWrap: "wrap",
+            }}
+          >
+            <TextField
+              placeholder="Search inventory by make, model, reg, year..."
+              size="small"
+              value={inventorySearch}
+              onChange={(e) => setInventorySearch(e.target.value)}
+              sx={{
+                flex: 1,
+                minWidth: 200,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "10px",
+                  fontFamily: "Bricolage Grotesque",
+                },
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ color: "#999" }} />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                flexWrap: "wrap",
+              }}
+            >
+              <Chip
+                label={`${filteredInventory.length} cars`}
+                sx={{
+                  fontFamily: "Bricolage Grotesque",
+                  fontWeight: 600,
+                  backgroundColor: "#e8f5e9",
+                  color: "#2e7d32",
+                }}
+              />
+              <input
+                ref={csvInputRef}
+                type="file"
+                accept=".csv,text/csv"
+                onChange={handleCsvImport}
+                style={{ display: "none" }}
+              />
+              <Button
+                variant="contained"
+                size="small"
+                disabled={importing}
+                startIcon={
+                  importing ? (
+                    <CircularProgress size={16} sx={{ color: "#fff" }} />
+                  ) : (
+                    <UploadFileIcon />
+                  )
+                }
+                onClick={() => csvInputRef.current?.click()}
+                sx={{
+                  fontFamily: "Bricolage Grotesque",
+                  textTransform: "none",
+                  backgroundColor: "#00CE84",
+                  borderRadius: "8px",
+                  "&:hover": { backgroundColor: "#00b574" },
+                }}
+              >
+                {importing ? "Importing..." : "Import CSV"}
+              </Button>
+              <IconButton onClick={fetchInventory} sx={{ color: "#00CE84" }}>
+                <RefreshIcon />
+              </IconButton>
+            </Box>
+          </Box>
+
+          {/* Import / upload feedback */}
+          {importMsg && (
+            <Box sx={{ px: isMobile ? 2 : 6 }}>
+              <Box
+                sx={{
+                  borderRadius: "10px",
+                  px: 2,
+                  py: 1.2,
+                  mb: 1,
+                  fontFamily: "Bricolage Grotesque",
+                  fontSize: "0.85rem",
+                  fontWeight: 600,
+                  backgroundColor:
+                    importMsg.type === "success" ? "#e8f5e9" : "#ffebee",
+                  color: importMsg.type === "success" ? "#2e7d32" : "#c62828",
+                }}
+              >
+                {importMsg.text}
+              </Box>
+            </Box>
+          )}
+
+          {/* Content */}
+          <Box sx={{ px: isMobile ? 2 : 6, pb: 4 }}>
+            {inventoryLoading ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  py: 10,
+                }}
+              >
+                <CircularProgress sx={{ color: "#00CE84" }} />
+              </Box>
+            ) : filteredInventory.length === 0 ? (
+              <Box sx={{ textAlign: "center", py: 10 }}>
+                <Typography
+                  sx={{
+                    fontFamily: "Bricolage Grotesque",
+                    fontSize: "1.1rem",
+                    color: "#999",
+                  }}
+                >
+                  {inventorySearch
+                    ? "No cars match your search."
+                    : "No cars in inventory yet. Import a CSV to get started."}
+                </Typography>
+              </Box>
+            ) : (
+              <TableContainer
+                component={Paper}
+                sx={{
+                  borderRadius: "12px",
+                  boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+                }}
+              >
+                <Table size="small">
+                  <TableHead>
+                    <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+                      <TableCell
+                        sx={{
+                          fontFamily: "Bricolage Grotesque",
+                          fontWeight: 700,
+                          fontSize: "0.8rem",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        #
+                      </TableCell>
+                      {inventoryColumns.map((col) => (
+                        <TableCell
+                          key={col}
+                          sx={{
+                            fontFamily: "Bricolage Grotesque",
+                            fontWeight: 700,
+                            fontSize: "0.8rem",
+                            color: "#333",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {prettifyColumn(col)}
+                        </TableCell>
+                      ))}
+                      <TableCell
+                        sx={{
+                          fontFamily: "Bricolage Grotesque",
+                          fontWeight: 700,
+                          fontSize: "0.8rem",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        Photos
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filteredInventory.map((car, i) => {
+                      const photos = Array.isArray(car.photos)
+                        ? car.photos
+                        : car.photos
+                          ? [car.photos]
+                          : [];
+                      return (
+                        <TableRow
+                          key={car.id || i}
+                          sx={{
+                            "&:hover": { backgroundColor: "#f9fdf9" },
+                            "&:nth-of-type(even)": {
+                              backgroundColor: "#fafafa",
+                            },
+                          }}
+                        >
+                          <TableCell sx={cellSx}>{i + 1}</TableCell>
+                          {inventoryColumns.map((col) => (
+                            <TableCell key={col} sx={cellSx}>
+                              {renderInventoryCell(car[col], col)}
+                            </TableCell>
+                          ))}
+                          <TableCell sx={cellSx}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 0.5,
+                              }}
+                            >
+                              {photos.slice(0, 3).map((url, idx) => (
+                                <a
+                                  key={idx}
+                                  href={url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  <img
+                                    src={url}
+                                    alt="car"
+                                    style={{
+                                      width: 36,
+                                      height: 36,
+                                      objectFit: "cover",
+                                      borderRadius: 6,
+                                      border: "1px solid #e0e0e0",
+                                    }}
+                                  />
+                                </a>
+                              ))}
+                              {photos.length > 3 && (
+                                <Typography
+                                  sx={{
+                                    fontFamily: "Bricolage Grotesque",
+                                    fontSize: "0.72rem",
+                                    color: "#666",
+                                  }}
+                                >
+                                  +{photos.length - 3}
+                                </Typography>
+                              )}
+                              <IconButton
+                                component="label"
+                                size="small"
+                                disabled={uploadingId === car.id}
+                                sx={{ color: "#00CE84" }}
+                              >
+                                {uploadingId === car.id ? (
+                                  <CircularProgress
+                                    size={18}
+                                    sx={{ color: "#00CE84" }}
+                                  />
+                                ) : (
+                                  <AddPhotoAlternateIcon fontSize="small" />
+                                )}
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  multiple
+                                  hidden
+                                  onChange={(e) =>
+                                    handleImageUpload(
+                                      car,
+                                      Array.from(e.target.files || []),
+                                    )
+                                  }
+                                />
+                              </IconButton>
+                            </Box>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+          </Box>
+        </>
+      )}
+
+      {/* TAB 3: Valuation Tuner */}
+      {activeTab === 3 && (
         <Box sx={{ px: isMobile ? 2 : 6, py: 3 }}>
           {/* Hero Banner */}
           <Paper
