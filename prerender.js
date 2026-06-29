@@ -3,6 +3,7 @@ import path from 'path'
 import { getContentfulSeoData, getLocationSEO } from './src/utils/contentfulSeoData.js'
 import { locations } from './src/data/locations.js'
 import { createClient } from 'contentful'
+import { snapshotRoutes } from './prerender-snapshot.js'
 
 const contentfulClient = createClient({
   space: "m7qe3du2pj2h",
@@ -123,6 +124,12 @@ async function generatePages() {
   // console.log('Sitemap generated!')
   
   console.log(`\nPre-rendered ${Object.keys(routes).length} pages with SEO!`)
+
+  // Bake the JS-rendered DOM (H1/H2/body content) into each static HTML file so
+  // crawlers can read the content from source. Best-effort: on failure the
+  // meta-only HTML above is shipped unchanged.
+  await snapshotRoutes('./dist', Object.keys(routes))
+
   Object.keys(routes).forEach(route => {
     const seo = routes[route]
     // console.log(`  ${route}:`)
