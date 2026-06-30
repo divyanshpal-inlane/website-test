@@ -210,13 +210,14 @@ async function runPool(items, limit, worker) {
 //  - Local / CI: drive the system Chrome (or PUPPETEER_EXECUTABLE_PATH).
 // Throws if no browser can be launched; the caller treats that as a soft failure
 // and ships the meta-only HTML.
-async function launchBrowser() {
+async function launchBrowser(report) {
   const puppeteer = (await import('puppeteer-core')).default
   const isServerless = !!process.env.VERCEL || !!process.env.AWS_LAMBDA_FUNCTION_NAME
 
   if (isServerless) {
     const chromium = (await import('@sparticuz/chromium')).default
     const executablePath = await chromium.executablePath()
+    report.launch = { path: '@sparticuz/chromium', executablePath }
     console.log(`Launching @sparticuz/chromium (${executablePath})`)
     return await puppeteer.launch({
       args: [...chromium.args, '--disable-dev-shm-usage'],
@@ -226,6 +227,7 @@ async function launchBrowser() {
   }
 
   const executablePath = findChromeExecutable()
+  report.launch = { path: 'system-chrome', executablePath: executablePath || null }
   if (!executablePath) {
     throw new Error(
       'No local Chrome found. Install Google Chrome or set PUPPETEER_EXECUTABLE_PATH.',
@@ -245,8 +247,39 @@ async function launchBrowser() {
  * @param {string[]} routes route paths, e.g. ['/', '/blog/foo', ...]
  */
 export async function snapshotRoutes(distDir, routes) {
+  // A machine-readable outcome is always written to dist/prerender-report.json so
+  // the result can be inspected straight from the deployed URL
+  // (e.g. https://inlane.in/prerender-report.json) without digging through build
+  // logs. Safe to remove once prerendering is confirmed stable on the host.
+  const report = {
+    when: new Date().toISOString(),
+    env: {
+      vercel: !!process.env.VERCEL,
+      awsLambda: !!process.env.AWS_LAMBDA_FUNCTION_NAME,
+      platform: process.platform,
+      node: process.version,
+    },
+    launch: null,
+    total: routes.length,
+    baked: 0,
+    error: null,
+    failures: [],
+  }
+  const writeReport = () => {
+    try {
+      fs.writeFileSync(
+        path.join(distDir, 'prerender-report.json'),
+        JSON.stringify(report, null, 2),
+      )
+    } catch {
+      /* non-fatal */
+    }
+  }
+
   if (process.env.SKIP_SNAPSHOT === '1' || process.env.SKIP_SNAPSHOT === 'true') {
     console.log('Snapshot pass skipped (SKIP_SNAPSHOT set). HTML stays meta-only.')
+    report.error = 'skipped (SKIP_SNAPSHOT set)'
+    writeReport()
     return
   }
 
@@ -257,24 +290,31 @@ export async function snapshotRoutes(distDir, routes) {
     const { port } = server.address()
     const baseUrl = `http://127.0.0.1:${port}`
 
-    browser = await launchBrowser()
+    browser = await launchBrowser(report)
 
     console.log(`\nSnapshotting ${routes.length} routes into static HTML...`)
     const results = await runPool(routes, 4, (route) =>
       snapshotRoute(browser, baseUrl, route, distDir),
     )
 
-    const ok = results.filter((r) => r && r.status === 'ok').length
-    console.log(`Snapshot complete: ${ok}/${routes.length} routes baked with rendered content.`)
-    results
+    report.baked = results.filter((r) => r && r.status === 'ok').length
+    report.failures = results
       .filter((r) => r && r.status !== 'ok')
-      .forEach((r) => console.log(`  - ${r.route}: ${r.status}`))
+      .map((r) => ({ route: r.route, status: r.status }))
+      .slice(0, 50)
+
+    console.log(
+      `Snapshot complete: ${report.baked}/${routes.length} routes baked with rendered content.`,
+    )
+    report.failures.forEach((r) => console.log(`  - ${r.route}: ${r.status}`))
   } catch (err) {
     // Graceful fallback: leave the meta-only HTML as-is so the build still ships.
+    report.error = err.message
     console.warn('⚠️  Content snapshot pass failed — keeping meta-only HTML.')
     console.warn('   Reason:', err.message)
   } finally {
     if (browser) await browser.close().catch(() => {})
     if (server) server.close()
+    writeReport()
   }
 }
