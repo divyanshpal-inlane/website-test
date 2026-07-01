@@ -68,15 +68,5 @@
     "vite": "^5.2.0",
     "vite-bundle-analyzer": "^0.22.0",
     "vite-plugin-compression": "^0.5.1"
-  },
-  "packageManager": "pnpm@11.3.0",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "@swc/core"
-    ],
-    "ignoredBuiltDependencies": [
-      "puppeteer"
-    ]
   }
 }
