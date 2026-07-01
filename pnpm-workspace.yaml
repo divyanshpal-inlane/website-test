@@ -1,9 +1,0 @@
-onlyBuiltDependencies:
-  - esbuild
-  - "@swc/core"
-ignoredBuiltDependencies:
-  - puppeteer
-allowBuilds:
-  '@swc/core': true
-  esbuild: true
-  puppeteer: false
