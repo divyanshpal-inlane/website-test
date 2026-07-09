@@ -1829,30 +1829,11 @@ const Sell = () => {
                   Valuation
                 </>
               }
-              description="See your car's value instantly, then profile your vehicle. Quick, easy to follow and vehicle is listed in few steps"
+              description="See your car's estimate value instantly, then profile your vehicle. Quick, easy to follow and vehicle is listed in few steps"
             />
-            {/* Door Step Inspection - Orange */}
+            {/* Best Offer - Orange */}
             <FeatureCard
               bgColor="bg-[#FFC229]"
-              icon={
-                <img
-                  src="/l2.png"
-                  alt="Door Step Inspection Icon"
-                  className="w-full h-full object-contain"
-                />
-              }
-              title={
-                <>
-                  Door Step
-                  <br />
-                  Inspection
-                </>
-              }
-              description="Our expert inspects the car and prepare a detailed report for final valuation"
-            />
-            {/* Best Offer - Magenta/Pink */}
-            <FeatureCard
-              bgColor="bg-[#FF99F5]"
               icon={
                 <img
                   src="/l3.png"
@@ -1869,9 +1850,9 @@ const Sell = () => {
               }
               description="Get offers from our buyer or learners who have learned driving with us. Speedy close of transaction"
             />
-            {/* Secure Deal - Cyan/Blue */}
+            {/* Secure Deal - Magenta/Pink */}
             <FeatureCard
-              bgColor="bg-[#87CEEB]"
+              bgColor="bg-[#FF99F5]"
               icon={
                 <img
                   src="/l4.png"
@@ -1887,6 +1868,25 @@ const Sell = () => {
                 </>
               }
               description="Accept the offer, handover the car to the buyer and we'll securely handle the payment and ownership transfer"
+            />
+
+            {/* RC Transfer - Cyan/Blue */}
+            <FeatureCard
+              bgColor="bg-[#87CEEB]"
+              icon={
+                <img
+                  src="/icon.png"
+                  alt="RC Transfer Icon"
+                  className="w-full h-full object-contain"
+                />
+              }
+              title={
+                <>
+                  RC <br />
+                  Transfer
+                </>
+              }
+              description="Skip the paperwork. We'll handle your RC transfer from start to finish—fast, simple, and stress-free."
             />
           </div>
         </div>
@@ -1954,11 +1954,11 @@ const Sell = () => {
               description="Get an instant estimated price"
               bgColor="bg-[#D8FF7A]"
             />
-            <StepCard
+            {/* <StepCard
               number="2"
               icon={
                 <img
-                  src="/2.png"
+                  src=""
                   alt="Door Step Inspection"
                   className="w-full h-full object-contain"
                 />
@@ -1966,22 +1966,22 @@ const Sell = () => {
               title="Door Step Inspection"
               description="Expert car check + document verification"
               bgColor="bg-[#FFB03A]"
-            />
+            /> */}
             <StepCard
-              number="3"
+              number="2"
               icon={
                 <img
-                  src="/3.png"
+                  src="/2.png"
                   alt="Best Offer"
                   className="w-full h-full object-contain"
                 />
               }
               title="Best Offer"
               description="Price at your terms"
-              bgColor="bg-[#00CE84]"
+              bgColor="bg-[#FFB03A]"
             />
             <StepCard
-              number="4"
+              number="3"
               icon={
                 <img
                   src="/4.png"
