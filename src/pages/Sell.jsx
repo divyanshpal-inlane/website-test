@@ -885,7 +885,7 @@ const FeatureCard = memo(({ icon, title, description, bgColor }) => (
     <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-20 md:h-20 bg-white rounded-full flex items-center justify-center mb-4 md:mb-6 shadow-sm text-black flex-shrink-0">
       {icon}
     </div>
-    <h3 className="w-full text-left font-['Bricolage_Grotesque'] font-bold text-[22px] sm:text-[28px] md:text-[42px] mb-2 md:mb-4 text-black leading-tight">
+    <h3 className="w-full text-left break-words font-['Bricolage_Grotesque'] font-bold text-[22px] sm:text-[28px] md:text-[26px] lg:text-[34px] xl:text-[42px] mb-2 md:mb-4 text-black leading-tight">
       {title}
     </h3>
     <p className="font-['Bricolage_Grotesque'] font-medium text-[13px] sm:text-[14px] md:text-[20px] text-black leading-snug tracking-tight sm:tracking-normal">
@@ -1402,7 +1402,7 @@ const Sell = () => {
         burgerMenu="/PurpleHamburger.png"
       />
 
-      <section className="bg-[#00CE84] min-h-[750px] relative z-20 -mt-[2px] md:-mt-[4px] flex flex-col items-center md:items-start md:block pb-10 md:pb-0">
+      <section className="bg-[#00CE84] min-h-[750px] relative z-20 -mt-[2px] md:-mt-[4px] pb-10 md:pb-16">
         {/* Background Watermark Pattern */}
         <div
           className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none"
@@ -1414,28 +1414,33 @@ const Sell = () => {
           }}
         ></div>
 
-        {/* Car Image - Positioned bottom left */}
-        <div className="relative md:absolute order-2 md:order-none mt-4 md:mt-0 md:-bottom-[5%] lg:-bottom-[12%] md:-left-[2%] lg:left-[5%] w-[110%] md:w-[85%] lg:w-[65%] max-w-[850px] z-20 pointer-events-none self-center flex justify-center">
-          <img
-            src="/MainCar.png"
-            alt="Car"
-            className="w-[95%] md:w-full h-auto mr-auto object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.3)]"
-          />
-        </div>
+        {/* Hero content - stacked on mobile, two columns from md+ so the headline/car and form can never overlap */}
+        <div className="relative z-10 max-w-[1400px] mx-auto flex flex-col md:flex-row items-center md:px-8 lg:px-12 md:gap-6 lg:gap-10">
+          {/* Left column: Headline + Car */}
+          <div className="relative z-20 flex flex-col items-center md:items-start w-full md:w-1/2 lg:w-[54%] shrink-0">
+            {/* Headline */}
+            <div className="relative top-8 md:top-0 z-30 flex flex-col items-center md:items-start w-full mt-[40px] md:mt-8 lg:mt-10 px-4 md:px-0">
+              <div className="relative flex flex-col items-center md:items-start w-full px-2 sm:px-4 md:px-0">
+                <img
+                  src="/sales_tag.png"
+                  alt="Sell Your Car, Fast, Fair & Hassle Free"
+                  className="w-[90%] sm:w-full max-w-[450px] md:max-w-[480px] lg:max-w-[600px] object-contain drop-shadow-lg"
+                />
+              </div>
+            </div>
 
-        {/* Headlines - Top Left */}
-        <div className="relative md:absolute order-1 md:order-none top-8 md:top-6 lg:top-8 left-0 md:left-[5%] lg:left-[8%] z-30 flex flex-col items-center w-full md:w-auto mt-[40px] md:mt-0 px-4 md:px-0">
-          <div className="relative flex flex-col items-center w-full px-2 sm:px-4">
-            <img
-              src="/sales_tag.png"
-              alt="Sell Your Car, Fast, Fair & Hassle Free"
-              className="w-[90%] sm:w-full max-w-[450px] md:max-w-[600px] lg:max-w-[750px] object-contain drop-shadow-lg"
-            />
+            {/* Car Image */}
+            <div className="relative mt-4 md:mt-2 lg:-mt-2 w-[110%] md:w-full max-w-[850px] z-20 pointer-events-none self-center md:self-start flex justify-center md:justify-start">
+              <img
+                src="/MainCar.png"
+                alt="Car"
+                className="w-[95%] md:w-full h-auto object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.3)]"
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Form - Right side */}
-        <div className="relative md:absolute order-3 md:order-none -mt-4 sm:-mt-8 md:mt-0 md:top-[48%] md:-translate-y-1/2 right-0 left-0 md:left-auto md:right-12 lg:right-[8%] z-10 w-[94%] sm:w-[88%] mx-auto md:mx-0 md:w-[48%] lg:w-[42%] max-w-[540px] drop-shadow-2xl">
+          {/* Form - Right side */}
+          <div className="relative z-10 -mt-4 sm:-mt-8 md:mt-0 w-[94%] sm:w-[88%] mx-auto md:mx-0 md:w-1/2 lg:w-[46%] max-w-[540px] shrink-0 drop-shadow-2xl">
           <div className="bg-[#FCFCFC] rounded-[20px] md:rounded-[24px] p-6 sm:p-7 md:p-8 lg:p-10 shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-gray-200">
             {showResult ? (
               /* THANK YOU STATE */
@@ -1795,6 +1800,7 @@ const Sell = () => {
               </form>
             )}
           </div>
+          </div>
         </div>
       </section>
 
@@ -1829,30 +1835,11 @@ const Sell = () => {
                   Valuation
                 </>
               }
-              description="See your car's value instantly, then profile your vehicle. Quick, easy to follow and vehicle is listed in few steps"
+              description="See your car's estimate value instantly, then profile your vehicle. Quick, easy to follow and vehicle is listed in few steps"
             />
-            {/* Door Step Inspection - Orange */}
+            {/* Best Offer - Orange */}
             <FeatureCard
               bgColor="bg-[#FFC229]"
-              icon={
-                <img
-                  src="/l2.png"
-                  alt="Door Step Inspection Icon"
-                  className="w-full h-full object-contain"
-                />
-              }
-              title={
-                <>
-                  Door Step
-                  <br />
-                  Inspection
-                </>
-              }
-              description="Our expert inspects the car and prepare a detailed report for final valuation"
-            />
-            {/* Best Offer - Magenta/Pink */}
-            <FeatureCard
-              bgColor="bg-[#FF99F5]"
               icon={
                 <img
                   src="/l3.png"
@@ -1869,9 +1856,9 @@ const Sell = () => {
               }
               description="Get offers from our buyer or learners who have learned driving with us. Speedy close of transaction"
             />
-            {/* Secure Deal - Cyan/Blue */}
+            {/* Secure Deal - Magenta/Pink */}
             <FeatureCard
-              bgColor="bg-[#87CEEB]"
+              bgColor="bg-[#FF99F5]"
               icon={
                 <img
                   src="/l4.png"
@@ -1887,6 +1874,25 @@ const Sell = () => {
                 </>
               }
               description="Accept the offer, handover the car to the buyer and we'll securely handle the payment and ownership transfer"
+            />
+
+            {/* RC Transfer - Cyan/Blue */}
+            <FeatureCard
+              bgColor="bg-[#87CEEB]"
+              icon={
+                <img
+                  src="/icon.png"
+                  alt="RC Transfer Icon"
+                  className="w-full h-full object-contain"
+                />
+              }
+              title={
+                <>
+                  RC <br />
+                  Transfer
+                </>
+              }
+              description="Skip the paperwork. We'll handle your RC transfer from start to finish—fast, simple, and stress-free."
             />
           </div>
         </div>
@@ -1954,11 +1960,11 @@ const Sell = () => {
               description="Get an instant estimated price"
               bgColor="bg-[#D8FF7A]"
             />
-            <StepCard
+            {/* <StepCard
               number="2"
               icon={
                 <img
-                  src="/2.png"
+                  src=""
                   alt="Door Step Inspection"
                   className="w-full h-full object-contain"
                 />
@@ -1966,22 +1972,22 @@ const Sell = () => {
               title="Door Step Inspection"
               description="Expert car check + document verification"
               bgColor="bg-[#FFB03A]"
-            />
+            /> */}
             <StepCard
-              number="3"
+              number="2"
               icon={
                 <img
-                  src="/3.png"
+                  src="/2.png"
                   alt="Best Offer"
                   className="w-full h-full object-contain"
                 />
               }
               title="Best Offer"
               description="Price at your terms"
-              bgColor="bg-[#00CE84]"
+              bgColor="bg-[#FFB03A]"
             />
             <StepCard
-              number="4"
+              number="3"
               icon={
                 <img
                   src="/4.png"
