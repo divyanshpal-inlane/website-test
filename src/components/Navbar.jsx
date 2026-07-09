@@ -156,6 +156,27 @@ const Navbar2 = ({
               }
             />
           </ListItem>
+
+          <ListItem
+            button
+            component={Link}
+            to="/rto-services"
+            onClick={handleClose}
+          >
+            <ListItemText
+              primary={
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontFamily: "Bricolage Grotesque",
+                    textAlign: "center",
+                  }}
+                >
+                  RTO Services
+                </Typography>
+              }
+            />
+          </ListItem>
           <ListItem button component={Link} to="/blog" onClick={handleClose}>
             <ListItemText
               primary={

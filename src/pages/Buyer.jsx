@@ -425,6 +425,7 @@ const footerColumns = [
     links: [
       { text: "About Us", href: "/about-us" },
       { text: "Courses", href: "/courses" },
+      { text: "RTO Services", href: "/rto" },
       { text: "FAQs", href: "/faqs" },
       { text: "Lane Journal", href: "/blog" },
     ],
@@ -849,7 +850,7 @@ export default function BuyerHeroSection() {
       <BuyerNavbar
         backgroundColor="#F5F5F5"
         logo="/LANE_LOGO.svg"
-        burgerMenu="/Green-Hamburger.png"
+        burgerMenu="/rto-hamburger.svg"
       />
 
       {/* ================= HERO WRAPPER ================= */}
@@ -934,16 +935,16 @@ export default function BuyerHeroSection() {
                        bg-gradient-to-b from-[#00CE84] to-[#00BC78]
                        shadow-[0_10px_28px_rgba(0,0,0,0.14)]
                        transition-all duration-300 hover:scale-[1.02]
-                       h-[52px] w-full max-w-[250px]
-                       sm:h-[56px] sm:max-w-[270px]
-                       md:h-[64px] md:w-[300px] md:max-w-none
-                       lg:h-[70px] lg:w-[330px]"
+                       h-[48px] w-full max-w-[220px]
+                       sm:h-[52px] sm:max-w-[240px]
+                       md:h-[56px] md:w-[280px] md:max-w-none
+                       lg:h-[64px] lg:w-[320px]"
           >
             <span
               className="flex items-center gap-2
                          font-['Bricolage_Grotesque'] font-bold tracking-[-0.02em]
                          text-white
-                         text-[15px] sm:text-[16px] md:text-[20px] lg:text-[22px]"
+                         text-[15px] sm:text-[15px] md:text-[17px] lg:text-[18px]"
             >
               Explore Cars
               <ArrowRight
@@ -960,15 +961,15 @@ export default function BuyerHeroSection() {
                        border-[3px] border-white bg-white
                        shadow-[0_10px_28px_rgba(0,0,0,0.12)]
                        transition-all duration-300 hover:scale-[1.02]
-                       h-[52px] w-full max-w-[250px]
-                       sm:h-[56px] sm:max-w-[270px]
-                       md:h-[64px] md:w-[300px] md:max-w-none
-                       lg:h-[70px] lg:w-[330px]"
+                       h-[48px] w-full max-w-[220px]
+                       sm:h-[52px] sm:max-w-[240px]
+                       md:h-[56px] md:w-[280px] md:max-w-none
+                       lg:h-[64px] lg:w-[320px]"
           >
             <span
               className="font-['Bricolage_Grotesque'] font-bold tracking-[-0.02em]
                          text-black
-                         text-[15px] sm:text-[16px] md:text-[20px] lg:text-[22px]"
+                         text-[15px] sm:text-[15px] md:text-[17px] lg:text-[18px]"
             >
               Let's Chat
             </span>
@@ -981,18 +982,18 @@ export default function BuyerHeroSection() {
                      md:mt-8 md:px-[7.4%] lg:mt-10"
         >
           <div
-            className="grid grid-cols-2 gap-2
-                       sm:grid-cols-3 sm:gap-2.5
-                       lg:grid-cols-5 lg:gap-[1.5vw] xl:gap-[22px]"
+            className="grid grid-cols-2 gap-2.5
+                       sm:grid-cols-3 sm:gap-3
+                       md:gap-4 lg:grid-cols-5 lg:gap-5"
           >
             {services.map((service, index) => (
               <div
                 key={index}
                 className="flex h-full flex-col rounded-[4px]
                            border border-[#E3D9D9] bg-white
-                           px-2.5 pb-2.5 pt-2.5
-                           sm:px-3 sm:pb-3 sm:pt-3
-                           md:rounded-[5px] md:px-[10px] md:pb-[12px] md:pt-[12px]
+                           px-2.5 py-2.5
+                           sm:px-3 sm:py-3
+                           md:rounded-[5px] md:px-4 md:py-4
                            min-h-[105px] sm:min-h-[115px] md:min-h-[120px] lg:min-h-[135px]"
               >
                 <div className="mb-1.5 leading-none text-[clamp(24px,2.65vw,34px)] sm:mb-2">
@@ -1001,13 +1002,13 @@ export default function BuyerHeroSection() {
                 <h3
                   className="font-['Bricolage_Grotesque'] font-bold leading-[120%]
                              text-[#111111]
-                             text-[clamp(14px,1.3vw,16px)]"
+                             text-[clamp(14px,1.6vw,16px)]"
                 >
                   {service.title}
                 </h3>
                 <p
                   className="mt-1.5 leading-[125%] text-[#7A7F75]
-                             text-[clamp(14px,1.3vw,16px)]
+                             text-[clamp(13px,1.4vw,15px)]
                              md:mt-2"
                 >
                   {service.description}
@@ -1021,7 +1022,7 @@ export default function BuyerHeroSection() {
       </div>
 
       {/* ================= BOTTOM ACCENT BLOCK ================= */}
-      <div className="h-[36px] w-full bg-[#D9FF7A] sm:h-[45px] md:h-[60px] lg:h-[80px] xl:h-[100px]" />
+      <div className="h-[40px] w-full bg-[#D9FF7A] sm:h-[50px] md:h-[60px] lg:h-[80px] xl:h-[100px]" />
 
       {/* ================= CAR FINDER (QUIZ + LEAD FORM) ================= */}
       <div className="w-full bg-[#D1B3FF]">
@@ -1035,14 +1036,14 @@ export default function BuyerHeroSection() {
                 <h2
                   className="font-['Bricolage_Grotesque'] font-semibold tracking-[-0.015em]
                            text-[#111] leading-[1.05]
-                           text-[clamp(22px,2.6vw,32px)]"
+                           text-[clamp(22px,2.8vw,32px)]"
                 >
                   New or used? Let's figure it out.
                 </h2>
                 <p
                   className="mx-auto mt-2 max-w-[430px] font-['Bricolage_Grotesque']
                            font-medium text-black leading-[140%] md:leading-[130%]
-                           text-[clamp(14px,1.7vw,20px)]"
+                           text-[clamp(14px,1.6vw,18px)]"
                 >
                   4 quick questions. No right answer — just what works for you.
                 </p>
@@ -1071,7 +1072,7 @@ export default function BuyerHeroSection() {
                       <h3
                         className="font-['Bricolage_Grotesque'] font-semibold text-[#111]
                                  leading-[1.1]
-                                 text-[clamp(18px,2.1vw,24px)]"
+                                 text-[clamp(18px,2vw,24px)]"
                       >
                         {QUIZ_STEPS[step].title}
                       </h3>
@@ -1113,7 +1114,7 @@ export default function BuyerHeroSection() {
                             </span>
                             <span
                               className="font-['Bricolage_Grotesque'] font-medium text-[#111]
-                                       text-[clamp(14px,1.4vw,16px)]"
+                                       text-[clamp(14px,1.6vw,16px)]"
                             >
                               {option.label}
                             </span>
@@ -1390,7 +1391,7 @@ export default function BuyerHeroSection() {
             />
             <h2
               className="relative z-10 font-['glancyr'] font-medium leading-none text-black
-                         text-[30px] sm:text-[35px] md:text-[3.5vw] xl:text-[48px]"
+                         text-[32px] sm:text-[36px] md:text-[3.5vw] xl:text-[48px]"
             >
               New vs Used
             </h2>
@@ -1398,13 +1399,13 @@ export default function BuyerHeroSection() {
 
           <p
             className="mt-6 font-['Bricolage_Grotesque'] font-medium capitalize leading-[1.18] text-black
-                       text-[16px] sm:text-[22px] md:text-[3.0vw] xl:text-[34px]"
+                       text-[16px] sm:text-[20px] md:text-[2.8vw] xl:text-[32px]"
           >
             The Honest Breakdown
           </p>
           <p
             className="mx-auto mt-3 max-w-[640px] font-['Bricolage_Grotesque'] font-medium text-black
-                       text-[14px] sm:text-[16px] md:text-[1.5vw] xl:text-[20px]"
+                       text-[14px] sm:text-[16px] md:text-[1.6vw] xl:text-[20px]"
           >
             No agenda. Just the facts so you can decide.
           </p>
@@ -1532,7 +1533,7 @@ export default function BuyerHeroSection() {
               />
               <h2
                 className="relative z-10 font-['glancyr'] font-medium leading-none text-black
-                           text-[30px] sm:text-[35px] md:text-[3.5vw] xl:text-[48px]"
+                           text-[32px] sm:text-[36px] md:text-[3.5vw] xl:text-[48px]"
               >
                 Everything Else?
               </h2>
@@ -1540,14 +1541,14 @@ export default function BuyerHeroSection() {
 
             <p
               className="mt-6 font-['Bricolage_Grotesque'] font-medium leading-none text-black
-                         text-[16px] sm:text-[22px] md:text-[3.0vw] xl:text-[34px]"
+                         text-[16px] sm:text-[20px] md:text-[2.8vw] xl:text-[32px]"
             >
               We Handle It.
             </p>
 
             <p
               className="mx-auto mt-3 max-w-[640px] font-['Bricolage_Grotesque'] font-medium text-black
-                         text-[14px] sm:text-[16px] md:text-[1.5vw] xl:text-[20px]"
+                         text-[14px] sm:text-[16px] md:text-[1.6vw] xl:text-[20px]"
             >
               You focus on picking a colour. We'll sort the rest.
             </p>
@@ -1572,13 +1573,13 @@ export default function BuyerHeroSection() {
                   </div>
                   <h3
                     className="font-bold leading-tight text-black
-                               text-[16px] sm:text-[18px] md:text-[1.9vw] xl:text-[26px]"
+                               text-[16px] sm:text-[18px] md:text-[1.8vw] xl:text-[24px]"
                   >
                     {service.title}
                   </h3>
                   <p
                     className="mt-1.5 font-medium leading-[140%] text-black
-                               text-[clamp(14px,1.3vw,16px)]"
+                               text-[clamp(14px,1.6vw,16px)]"
                   >
                     {service.description}
                   </p>
@@ -1615,7 +1616,7 @@ export default function BuyerHeroSection() {
         <div className="rounded-[20px] bg-white p-6 shadow-[0_4px_4px_rgba(0,0,0,0.25)] md:rounded-[2.5rem] md:p-12 lg:p-16">
           <h2
             className="font-['Bricolage_Grotesque'] font-semibold leading-tight text-black
-                       text-2xl md:text-3xl"
+                       text-[26px] md:text-[32px]"
           >
             Frequently Asked Questions
           </h2>
@@ -1665,7 +1666,7 @@ export default function BuyerHeroSection() {
           <p
             className="max-w-[522px] font-['Bricolage_Grotesque'] font-light leading-[110%]
                        text-black
-                       text-[clamp(16px,2.2vw,28px)]"
+                       text-[clamp(16px,2vw,24px)]"
           >
             Got more Questions ? Don't worry we got them covered.
           </p>
@@ -1679,7 +1680,7 @@ export default function BuyerHeroSection() {
           >
             <span
               className="font-['Bricolage_Grotesque'] font-bold text-black
-                         text-[clamp(14px,1.4vw,18px)]"
+                         text-[clamp(14px,1.6vw,16px)]"
             >
               See more
             </span>
@@ -1727,7 +1728,7 @@ export default function BuyerHeroSection() {
               <img
                 src="/Lane_Footer_Logo.svg"
                 alt="LANE — By Your Side, Every Ride"
-                className="h-auto w-[clamp(120px,15.6vw,200px)]"
+                className="h-auto w-[clamp(120px,15.6vw,200px)] px-4 py-2"
               />
               <div className="mt-5 flex justify-center md:justify-start items-center gap-3 md:mt-6">
                 {socialLinks.map(({ Icon, href, label }) => (
@@ -1737,7 +1738,7 @@ export default function BuyerHeroSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="flex items-center justify-center rounded-full bg-black text-white transition-transform duration-300 hover:scale-110 h-[34px] w-[34px] sm:h-[38px] sm:w-[38px] md:h-[2.9vw] md:w-[2.9vw] md:min-h-[40px] md:min-w-[40px] xl:h-[44px] xl:w-[44px]"
+                    className="flex items-center justify-center rounded-full bg-black text-white transition-transform duration-300 hover:scale-110 h-[36px] w-[36px] sm:h-[40px] sm:w-[40px] md:h-[3vw] md:w-[3vw] xl:h-[44px] xl:w-[44px]"
                   >
                     <Icon className="text-[15px] sm:text-[17px] xl:text-[20px]" />
                   </a>
@@ -1761,7 +1762,7 @@ export default function BuyerHeroSection() {
                         href={link.href}
                         className="font-['Bricolage_Grotesque'] font-medium text-black
                                    transition-colors duration-200 hover:text-[#00CE84]
-                                   text-[clamp(15px,1.25vw,16px)]"
+                                   text-[clamp(15px,1.6vw,16px)]"
                       >
                         {link.text}
                       </a>

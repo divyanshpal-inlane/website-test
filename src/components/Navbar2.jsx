@@ -7,6 +7,8 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  Menu,
+  MenuItem,
   List,
   ListItem,
   ListItemText,
@@ -23,6 +25,8 @@ import {
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { locations } from "../data/locations";
 
 const Navbar2 = () => {
   const theme = useTheme();
@@ -36,6 +40,10 @@ const Navbar2 = () => {
   const handleClose = () => {
     setDrawerOpen(false);
   };
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
+  const handleMenuClose = () => setAnchorEl(null);
 
   const drawerContent = (
     <Box
@@ -91,7 +99,12 @@ const Navbar2 = () => {
               }
             />
           </ListItem>
-          <ListItem button component={Link} to="/about-us" onClick={handleClose}>
+          <ListItem
+            button
+            component={Link}
+            to="/about-us"
+            onClick={handleClose}
+          >
             <ListItemText
               primary={
                 <Typography
@@ -121,6 +134,26 @@ const Navbar2 = () => {
               }
             />
           </ListItem>
+          <ListItem
+            button
+            component={Link}
+            to="/rto-services"
+            onClick={handleClose}
+          >
+            <ListItemText
+              primary={
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontFamily: "Bricolage Grotesque",
+                    textAlign: "center",
+                  }}
+                >
+                  RTO Services
+                </Typography>
+              }
+            />
+          </ListItem>
           <ListItem button component={Link} to="/blog" onClick={handleClose}>
             <ListItemText
               primary={
@@ -136,7 +169,66 @@ const Navbar2 = () => {
               }
             />
           </ListItem>
-
+          <ListItem
+            button
+            component={Link}
+            to="/sell-used-car"
+            onClick={handleClose}
+          >
+            <ListItemText
+              primary={
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontFamily: "Bricolage Grotesque",
+                    textAlign: "center",
+                  }}
+                >
+                  Sell Your Car
+                </Typography>
+              }
+            />
+          </ListItem>
+          <ListItem button onClick={handleMenuOpen}>
+            <ListItemText
+              primary={
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontFamily: "Bricolage Grotesque",
+                    textAlign: "center",
+                  }}
+                >
+                  Locations {anchorEl ? <ExpandLess /> : <ExpandMore />}
+                </Typography>
+              }
+            />
+          </ListItem>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            transformOrigin={{ horizontal: "center", vertical: "top" }}
+            anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+          >
+            {locations.map((location, index) => (
+              <MenuItem
+                key={index}
+                component={Link}
+                to={`/driving-school-in/${location.toLowerCase().replace(/\s+/g, "-")}`}
+                onClick={handleMenuClose}
+                sx={{
+                  fontFamily: "Bricolage Grotesque",
+                  fontSize: "1rem",
+                  "&:hover": {
+                    backgroundColor: "#f0f0f0",
+                  },
+                }}
+              >
+                {location}
+              </MenuItem>
+            ))}
+          </Menu>
           {/* Social Icons */}
           <Box
             sx={{
