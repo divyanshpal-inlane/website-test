@@ -1402,7 +1402,7 @@ const Sell = () => {
         burgerMenu="/PurpleHamburger.png"
       />
 
-      <section className="bg-[#00CE84] min-h-[750px] relative z-20 -mt-[2px] md:-mt-[4px] pb-10 md:pb-16">
+      <section className="bg-[#00CE84] relative z-20 -mt-[2px] md:-mt-[4px] pb-6 md:pb-8">
         {/* Background Watermark Pattern */}
         <div
           className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none"
@@ -1805,7 +1805,7 @@ const Sell = () => {
       </section>
 
       {/* Features Section */}
-      <section className="-mt-1 pt-16 sm:pt-20 md:pt-24 pb-6 md:pb-8 px-4 md:px-8 bg-[#00CE84] relative z-0 overflow-hidden">
+      <section className="-mt-1 pt-8 sm:pt-10 md:pt-12 pb-6 md:pb-8 px-4 md:px-8 bg-[#00CE84] relative z-0 overflow-hidden">
         {/* Background Watermark Pattern (continued from Hero) */}
         <div
           className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none"
@@ -1946,20 +1946,22 @@ const Sell = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-6 md:mt-10">
-            <StepCard
-              number="1"
-              icon={
-                <img
-                  src="/1.png"
-                  alt="List Your Car"
-                  className="w-full h-full object-contain"
-                />
-              }
-              title="List Your Car"
-              description="Get an instant estimated price"
-              bgColor="bg-[#D8FF7A]"
-            />
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6 mt-6 md:mt-10">
+            <div className="w-[calc((100%-16px)/2)] md:w-[calc((100%-72px)/4)]">
+              <StepCard
+                number="1"
+                icon={
+                  <img
+                    src="/1.png"
+                    alt="List Your Car"
+                    className="w-full h-full object-contain"
+                  />
+                }
+                title="List Your Car"
+                description="Get an instant estimated price"
+                bgColor="bg-[#D8FF7A]"
+              />
+            </div>
             {/* <StepCard
               number="2"
               icon={
@@ -1973,32 +1975,36 @@ const Sell = () => {
               description="Expert car check + document verification"
               bgColor="bg-[#FFB03A]"
             /> */}
-            <StepCard
-              number="2"
-              icon={
-                <img
-                  src="/2.png"
-                  alt="Best Offer"
-                  className="w-full h-full object-contain"
-                />
-              }
-              title="Best Offer"
-              description="Price at your terms"
-              bgColor="bg-[#FFB03A]"
-            />
-            <StepCard
-              number="3"
-              icon={
-                <img
-                  src="/4.png"
-                  alt="RTO & Ownership"
-                  className="w-full h-full object-contain"
-                />
-              }
-              title="RTO & Ownership"
-              description="Lane handles ownership & paperwork end-to-end"
-              bgColor="bg-[#7FEFFF]"
-            />
+            <div className="w-[calc((100%-16px)/2)] md:w-[calc((100%-72px)/4)]">
+              <StepCard
+                number="2"
+                icon={
+                  <img
+                    src="/2.png"
+                    alt="Best Offer"
+                    className="w-full h-full object-contain"
+                  />
+                }
+                title="Best Offer"
+                description="Price at your terms"
+                bgColor="bg-[#FFB03A]"
+              />
+            </div>
+            <div className="w-[calc((100%-16px)/2)] md:w-[calc((100%-72px)/4)]">
+              <StepCard
+                number="3"
+                icon={
+                  <img
+                    src="/4.png"
+                    alt="RTO & Ownership"
+                    className="w-full h-full object-contain"
+                  />
+                }
+                title="RTO & Ownership"
+                description="Lane handles ownership & paperwork end-to-end"
+                bgColor="bg-[#7FEFFF]"
+              />
+            </div>
           </div>
         </div>
       </section>
