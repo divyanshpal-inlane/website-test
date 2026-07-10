@@ -37,6 +37,7 @@ import Sell from "./pages/Sell";
 import Reviews from "./pages/Reviews";
 import Admin from "./pages/Admin";
 import Buyer from "./pages/Buyer";
+import RefundPolicy from "./pages/RefundPolicy";
 
 const Layout = () => {
   return (
@@ -154,6 +155,10 @@ const router = createBrowserRouter(
         {
           path: "/rescheduling-policy",
           element: <ReschedulePolicy />,
+        },
+        {
+          path: "/refund-policy",
+          element: <RefundPolicy />,
         },
       ],
     },
