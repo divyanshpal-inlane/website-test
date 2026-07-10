@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { X, ArrowRight } from "lucide-react";
 import { APIProvider, useMapsLibrary } from "@vis.gl/react-google-maps";
+import {
+  resolveUTMsForSubmission,
+  buildLeadSource,
+} from "../utils/utmTracking";
 /**
  * RTOLeadModal
  * --------------------------------------------------------------------------
@@ -184,17 +188,37 @@ export default function RTOLeadModal({ open, onClose, service, onSubmit }) {
       setLoading(true);
       setErrors({});
 
-      // No backend call yet — lead submission will be wired up to the Cratio
-      // webhook. For now this just validates and shows the success state.
-
-      onSubmit?.({
+      const utmParams = resolveUTMsForSubmission();
+      const leadData = {
         name,
         email,
-        phone,
-        location,
-        service: service || null,
-        serviceInterest: serviceInterest.trim() || null,
+        phone: `+91${phone}`,
+        locality: location,
+        service: service || "",
+        serviceInterest: serviceInterest.trim() || "",
+        adName: "RTO Lead Form",
+        leadSource: buildLeadSource(utmParams, "rto"),
+        leadOwner: "Christopher Rosewan",
+      };
+
+      const cratioPayload = {
+        ...utmParams,
+        ...leadData,
+        timestamp: new Date().toISOString(),
+      };
+
+      await fetch(import.meta.env.VITE_CRATIO_RTO_WEBHOOK_URL, {
+        method: "POST",
+        mode: "no-cors",
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(cratioPayload),
       });
+
+      onSubmit?.(leadData);
       setSubmitted(true);
 
       // Reset Form
