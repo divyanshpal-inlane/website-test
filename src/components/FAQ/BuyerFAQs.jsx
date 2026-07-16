@@ -141,6 +141,7 @@ const BuyerFAQs = () => {
       links: [
         { text: "About Us", href: "/about-us" },
         { text: "Courses", href: "/courses" },
+        { text: "RTO Services", href: "/rto" },
         { text: "FAQs", href: "/faqs" },
         { text: "Lane Journal", href: "/blog" },
       ],

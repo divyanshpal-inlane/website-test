@@ -37,6 +37,8 @@ import Sell from "./pages/Sell";
 import Reviews from "./pages/Reviews";
 import Admin from "./pages/Admin";
 import Buyer from "./pages/Buyer";
+import RTO from "./pages/RTO";
+import RTOServiceDetailPage from "./pages/RTOServiceDetailPage";
 import RefundPolicy from "./pages/RefundPolicy";
 
 const Layout = () => {
@@ -185,6 +187,15 @@ const router = createBrowserRouter(
     {
       path: "/buyer",
       element: <Buyer />,
+    },
+    {
+      // Alias of the catalogue so the detail page's "All services" back-links resolve.
+      path: "/rto-services",
+      element: <RTO />,
+    },
+    {
+      path: "/rto-services/:serviceSlug",
+      element: <RTOServiceDetailPage />,
     },
   ],
   {
