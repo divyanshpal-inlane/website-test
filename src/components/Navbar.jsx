@@ -361,7 +361,7 @@ const Navbar2 = ({
               sx={{
                 position: "fixed",
                 right: isMobile ? 70 : 90,
-                zIndex: 2,
+                zIndex: 100,
                 textTransform: "none",
                 fontFamily: "Bricolage Grotesque",
                 fontWeight: 600,
@@ -390,7 +390,7 @@ const Navbar2 = ({
                 width: 80,
                 height: 73,
                 fontWeight: "bold",
-                zIndex: 2,
+                zIndex: 100,
               }}
             >
               <img
