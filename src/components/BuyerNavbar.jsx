@@ -148,7 +148,7 @@ const BuyerNavbar = ({
             />
           </ListItem>
 
-          <ListItem
+          {/* <ListItem
             button
             component={Link}
             to="/rto-services"
@@ -167,7 +167,7 @@ const BuyerNavbar = ({
                 </Typography>
               }
             />
-          </ListItem>
+          </ListItem> */}
 
           <ListItem button component={Link} to="/blog" onClick={handleClose}>
             <ListItemText

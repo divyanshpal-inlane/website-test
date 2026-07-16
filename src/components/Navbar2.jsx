@@ -134,7 +134,7 @@ const Navbar2 = () => {
               }
             />
           </ListItem>
-          <ListItem
+          {/* <ListItem
             button
             component={Link}
             to="/rto-services"
@@ -153,7 +153,7 @@ const Navbar2 = () => {
                 </Typography>
               }
             />
-          </ListItem>
+          </ListItem> */}
           <ListItem button component={Link} to="/blog" onClick={handleClose}>
             <ListItemText
               primary={
