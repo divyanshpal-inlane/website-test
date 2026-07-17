@@ -56,10 +56,6 @@ const Footer = () => {
 
   const contactSections = [
     {
-      title: "RTO Services",
-      items: [{ Icon: PhoneIcon, text: "9900047562", href: "tel:9900047562" }],
-    },
-    {
       title: "Customer Support",
       items: [
         { Icon: PhoneIcon, text: "+91 63607 39863", href: "tel:+916360739863" },
