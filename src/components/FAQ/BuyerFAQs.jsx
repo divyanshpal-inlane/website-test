@@ -3,6 +3,7 @@ import faqData from "../../data/buyerFaq";
 import BuyerNavbar from "../BuyerNavbar";
 import Footer from "../Footer";
 import SEOHead from "../SEOHead";
+import LetsChatModal from "../LetsChatModal";
 import { seoData } from "../../utils/seoData";
 import {
   FaInstagram,
@@ -117,6 +118,7 @@ const BuyerFAQs = () => {
   const [filteredFAQs, setFilteredFAQs] = useState(faqData);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isTyping, setIsTyping] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
   const seo = seoData["/faqs"];
 
   /* ===================== FOOTER DATA ===================== */
@@ -581,10 +583,10 @@ const BuyerFAQs = () => {
                 For More Information
               </h3>
               <button
-                onClick={() => (window.location.href = "/signup")}
+                onClick={() => setChatOpen(true)}
                 className="bg-gradient-to-r from-[#00CE84] to-[#00BC78] text-white px-6 py-2 rounded-full font-grotesque font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105"
               >
-                Sign Up
+                Talk to an Expert
               </button>
             </div>
           </div>
@@ -704,6 +706,8 @@ const BuyerFAQs = () => {
         </footer>
         {/* <Footer /> */}
       </div>
+
+      <LetsChatModal open={chatOpen} onClose={() => setChatOpen(false)} />
     </>
   );
 };
