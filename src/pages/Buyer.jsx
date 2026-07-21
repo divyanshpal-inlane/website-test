@@ -311,6 +311,68 @@ const HONEST_BREAKDOWN = [
   },
 ];
 
+/* Maps each buildBreakdown() row to the quiz question that drives it, so a
+   row can be revealed the moment that specific question is answered. */
+const ROW_ANSWER_KEY = { price: "budget", exp: "exp", scratch: "scratch", priority: "priority" };
+
+/* Quiz-driven rows for the "New vs Used" section. Once the quiz has been
+   touched, all 6 rows render (stable order — nothing reflows as you
+   answer); rows tied to a still-unanswered question come back `locked`
+   so the UI can render them as a greyed "answer to reveal" placeholder.
+   The two factual rows (warranty/depreciation) never lock — they don't
+   depend on any answer. Falls back to the static HONEST_BREAKDOWN copy
+   when the quiz hasn't been touched yet. */
+function getComparisonRows(answers) {
+  if (Object.keys(answers).length === 0) {
+    return HONEST_BREAKDOWN.map((row, i) => ({
+      key: `static-${i}`,
+      ...row,
+      locked: false,
+    }));
+  }
+  return buildBreakdown(answers).map((row) => {
+    const isFactual = row.key === "warranty" || row.key === "depreciation";
+    const answered = isFactual || answers[ROW_ANSWER_KEY[row.key]] !== undefined;
+    return {
+      key: row.key,
+      icon: answered ? row.icon : "🔒",
+      category: row.label,
+      newText: answered ? row.newText : "Answer to reveal",
+      usedText: answered ? row.usedText : "Answer to reveal",
+      winner: answered ? row.winner : null,
+      locked: !answered,
+    };
+  });
+}
+
+/* Verdict banner shown above the comparison table once the quiz is complete. */
+function getVerdict(newScore, usedScore) {
+  if (usedScore > newScore) return "used";
+  if (newScore > usedScore) return "new";
+  return "tie";
+}
+
+const VERDICT_BANNER = {
+  used: {
+    icon: "🏆",
+    title: "Used car is the smart move for you",
+    sub: "Based on your budget and priorities, a quality used car gives you the most value with the least risk.",
+    wrap: "bg-gradient-to-br from-[#6b5fa0] to-[#4b3f80] text-white",
+  },
+  new: {
+    icon: "🚗",
+    title: "New car is the right call for you",
+    sub: "Your budget, experience and priorities all point to the peace of mind a new car brings.",
+    wrap: "bg-gradient-to-br from-[#00CE84] to-[#00a86b] text-white",
+  },
+  tie: {
+    icon: "⚖️",
+    title: "It could go either way for you",
+    sub: "You're right on the fence — there's a strong case for both, so it comes down to what you value on the day.",
+    wrap: "bg-gradient-to-br from-[#DAFD82] to-[#bdf04f] text-[#111]",
+  },
+};
+
 /* ===================== "EVERYTHING ELSE" DATA ===================== */
 const handledServices = [
   {
@@ -526,166 +588,8 @@ function FAQItem({ question, answer, isOpen, onToggle }) {
   );
 }
 
-/* ===================== QUIZ RESULT SCREEN ===================== */
-/**
- * QuizResult
- * Renders the full result per the spec: verdict banner, animated score bars,
- * 6-row breakdown table, adaptive CTA. `newScore` / `usedScore` are the raw
- * point totals; everything else is derived here.
- */
-function QuizResult({ answers, newScore, usedScore, onTalkToLane, onRetake }) {
-  const total = newScore + usedScore || 1; // guard against /0
-  const newPct = Math.round((newScore / total) * 100);
-  const usedPct = 100 - newPct;
-
-  // Verdict
-  let verdict; // "new" | "used" | "tie"
-  if (usedScore > newScore) verdict = "used";
-  else if (newScore > usedScore) verdict = "new";
-  else verdict = "tie";
-
-  const banner = {
-    used: {
-      icon: "🏆",
-      title: "Used car is the smart move for you",
-      sub: "Based on your budget and priorities, a quality used car gives you the most value with the least risk.",
-      wrap: "bg-gradient-to-br from-[#6b5fa0] to-[#4b3f80] text-white",
-    },
-    new: {
-      icon: "🚗",
-      title: "New car is the right call for you",
-      sub: "Your budget, experience and priorities all point to the peace of mind a new car brings.",
-      wrap: "bg-gradient-to-br from-[#00CE84] to-[#00a86b] text-white",
-    },
-    tie: {
-      icon: "⚖️",
-      title: "It could go either way for you",
-      sub: "You're right on the fence — there's a strong case for both, so it comes down to what you value on the day.",
-      wrap: "bg-gradient-to-br from-[#DAFD82] to-[#bdf04f] text-[#111]",
-    },
-  }[verdict];
-
-  const cta = {
-    used: "We'll find you quality certified used cars in your budget, verify the history, and handle all the paperwork. Ready?",
-    new: "We'll help you find the best new car in your budget, get you the lowest loan rate from HDFC Bank, and sort insurance. Let's go.",
-    tie: "We'll curate a shortlist of both new and used options at your budget so you can decide with real numbers. Sound good?",
-  }[verdict];
-
-  const breakdown = buildBreakdown(answers);
-
-  // Animate the bars from 0 → target on mount.
-  const [barsReady, setBarsReady] = useState(false);
-  useEffect(() => {
-    const id = requestAnimationFrame(() => setBarsReady(true));
-    return () => cancelAnimationFrame(id);
-  }, []);
-
-  const winnerCell = "bg-[#00CE84] text-white font-semibold";
-  const loserCell = "bg-[#f4f5f2] text-[#9aa094]";
-
-  return (
-    <div className="flex flex-col gap-5">
-      {/* ---------- VERDICT BANNER ---------- */}
-      <div className={`rounded-[16px] p-5 sm:p-6 ${banner.wrap}`}>
-        <div className="text-[34px] leading-none">{banner.icon}</div>
-        <h3 className="mt-2 font-['Bricolage_Grotesque'] font-bold leading-[1.1] text-[clamp(18px,2.2vw,26px)]">
-          {banner.title}
-        </h3>
-        <p className="mt-2 font-['Bricolage_Grotesque'] font-medium leading-[1.4] text-[clamp(13px,1.4vw,15px)] opacity-90">
-          {banner.sub}
-        </p>
-      </div>
-
-      {/* ---------- SCORE BARS ---------- */}
-      <div className="flex flex-col gap-3 rounded-[16px] border border-[#edefeb] bg-white p-5 sm:p-6">
-        {[
-          { label: "New", pct: newPct, color: "#00CE84" },
-          { label: "Used", pct: usedPct, color: "#6b5fa0" },
-        ].map((bar) => (
-          <div key={bar.label}>
-            <div className="mb-1 flex items-center justify-between font-['Bricolage_Grotesque'] text-[13px] font-semibold text-[#111]">
-              <span>{bar.label}</span>
-              <span>{bar.pct}%</span>
-            </div>
-            <div className="h-[10px] w-full overflow-hidden rounded-full bg-[#edefeb]">
-              <div
-                className="h-full rounded-full transition-[width] duration-700 ease-out"
-                style={{
-                  width: barsReady ? `${bar.pct}%` : "0%",
-                  backgroundColor: bar.color,
-                }}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* ---------- BREAKDOWN TABLE ---------- */}
-      <div className="overflow-hidden rounded-[16px] border border-[#edefeb] bg-white">
-        <div className="grid grid-cols-[1.1fr_1fr_1fr] bg-[#f4f5f2] font-['Bricolage_Grotesque'] text-[12px] font-bold uppercase tracking-[0.04em] text-[#3D4038]">
-          <div className="px-3 py-2.5">Category</div>
-          <div className="px-3 py-2.5 text-center">New</div>
-          <div className="px-3 py-2.5 text-center">Used</div>
-        </div>
-        {breakdown.map((row) => (
-          <div
-            key={row.key}
-            className="grid grid-cols-[1.1fr_1fr_1fr] border-t border-[#edefeb]"
-          >
-            <div className="flex items-center gap-1.5 px-3 py-2.5 font-['Bricolage_Grotesque'] text-[13px] font-semibold text-[#111]">
-              <span>{row.icon}</span>
-              <span>{row.label}</span>
-            </div>
-            <div
-              className={`px-3 py-2.5 text-center font-['Bricolage_Grotesque'] text-[12px] leading-[1.3] ${
-                row.winner === "new" ? winnerCell : loserCell
-              }`}
-            >
-              {row.newText}
-            </div>
-            <div
-              className={`px-3 py-2.5 text-center font-['Bricolage_Grotesque'] text-[12px] leading-[1.3] ${
-                row.winner === "used" ? winnerCell : loserCell
-              }`}
-            >
-              {row.usedText}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* ---------- ADAPTIVE CTA ---------- */}
-      <div className="rounded-[16px] bg-[#f3edff] p-5 sm:p-6">
-        <p className="font-['Bricolage_Grotesque'] font-medium leading-[1.45] text-[#111] text-[clamp(13px,1.4vw,15px)]">
-          {cta}
-        </p>
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            onClick={onTalkToLane}
-            className="inline-flex items-center gap-2 rounded-[12px] bg-[#00CE84] px-6 py-3
-                       font-['Bricolage_Grotesque'] text-[15px] font-bold text-white
-                       transition-colors hover:bg-[#00b574]"
-          >
-            Talk to Lane
-            <ArrowRight className="h-4 w-4" strokeWidth={3} />
-          </button>
-          <button
-            type="button"
-            onClick={onRetake}
-            className="font-['Bricolage_Grotesque'] text-[13px] font-semibold text-[#6b5fa0]
-                       transition-colors hover:text-[#111]"
-          >
-            ↺ Retake quiz
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function BuyerHeroSection() {
-  // Controls the "Let's Chat" pop-up form
+  // Controls the lead-capture pop-up form
   const [chatOpen, setChatOpen] = useState(false);
 
   // Controls which FAQ accordion row is open
@@ -763,13 +667,33 @@ export default function BuyerHeroSection() {
     setUsedScore(0);
   };
 
-  // From the result screen's "Talk to Lane" → scroll to the contact form & focus name.
-  // NOTE: we deliberately do NOT expand the optional "more details" section here —
-  // moving the cursor to the form is enough; the optional fields stay collapsed.
-  const goToForm = () => {
-    formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-    requestAnimationFrame(() => nameRef.current?.focus());
+  // The quiz's result now renders inside the "New vs Used" section instead
+  // of inline in the quiz card — scroll there once the last question is answered.
+  const comparisonRef = useRef(null);
+  const scrollToComparison = () => {
+    comparisonRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  // Animate the score bars in the "New vs Used" section from 0 → target
+  // once the quiz completes (reset so retaking the quiz replays it).
+  const [compareBarsReady, setCompareBarsReady] = useState(false);
+  useEffect(() => {
+    if (!quizDone) {
+      setCompareBarsReady(false);
+      return;
+    }
+    const id = requestAnimationFrame(() => setCompareBarsReady(true));
+    return () => cancelAnimationFrame(id);
+  }, [quizDone]);
+
+  // Drives the "New vs Used" section: rows fill in live as questions are
+  // answered, and the verdict banner appears once the quiz is complete.
+  const comparisonRows = getComparisonRows(answers);
+  const compareVerdict = getVerdict(newScore, usedScore);
+  const compareBanner = VERDICT_BANNER[compareVerdict];
+  const compareTotal = newScore + usedScore || 1;
+  const compareNewPct = Math.round((newScore / compareTotal) * 100);
+  const compareUsedPct = 100 - compareNewPct;
 
   /* ---- FORM LOGIC ---- */
   const toggleBodyType = (type) => {
@@ -929,6 +853,7 @@ export default function BuyerHeroSection() {
                      md:mt-3 md:gap-[34px] lg:mt-4 lg:gap-[42px]"
         >
           <button
+            onClick={() => setChatOpen(true)}
             className="group relative flex items-center justify-center
                        overflow-hidden rounded-full
                        border-[3px] border-white
@@ -946,32 +871,12 @@ export default function BuyerHeroSection() {
                          text-white
                          text-[15px] sm:text-[15px] md:text-[17px] lg:text-[18px]"
             >
-              Explore Cars
+              Talk to an Expert
               <ArrowRight
                 className="h-4 w-4 md:h-5 md:w-5
                            transition-transform group-hover:translate-x-1"
                 strokeWidth={3.2}
               />
-            </span>
-          </button>
-
-          <button
-            onClick={() => setChatOpen(true)}
-            className="flex items-center justify-center rounded-full
-                       border-[3px] border-white bg-white
-                       shadow-[0_10px_28px_rgba(0,0,0,0.12)]
-                       transition-all duration-300 hover:scale-[1.02]
-                       h-[48px] w-full max-w-[220px]
-                       sm:h-[52px] sm:max-w-[240px]
-                       md:h-[56px] md:w-[280px] md:max-w-none
-                       lg:h-[64px] lg:w-[320px]"
-          >
-            <span
-              className="font-['Bricolage_Grotesque'] font-bold tracking-[-0.02em]
-                         text-black
-                         text-[15px] sm:text-[15px] md:text-[17px] lg:text-[18px]"
-            >
-              Let's Chat
             </span>
           </button>
         </div>
@@ -1022,7 +927,7 @@ export default function BuyerHeroSection() {
       </div>
 
       {/* ================= BOTTOM ACCENT BLOCK ================= */}
-      <div className="h-[40px] w-full bg-[#D9FF7A] sm:h-[50px] md:h-[60px] lg:h-[80px] xl:h-[100px]" />
+      {/* <div className="h-[40px] w-full bg-[#D9FF7A] sm:h-[50px] md:h-[60px] lg:h-[80px] xl:h-[100px]" /> */}
 
       {/* ================= CAR FINDER (QUIZ + LEAD FORM) ================= */}
       <div className="w-full bg-[#D1B3FF]">
@@ -1130,14 +1035,35 @@ export default function BuyerHeroSection() {
                     </p>
                   </>
                 ) : (
-                  /* RESULT SCREEN */
-                  <QuizResult
-                    answers={answers}
-                    newScore={newScore}
-                    usedScore={usedScore}
-                    onTalkToLane={goToForm}
-                    onRetake={restartQuiz}
-                  />
+                  /* DONE STATE — the actual result now lives in the
+                     "New vs Used" section below, so this just hands off. */
+                  <div className="flex flex-col items-center gap-4 py-4 text-center">
+                    <div className="text-[40px] leading-none">✅</div>
+                    <h3 className="font-['Bricolage_Grotesque'] font-semibold text-[#111] text-[clamp(18px,2vw,24px)]">
+                      You're all set!
+                    </h3>
+                    <p className="max-w-[300px] font-['Bricolage_Grotesque'] text-[14px] font-medium leading-[1.5] text-[#5A5F55]">
+                      Your personalized New vs Used comparison is ready below.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={scrollToComparison}
+                      className="inline-flex items-center gap-2 rounded-[12px] bg-[#00CE84] px-6 py-3
+                                 font-['Bricolage_Grotesque'] text-[15px] font-bold text-white
+                                 transition-colors hover:bg-[#00b574]"
+                    >
+                      View My Comparison
+                      <ArrowRight className="h-4 w-4" strokeWidth={3} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={restartQuiz}
+                      className="font-['Bricolage_Grotesque'] text-[13px] font-semibold text-[#6b5fa0]
+                                 transition-colors hover:text-[#111]"
+                    >
+                      ↺ Retake quiz
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
@@ -1374,7 +1300,10 @@ export default function BuyerHeroSection() {
       </div>
 
       {/* ================= NEW vs USED — THE HONEST BREAKDOWN ================= */}
-      <div className="mx-auto w-full max-w-6xl px-5 pb-12 pt-11 md:px-8 md:pt-15 md:pb-16 lg:pb-20 lg:pt-19">
+      <div
+        ref={comparisonRef}
+        className="mx-auto w-full max-w-6xl px-5 pb-12 pt-11 md:px-8 md:pt-15 md:pb-16 lg:pb-20 lg:pt-19"
+      >
         {/* ---------- HEADER ---------- */}
         <div className="text-center">
           <span className="relative inline-block ">
@@ -1411,6 +1340,46 @@ export default function BuyerHeroSection() {
           </p>
         </div>
 
+        {/* ---------- QUIZ VERDICT (appears once the quiz is complete) ---------- */}
+        {quizDone && (
+          <div className="mx-auto mt-8 flex max-w-[640px] flex-col gap-3 md:mt-10">
+            <div className={`rounded-[16px] p-5 sm:p-6 ${compareBanner.wrap}`}>
+              <div className="text-[34px] leading-none">
+                {compareBanner.icon}
+              </div>
+              <h3 className="mt-2 font-['Bricolage_Grotesque'] font-bold leading-[1.1] text-[clamp(18px,2.2vw,26px)]">
+                {compareBanner.title}
+              </h3>
+              <p className="mt-2 font-['Bricolage_Grotesque'] font-medium leading-[1.4] text-[clamp(13px,1.4vw,15px)] opacity-90">
+                {compareBanner.sub}
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3 rounded-[16px] border border-[#edefeb] bg-white p-5 sm:p-6">
+              {[
+                { label: "New", pct: compareNewPct, color: "#00CE84" },
+                { label: "Used", pct: compareUsedPct, color: "#6b5fa0" },
+              ].map((bar) => (
+                <div key={bar.label}>
+                  <div className="mb-1 flex items-center justify-between font-['Bricolage_Grotesque'] text-[13px] font-semibold text-[#111]">
+                    <span>{bar.label}</span>
+                    <span>{bar.pct}%</span>
+                  </div>
+                  <div className="h-[10px] w-full overflow-hidden rounded-full bg-[#edefeb]">
+                    <div
+                      className="h-full rounded-full transition-[width] duration-700 ease-out"
+                      style={{
+                        width: compareBarsReady ? `${bar.pct}%` : "0%",
+                        backgroundColor: bar.color,
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* ---------- COMPARISON TABLE (tablet / desktop) ---------- */}
         <div className="mt-8 hidden overflow-hidden rounded-[18px] border border-[#edefeb] bg-white md:mt-10 sm:block">
           {/* Header row */}
@@ -1433,25 +1402,30 @@ export default function BuyerHeroSection() {
           </div>
 
           {/* Body rows */}
-          {HONEST_BREAKDOWN.map((row) => (
+          {comparisonRows.map((row) => (
             <div
-              key={row.category}
-              className="grid grid-cols-[1fr_1.1fr_1.3fr] border-b border-[#edefeb] last:border-b-0"
+              key={row.key}
+              className={`grid grid-cols-[1fr_1.1fr_1.3fr] border-b border-[#edefeb] last:border-b-0
+                          transition-all duration-300 ease-out
+                          ${row.locked ? "-translate-y-0.5 opacity-50" : "translate-y-0 opacity-100"}`}
             >
               <div
-                className="px-3 py-3 font-['Bricolage_Grotesque'] font-bold text-[#111]
+                className={`flex items-center gap-1.5 px-3 py-3 font-['Bricolage_Grotesque'] font-bold
                            text-[clamp(15px,1.4vw,18px)]
-                           md:px-6 md:py-4"
+                           md:px-6 md:py-4 ${row.locked ? "text-[#9aa094]" : "text-[#111]"}`}
               >
-                {row.category}
+                {row.icon && <span>{row.icon}</span>}
+                <span>{row.category}</span>
               </div>
               <div
                 className={`px-3 py-3 font-['Bricolage_Grotesque'] leading-snug
                             text-[clamp(15px,1.4vw,18px)]
                             md:px-6 md:py-4 ${
-                              row.winner === "new"
-                                ? "font-bold text-[#00b574]"
-                                : "font-normal text-[#111]"
+                              row.locked
+                                ? "italic text-[#9aa094]"
+                                : row.winner === "new"
+                                  ? "font-bold text-[#00b574]"
+                                  : "font-normal text-[#111]"
                             }`}
               >
                 {row.newText}
@@ -1460,9 +1434,11 @@ export default function BuyerHeroSection() {
                 className={`px-3 py-3 font-['Bricolage_Grotesque'] leading-snug
                             text-[clamp(15px,1.4vw,18px)]
                             md:px-6 md:py-4 ${
-                              row.winner === "used"
-                                ? "font-bold text-[#00b574]"
-                                : "font-normal text-[#111]"
+                              row.locked
+                                ? "italic text-[#9aa094]"
+                                : row.winner === "used"
+                                  ? "font-bold text-[#00b574]"
+                                  : "font-normal text-[#111]"
                             }`}
               >
                 {row.usedText}
@@ -1473,13 +1449,20 @@ export default function BuyerHeroSection() {
 
         {/* ---------- COMPARISON CARDS (mobile) ---------- */}
         <div className="mt-8 space-y-3 sm:hidden">
-          {HONEST_BREAKDOWN.map((row) => (
+          {comparisonRows.map((row) => (
             <div
-              key={row.category}
-              className="overflow-hidden rounded-[16px] border border-[#edefeb] bg-white"
+              key={row.key}
+              className={`overflow-hidden rounded-[16px] border border-[#edefeb] bg-white
+                          transition-all duration-300 ease-out
+                          ${row.locked ? "-translate-y-0.5 opacity-50" : "translate-y-0 opacity-100"}`}
             >
-              <div className="border-b border-[#edefeb] bg-[#f0faf5] px-4 py-2.5 font-['Bricolage_Grotesque'] text-[15px] font-bold text-[#111]">
-                {row.category}
+              <div
+                className={`flex items-center gap-1.5 border-b border-[#edefeb] bg-[#f0faf5] px-4 py-2.5 font-['Bricolage_Grotesque'] text-[15px] font-bold ${
+                  row.locked ? "text-[#9aa094]" : "text-[#111]"
+                }`}
+              >
+                {row.icon && <span>{row.icon}</span>}
+                <span>{row.category}</span>
               </div>
               <div className="grid grid-cols-2 divide-x divide-[#edefeb]">
                 <div className="px-4 py-3">
@@ -1488,9 +1471,11 @@ export default function BuyerHeroSection() {
                   </div>
                   <div
                     className={`mt-1 font-['Bricolage_Grotesque'] text-[15px] leading-snug ${
-                      row.winner === "new"
-                        ? "font-bold text-[#00b574]"
-                        : "font-normal text-[#111]"
+                      row.locked
+                        ? "italic text-[#9aa094]"
+                        : row.winner === "new"
+                          ? "font-bold text-[#00b574]"
+                          : "font-normal text-[#111]"
                     }`}
                   >
                     {row.newText}
@@ -1502,9 +1487,11 @@ export default function BuyerHeroSection() {
                   </div>
                   <div
                     className={`mt-1 font-['Bricolage_Grotesque'] text-[15px] leading-snug ${
-                      row.winner === "used"
-                        ? "font-bold text-[#00b574]"
-                        : "font-normal text-[#111]"
+                      row.locked
+                        ? "italic text-[#9aa094]"
+                        : row.winner === "used"
+                          ? "font-bold text-[#00b574]"
+                          : "font-normal text-[#111]"
                     }`}
                   >
                     {row.usedText}
@@ -1513,6 +1500,20 @@ export default function BuyerHeroSection() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* ---------- CTA ---------- */}
+        <div className="mt-8 flex justify-center md:mt-10">
+          <button
+            type="button"
+            onClick={() => setChatOpen(true)}
+            className="inline-flex items-center gap-2 rounded-[12px] bg-[#00CE84] px-6 py-3
+                       font-['Bricolage_Grotesque'] text-[15px] font-bold text-white
+                       transition-colors hover:bg-[#00b574]"
+          >
+            Talk to an Expert
+            <ArrowRight className="h-4 w-4" strokeWidth={3} />
+          </button>
         </div>
       </div>
 
@@ -1600,7 +1601,7 @@ export default function BuyerHeroSection() {
                 className="font-['Bricolage_Grotesque'] font-bold text-black
                            text-[14px] sm:text-[16px] md:text-[1.5vw] xl:text-[18px]"
               >
-                Let's Chat
+                Talk to an Expert
               </span>
               <ArrowRight
                 className="h-5 w-5 text-black md:h-6 md:w-6"

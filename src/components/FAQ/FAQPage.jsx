@@ -3,6 +3,7 @@ import faqData from '../../data/faq';
 import Navbar2 from '../Navbar2';
 import Footer from '../Footer';
 import SEOHead from '../SEOHead';
+import LetsChatModal from '../LetsChatModal';
 import { seoData } from '../../utils/seoData';
 
 // Memoized FAQ Item for performance
@@ -71,6 +72,7 @@ const FAQPage = () => {
   const [filteredFAQs, setFilteredFAQs] = useState(faqData);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [isTyping, setIsTyping] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
   const seo = seoData['/faqs'];
 
   // Define FAQ categories with emojis
@@ -338,16 +340,18 @@ const FAQPage = () => {
                 For More Information
               </h3>
               <button
-                onClick={() => window.location.href = '/signup'}
+                onClick={() => setChatOpen(true)}
                 className="bg-gradient-to-r from-[#00CE84] to-[#00BC78] text-white px-6 py-2 rounded-full font-grotesque font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105"
               >
-                Sign Up
+                Talk to an Expert
               </button>
             </div>
           </div>
         </div>
         <Footer />
       </div>
+
+      <LetsChatModal open={chatOpen} onClose={() => setChatOpen(false)} />
     </>
   );
 };
