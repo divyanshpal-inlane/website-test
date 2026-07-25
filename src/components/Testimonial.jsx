@@ -126,8 +126,7 @@ const Testimonial = () => {
     setActiveReview(null);
   };
 
-  const firstRow = testimonials.slice(0, Math.ceil(testimonials.length / 2));
-  const secondRow = testimonials.slice(Math.ceil(testimonials.length / 2));
+  const firstRow = testimonials;
 
   // Helper function to get embedded Drive URL
   const getEmbeddedDriveUrl = (driveUrl) => {
@@ -276,85 +275,6 @@ const Testimonial = () => {
                         </div>
                       </div>
                       <p className="text-black md:text-xl leading-relaxed font-['Bricolage_Grotesque'] line-clamp-4 md:line-clamp-6 text-left ">
-                        {testimonial.comment}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </ScrollingRow>
-        </ScrollContainer>
-
-        <Box sx={{ my: { xs: 3, sm: 4, md: 5 } }} />
-
-        <ScrollContainer>
-          <ScrollingRow direction="right">
-            {[...secondRow, ...secondRow].map((testimonial, index) => (
-              <div
-                key={index}
-                className="min-w-[300px] sm:min-w-[350px] md:min-w-[400px]"
-              >
-                {testimonial.videoLink ? (
-                  <div
-                    className="rounded-[32px] border-[12px] xs:border-[8px] border-white overflow-hidden cursor-pointer relative h-[250px] xs:h-[200px] md:h-[300px]"
-                    onClick={() => handleOpenModal(testimonial)}
-                  >
-                    <iframe
-                      src={getEmbeddedDriveUrl(testimonial.videoLink)}
-                      className="w-full h-full"
-                      frameBorder="0"
-                      allow="autoplay; encrypted-media"
-                      allowFullScreen
-                      title="Testimonial Video"
-                    />
-                    <div className="absolute top-0 left-0 right-0 p-6 xs:p-4 bg-white/80">
-                      <div className="flex justify-between items-start">
-                        <h3 className="text-sm md:text-xl font-bold font-['Bricolage_Grotesque'] text-black">
-                          {testimonial.name}
-                        </h3>
-                        <div className="flex gap-0.5">
-                          {[...Array(testimonial.rating)].map((_, i) => (
-                            <BorderedStarIcon key={i} viewBox="0 0 24 24">
-                              <path
-                                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                stroke="black"
-                                strokeWidth="1"
-                                fill={index % 2 === 0 ? "#D1B3FF" : "#D9FF7A"}
-                              />
-                            </BorderedStarIcon>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div
-                    className="rounded-[32px] p-6 xs:p-4 h-[250px] xs:h-[200px] md:h-[300px] border-[12px] xs:border-[8px] border-white"
-                    style={{
-                      backgroundColor: index % 2 === 0 ? "#D9FF7A" : "#D1B3FF",
-                    }}
-                    onClick={() => handleOpenModal(testimonial)}
-                  >
-                    <div className="space-y-3 xs:space-y-2">
-                      <div className="flex justify-between items-center">
-                        <h3 className="text-sm md:text-xl font-bold font-['Bricolage_Grotesque']">
-                          {testimonial.name}
-                        </h3>
-                        <div className="flex gap-0.5">
-                          {[...Array(testimonial.rating)].map((_, i) => (
-                            <BorderedStarIcon key={i} viewBox="0 0 24 24">
-                              <path
-                                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                stroke="black"
-                                strokeWidth="1"
-                                fill={index % 2 === 0 ? "#D1B3FF" : "#D9FF7A"}
-                              />
-                            </BorderedStarIcon>
-                          ))}
-                        </div>
-                      </div>
-                      <p className="text-black md:text-xl leading-relaxed font-['Bricolage_Grotesque'] line-clamp-4 md:line-clamp-6 text-left">
                         {testimonial.comment}
                       </p>
                     </div>

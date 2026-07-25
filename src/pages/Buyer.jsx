@@ -1507,12 +1507,30 @@ export default function BuyerHeroSection() {
           <button
             type="button"
             onClick={() => setChatOpen(true)}
-            className="inline-flex items-center gap-2 rounded-[12px] bg-[#00CE84] px-6 py-3
-                       font-['Bricolage_Grotesque'] text-[15px] font-bold text-white
-                       transition-colors hover:bg-[#00b574]"
+            className="group relative flex items-center justify-center
+                       overflow-hidden rounded-full
+                       border-[3px] border-white
+                       bg-gradient-to-b from-[#00CE84] to-[#00BC78]
+                       shadow-[0_10px_28px_rgba(0,0,0,0.14)]
+                       transition-all duration-300 hover:scale-[1.02]
+                       h-[48px] w-full max-w-[220px]
+                       sm:h-[52px] sm:max-w-[240px]
+                       md:h-[56px] md:w-[280px] md:max-w-none
+                       lg:h-[64px] lg:w-[320px]"
           >
-            Talk to an Expert
-            <ArrowRight className="h-4 w-4" strokeWidth={3} />
+            <span
+              className="flex items-center gap-2
+                         font-['Bricolage_Grotesque'] font-bold tracking-[-0.02em]
+                         text-white
+                         text-[15px] sm:text-[15px] md:text-[17px] lg:text-[18px]"
+            >
+              Talk to an Expert
+              <ArrowRight
+                className="h-4 w-4 md:h-5 md:w-5
+                           transition-transform group-hover:translate-x-1"
+                strokeWidth={3.2}
+              />
+            </span>
           </button>
         </div>
       </div>

@@ -10,7 +10,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  Button,
   Menu,
   MenuItem,
 } from "@mui/material";
@@ -28,6 +27,17 @@ import CloseIcon from "@mui/icons-material/Close";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { locations } from "../data/locations";
 
+const navItems = [
+  { label: "Learn To Drive", href: "/courses", icon: "/nav/drive.svg" },
+  // RTO Services — hidden for now (not needed yet), re-enable when ready.
+  // {
+  //   label: "RTO Services",
+  //   href: "/rto-services-k9x24qz7",
+  //   icon: "/nav/rto.svg",
+  // },
+  { label: "Buy & Sell Car", href: "/buyer", icon: "/nav/car.svg" },
+];
+
 const Navbar2 = ({
   backgroundColor = "#FAF9E6",
   logo = "./LANE_LOGO.svg",
@@ -37,6 +47,32 @@ const Navbar2 = ({
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [buySellAnchor, setBuySellAnchor] = useState(null);
+
+  const openBuySell = (event) => setBuySellAnchor(event.currentTarget);
+  const closeBuySell = () => setBuySellAnchor(null);
+
+  const buySellMenuProps = {
+    sx: {
+      backgroundColor: "#D9FF7A",
+      border: "1.5px solid #000000",
+      borderRadius: "16px",
+      boxShadow: "3px 4px 0px rgba(0,0,0,0.25)",
+      minWidth: 180,
+      overflow: "hidden",
+      py: 0,
+    },
+  };
+
+  const buySellMenuItemSx = {
+    justifyContent: "center",
+    fontFamily: "Bricolage Grotesque",
+    fontWeight: 700,
+    fontSize: "1.05rem",
+    color: "#000000",
+    py: 1.75,
+    "&:hover": { backgroundColor: "rgba(0,0,0,0.06)" },
+  };
 
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
@@ -329,7 +365,7 @@ const Navbar2 = ({
             sx={{
               width: "100%",
               display: "flex",
-              justifyContent: isMobile ? "flex-start" : "center",
+              justifyContent: "flex-start",
               alignItems: "center",
               position: "relative",
             }}
@@ -350,34 +386,94 @@ const Navbar2 = ({
               <img
                 src={logo}
                 alt="Lane logo"
-                width={isMobile ? 50 : 60}
+                width={isMobile ? 42 : 60}
                 style={{ marginRight: theme.spacing(1), zIndex: 2 }}
               />
             </Typography>
 
-            <Button
-              component={Link}
-              to="/sell-used-car"
+            {/* Nav items: one row on every breakpoint, sized down for mobile so
+                logo + items + the fixed hamburger all sit on a single line. */}
+            <Box
               sx={{
-                position: "fixed",
-                right: isMobile ? 70 : 90,
-                zIndex: 100,
-                textTransform: "none",
-                fontFamily: "Bricolage Grotesque",
-                fontWeight: 600,
-                fontSize: isMobile ? "0.75rem" : "0.95rem",
-                color: "#fff",
-                backgroundColor: "#6B2FA0",
-                borderRadius: "20px",
-                px: isMobile ? 1.5 : 2.5,
-                py: 0.5,
-                "&:hover": {
-                  backgroundColor: "#5a2789",
-                },
+                display: "flex",
+                alignItems: "center",
+                gap: { xs: 2, sm: 3, md: 4 },
+                position: "absolute",
+                left: "50%",
+                transform: "translateX(-50%)",
               }}
             >
-              Sell Your Car
-            </Button>
+              {navItems.map((item) => {
+                const isBuySell = item.label === "Buy & Sell Car";
+                return (
+                  <Box
+                    key={item.label}
+                    {...(isBuySell
+                      ? { component: "button", type: "button", onClick: openBuySell }
+                      : { component: Link, to: item.href })}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: { xs: 0.5, md: 1 },
+                      textDecoration: "none",
+                      whiteSpace: "nowrap",
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: 0,
+                      font: "inherit",
+                    }}
+                  >
+                    <Box
+                      component="img"
+                      src={item.icon}
+                      alt=""
+                      sx={{ width: { xs: 18, sm: 22, md: 28 }, height: { xs: 18, sm: 22, md: 28 } }}
+                    />
+                    <Typography
+                      sx={{
+                        fontFamily: "Bricolage Grotesque",
+                        fontWeight: 600,
+                        color: "#000000",
+                        fontSize: { xs: "0.68rem", sm: "0.85rem", md: "1rem" },
+                      }}
+                    >
+                      {item.label}
+                    </Typography>
+                  </Box>
+                );
+              })}
+            </Box>
+
+            <Menu
+              anchorEl={buySellAnchor}
+              open={Boolean(buySellAnchor)}
+              onClose={closeBuySell}
+              anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+              transformOrigin={{ horizontal: "center", vertical: "top" }}
+              PaperProps={buySellMenuProps}
+              MenuListProps={{ sx: { py: 0 } }}
+            >
+              <MenuItem
+                component={Link}
+                to="/buyer"
+                onClick={closeBuySell}
+                sx={{
+                  ...buySellMenuItemSx,
+                  borderBottom: "1px solid rgba(0,0,0,0.35)",
+                }}
+              >
+                Buy Car
+              </MenuItem>
+              <MenuItem
+                component={Link}
+                to="/sell-used-car"
+                onClick={closeBuySell}
+                sx={buySellMenuItemSx}
+              >
+                Sell Car
+              </MenuItem>
+            </Menu>
 
             <IconButton
               size="large"

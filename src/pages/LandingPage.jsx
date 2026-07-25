@@ -9,13 +9,24 @@ import {
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useAnimation, useScroll } from "framer-motion";
+import { Headset } from "lucide-react";
 import RoadSVG from "../components/SVGs/RoadSVG";
 import RoadSvg_Sm from "../components/SVGs/RoadSvg_Mobile";
 import { Link } from "react-router-dom";
 import Testimonial from "../components/Testimonial";
 import Rocket from "../components/SVGs/Rocket";
+import CountUp from "../components/CountUp";
+import LetsChatModal from "../components/LetsChatModal";
+import testimonialsData from "../data/testimonials";
 import { Helmet } from "react-helmet-async";
 import { captureUTMsOnLoad } from "../utils/utmTracking";
+
+const stats = [
+  { value: 3700, label: "Confident Learners" },
+  { value: 31000, label: "Hours on road" },
+  { value: 60, label: "Vetted Instructors" },
+  { value: null, staticLabel: "4.6 ★", label: "star rated" },
+];
 
 const LandingPage = () => {
   const theme = useTheme();
@@ -34,6 +45,7 @@ const LandingPage = () => {
   const controls = useAnimation();
   const controlsChanges = useAnimation();
   const [queryParams, setQueryParams] = useState("");
+  const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
     // Handle scroll animations
@@ -97,71 +109,188 @@ const LandingPage = () => {
         <meta property="og:type" content="website" />
       </Helmet>
 
-      <Box>
-        <Box className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 ">
-          <div className="text-center relative ">
-            <h1 className="relative text-4xl sm:text-5xl md:text-6xl font-bold text-[#3C4856] font-['Bricolage_Grotesque'] mb-8">
-              {/* Turn arrow in top left */}
-              <div className="absolute top-4 left-4 md:top-[-1rem] md:left-[19rem]">
-                <img
-                  src="/svg/turn_arrow.svg"
-                  alt="Turn arrow"
-                  className="w-8 h-8 md:w-2/3 md:h-2/3"
-                />
-              </div>
-              {/* P icon in top right */}
-              <div className="absolute top-4 right-4 md:top-[1rem] md:right-[17rem]">
-                <img
-                  src="/svg/P.svg"
-                  alt="P icon"
-                  className="w-8 h-8 md:w-2/3 md:h-2/3"
-                />
-              </div>
-              Let's Start Your
-              <br />
-              Driving Journey!
-            </h1>
+      {/* ============ FUNDING BANNER ============ */}
+      <div className="w-full bg-[#D1B3FF] py-2.5 px-4 text-center">
+        <p className="font-['Bricolage_Grotesque'] font-medium text-[#3C4856] text-[13px] sm:text-[16px] md:text-[18px]">
+          We Have <span className="font-bold">Raised ₹8.5Cr</span> To Fix How
+          India Learns Driving
+        </p>
+      </div>
 
-            <div className="flex flex-row items-center justify-center gap-6 mt-18">
-              <Button
-                variant="contained"
-                component={Link}
-                to={`/signup?${queryParams}`}
-                startIcon={<Rocket color={IconStyle} />}
-                sx={{
-                  background:
-                    "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
-                  color: "white",
-                  fontWeight: "bold",
-                  fontFamily: "Bricolage Grotesque",
-                  textDecoration: "none",
-                  textTransform: "none",
-                  "&:hover": {
-                    background:
-                      "linear-gradient(90deg, #00CE84 0%, #00BC78 100%)",
-                  },
-                  border: "2.5px solid #FFFFFF",
-                  borderRadius: "50px",
-                  padding: {
-                    sm: "10px 20px",
-                    md: "6px 68px",
-                  },
-                  fontSize: { xs: "0.8rem", sm: "1rem", md: "24px" },
-                  whiteSpace: "nowrap",
-                  boxShadow: "2px 4px 4px rgba(0, 0, 0, 0.35)",
-                }}
-              >
-                Sign Up
-              </Button>
-              <img
-                src="/svg/down_arrow.svg"
-                alt="down arrow"
-                className="w-8 h-8 md:w-auto md:h-auto"
-              />
+      {/* ============ HERO ============ */}
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 md:pt-16 text-center">
+        <h1 className="font-['Bricolage_Grotesque'] font-bold text-[#3C4856] leading-tight text-[28px] sm:text-[42px] md:text-[52px] lg:text-[56px]">
+          Bengaluru, Come Learn to
+        </h1>
+        <div className="flex items-center justify-center gap-2 sm:gap-4 md:gap-5 mt-1 sm:mt-2">
+          <img
+            src="/svg/turn_arrow.svg"
+            alt=""
+            className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 shrink-0"
+          />
+          <h1 className="font-['Bricolage_Grotesque'] font-extrabold text-[#00CE84] leading-tight text-[32px] sm:text-[48px] md:text-[60px] lg:text-[64px] whitespace-nowrap">
+            Actually Drive !
+          </h1>
+          <img
+            src="/svg/P.svg"
+            alt=""
+            className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 shrink-0"
+          />
+        </div>
+
+        <p className="mt-5 sm:mt-6 font-['Bricolage_Grotesque'] text-[#3C4856] text-[14px] sm:text-[17px] md:text-[19px] max-w-xl mx-auto">
+          A structured, 10-day method from Bengaluru's most-trusted driving
+          platform.
+        </p>
+
+        {/* ---------- CTA BUTTONS ---------- */}
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Link
+            to="/courses"
+            className="group relative flex items-center justify-center gap-2
+                       overflow-hidden rounded-full
+                       border-[3px] border-white
+                       bg-gradient-to-b from-[#00CE84] to-[#00BC78]
+                       shadow-[0_10px_28px_rgba(0,0,0,0.14)]
+                       transition-all duration-300 hover:scale-[1.02]
+                       h-[48px] w-full max-w-[240px] px-6
+                       sm:h-[52px] sm:w-auto"
+          >
+            <Rocket color={{ color: "#FFFFFF", width: 18, height: 18 }} />
+            <span className="font-['Bricolage_Grotesque'] font-bold text-white text-[15px] sm:text-[16px]">
+              Explore Courses
+            </span>
+          </Link>
+          <Link
+            to="/signup"
+            className="flex items-center justify-center gap-2 rounded-full
+                       bg-white shadow-[0_10px_28px_rgba(0,0,0,0.1)]
+                       transition-all duration-300 hover:scale-[1.02]
+                       h-[48px] w-full max-w-[240px] px-6
+                       sm:h-[52px] sm:w-auto"
+          >
+            <Headset className="w-5 h-5 text-black" strokeWidth={2.2} />
+            <span className="font-['Bricolage_Grotesque'] font-bold text-black text-[15px] sm:text-[16px]">
+              Talk to an expert
+            </span>
+          </Link>
+        </div>
+      </div>
+
+      <div className="relative w-full overflow-hidden">
+        {/* decorative arc behind stat cards, blending into the "Backed By" panel — full-bleed, no side gaps */}
+        <img
+          src="/Union.svg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-x-0 z-0 top-[60px] sm:top-[80px] md:top-[100px]
+                     w-full h-[260px] sm:h-[340px] md:h-[420px] object-fill
+                     pointer-events-none select-none"
+        />
+
+        <div className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        {/* ---------- STAT CARDS ---------- */}
+        <div className="relative z-10 mt-16 sm:mt-20 md:mt-24 grid grid-cols-2 sm:flex sm:flex-row flex-wrap justify-center gap-4 sm:gap-6 md:gap-8">
+          {stats.map((stat, index) => (
+            <div
+              key={stat.label}
+              className={`flex flex-col items-center justify-center rounded-[14px]
+                          bg-[#D9FF7A] px-4 py-4 sm:px-6 sm:py-5
+                          shadow-[0_6px_16px_rgba(0,0,0,0.12)]
+                          ${index % 2 === 0 ? "rotate-[-3deg]" : "rotate-[3deg]"}`}
+            >
+              <span className="font-['Bricolage_Grotesque'] font-extrabold text-black text-[22px] sm:text-[28px] md:text-[32px] whitespace-nowrap">
+                {stat.value !== null ? (
+                  <CountUp target={stat.value} suffix="+" />
+                ) : (
+                  stat.staticLabel
+                )}
+              </span>
+              <span className="font-['Bricolage_Grotesque'] font-medium text-black text-[12px] sm:text-[14px] mt-1 whitespace-nowrap">
+                {stat.label}
+              </span>
             </div>
+          ))}
+        </div>
+
+        {/* ---------- BACKED BY ---------- */}
+        <div className="relative z-10 mt-14 sm:mt-20 md:mt-24 pb-14 sm:pb-20">
+          <p className="font-['Bricolage_Grotesque'] font-bold text-[#3C4856] text-[15px] sm:text-[18px] tracking-[0.08em] mb-6">
+            BACKED BY
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14 md:gap-16">
+            <img
+              src="/investors/dvc.svg"
+              alt="DVC"
+              className="h-6 sm:h-8 md:h-9 w-auto"
+            />
+            <img
+              src="/investors/kae-capital.svg"
+              alt="Kae Capital"
+              className="h-7 sm:h-9 md:h-11 w-auto"
+            />
+            <img
+              src="/investors/antler.svg"
+              alt="Antler"
+              className="h-6 sm:h-8 md:h-9 w-auto"
+            />
           </div>
-        </Box>
-      </Box>
+        </div>
+        </div>
+      </div>
+
+      {/* ============ FEATURED REVIEWS TEASER ============ */}
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-14 sm:pb-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-center">
+          {testimonialsData.slice(0, 1).map((testimonial) => (
+            <div
+              key={testimonial.name}
+              className="rounded-[24px] bg-[#D1B3FF] p-5 sm:p-6 order-2 md:order-1"
+            >
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-['Bricolage_Grotesque'] font-bold text-black text-[15px] sm:text-[17px]">
+                  {testimonial.name}
+                </h3>
+                <span className="text-[13px] sm:text-[15px] text-[#FFB800]">
+                  {"★".repeat(testimonial.rating)}
+                </span>
+              </div>
+              <p className="font-['Bricolage_Grotesque'] text-black text-[13px] sm:text-[15px] leading-relaxed line-clamp-5">
+                {testimonial.comment}
+              </p>
+            </div>
+          ))}
+
+          <div className="order-1 md:order-2 rounded-[24px] overflow-hidden border-[3px] border-black">
+            <img
+              src="/team-photo.jpg"
+              alt="The Lane team"
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          {testimonialsData.slice(1, 2).map((testimonial) => (
+            <div
+              key={testimonial.name}
+              className="rounded-[24px] bg-[#D1B3FF] p-5 sm:p-6 order-3"
+            >
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-['Bricolage_Grotesque'] font-bold text-black text-[15px] sm:text-[17px]">
+                  {testimonial.name}
+                </h3>
+                <span className="text-[13px] sm:text-[15px] text-[#FFB800]">
+                  {"★".repeat(testimonial.rating)}
+                </span>
+              </div>
+              <p className="font-['Bricolage_Grotesque'] text-black text-[13px] sm:text-[15px] leading-relaxed line-clamp-5">
+                {testimonial.comment}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <LetsChatModal open={chatOpen} onClose={() => setChatOpen(false)} />
 
       {/* second section of the hero page  */}
 

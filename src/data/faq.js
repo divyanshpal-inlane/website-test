@@ -1,5 +1,5 @@
 const faqData = [
- 
+
   {
     question: "What services does Lane Driving School offer in Bangalore?",
     answer: "Lane Driving School offers beginner 4-Wheeler driving lessons, refresher courses, RTO assistance, and both 4- Wheeler and 2-Wheeler license test preparation in Bangalore. Training is provided in manual cars, or in your own car if preferred.",
@@ -21,8 +21,8 @@ const faqData = [
     category: "General Driving School Information"
   },
   {
-    question:"Why should I choose Lane over other driving schools in Bangalore?",
-    answer:"Lane Driving School offers a structured, curriculum-based learning experience tailored to each learner’s skill level. Our certified instructors are trained for clarity, patience, and safety, with verified backgrounds. Each class follows a clear agenda, and learners receive pre-reads, short videos, and interactive gaming modules in advance—so the learner can come prepared and make the most out of the practical sessions.",
+    question: "Why should I choose Lane over other driving schools in Bangalore?",
+    answer: "Lane Driving School offers a structured, curriculum-based learning experience tailored to each learner’s skill level. Our certified instructors are trained for clarity, patience, and safety, with verified backgrounds. Each class follows a clear agenda, and learners receive pre-reads, short videos, and interactive gaming modules in advance—so the learner can come prepared and make the most out of the practical sessions.",
     category: "General Driving School Information"
   },
   {
@@ -31,8 +31,8 @@ const faqData = [
     category: "General Driving School Information"
   },
   {
-    question:"What types of car driving courses does Lane Driving School offer?",
-    answer:"Lane Driving School in Bangalore offers beginner and refresher-level car driving courses using manual transmission hatchback cars. Learners can also opt to train in their own vehicles. All sessions are customized and conducted at the learner’s location, ensuring a convenient and personalized experience.",
+    question: "What types of car driving courses does Lane Driving School offer?",
+    answer: "Lane Driving School in Bangalore offers beginner and refresher-level car driving courses using manual transmission hatchback cars. Learners can also opt to train in their own vehicles. All sessions are customized and conducted at the learner’s location, ensuring a convenient and personalized experience.",
     category: "Course & Training Details",
   },
   {
@@ -191,11 +191,11 @@ const faqData = [
   },
   {
     question: "How do I contact Lane's customer support team for help or queries?",
-answer: `You can reach Lane's customer support by phone or WhatsApp at <a href="tel:+917338098798" style="color: #2563eb; text-decoration: underline; font-weight: 500;">+91 73380 98798</a> or email us at <a href="mailto:team@inlane.in" style="color: #2563eb; text-decoration: underline; font-weight: 500;">team@inlane.in</a>. We're here to assist you with any questions or support you need.`,
+    answer: `You can reach Lane's customer support by phone or WhatsApp at <a href="tel:+917338098798" style="color: #2563eb; text-decoration: underline; font-weight: 500;">+91 73380 98798</a> or email us at <a href="mailto:team@inlane.in" style="color: #2563eb; text-decoration: underline; font-weight: 500;">team@inlane.in</a>. We're here to assist you with any questions or support you need.`,
     category: "Legal, Policies & Support",
   },
-  
-  
+
+
 ];
 
 export default faqData;

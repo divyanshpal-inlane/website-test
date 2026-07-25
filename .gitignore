@@ -3,4 +3,5 @@ dist
 .env.local
 .env
 .vercel
-# papaji
+**/.DS_Store
+the-local
