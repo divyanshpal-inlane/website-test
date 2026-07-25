@@ -1,14 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowRight, ArrowLeft, ChevronDown } from "lucide-react";
-import {
-  FaInstagram,
-  FaXTwitter,
-  FaLinkedinIn,
-  FaWhatsapp,
-  FaPhone,
-  FaEnvelope,
-} from "react-icons/fa6";
-import BuyerNavbar from "../components/BuyerNavbar";
+import Navbar2 from "../components/Navbar";
+import Footer from "../components/Footer";
 import LetsChatModal from "../components/LetsChatModal";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../supabaseClient";
@@ -466,81 +459,6 @@ const faqs = [
   },
 ];
 
-/* ===================== FOOTER DATA ===================== */
-const socialLinks = [
-  {
-    Icon: FaInstagram,
-    href: "https://www.instagram.com/inlane.in/",
-    label: "Instagram",
-  },
-  { Icon: FaXTwitter, href: "https://x.com/inlane_in/", label: "X" },
-  {
-    Icon: FaLinkedinIn,
-    href: "https://www.linkedin.com/company/in-lane/",
-    label: "LinkedIn",
-  },
-];
-
-const footerColumns = [
-  {
-    title: "Information",
-    links: [
-      { text: "About Us", href: "/about-us" },
-      { text: "Courses", href: "/courses" },
-      { text: "RTO Services", href: "/rto" },
-      { text: "FAQs", href: "/faqs" },
-      { text: "Lane Journal", href: "/blog" },
-    ],
-  },
-  {
-    title: "Quick Links",
-    links: [
-      { text: "Support", href: "/support" },
-      { text: "Privacy Policy", href: "/privacy-policy" },
-      { text: "Terms & Conditions", href: "/terms-and-conditions" },
-    ],
-  },
-];
-
-const contactLinks = [
-  { Icon: FaPhone, text: "+91 9748439881", href: "tel:+919748439881" },
-  { Icon: FaEnvelope, text: "info@inlane.in", href: "mailto:info@inlane.in" },
-  {
-    Icon: FaWhatsapp,
-    text: "WhatsApp",
-    href: "https://wa.me/919748439881",
-    external: true,
-  },
-];
-
-/**
- * FooterHeading
- * Column title with Tag5.svg as a background image behind the text (per Figma).
- */
-function FooterHeading({ children }) {
-  return (
-    <h3 className="relative mb-3 md:mb-5 inline-block md:mb-5">
-      <span
-        aria-hidden="true"
-        className="absolute inset-x-[-12px] bottom-[-4px] top-[-4px] -z-0"
-        style={{
-          backgroundImage: "url('/Tag5.svg')",
-          backgroundSize: "100% 100%",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-        }}
-      />
-      <span
-        className="relative z-10 font-['Bricolage_Grotesque'] font-bold tracking-[-0.01em]
-                   text-[#111111]
-                   text-[clamp(16px,1.7vw,22px)]"
-      >
-        {children}
-      </span>
-    </h3>
-  );
-}
-
 /**
  * FAQItem
  * A single collapsible accordion row.
@@ -771,7 +689,7 @@ export default function BuyerHeroSection() {
   return (
     <section className="relative w-full overflow-x-hidden bg-[#F5F5F5]">
       {/* ================= NAVBAR ================= */}
-      <BuyerNavbar
+      <Navbar2
         backgroundColor="#F5F5F5"
         logo="/LANE_LOGO.svg"
         burgerMenu="/rto-hamburger.svg"
@@ -1712,106 +1630,7 @@ export default function BuyerHeroSection() {
       </div>
 
       {/* ================= FOOTER ================= */}
-      <style>{`
-        @keyframes buyerCarMove {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(calc(-110vw - 100px)); }
-        }
-      `}</style>
-
-      <footer
-        className="relative w-full bg-white"
-        style={{
-          backgroundImage: "url('/NavbarRoad.svg')",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "100% auto",
-          backgroundPosition: "top center",
-        }}
-      >
-        <img
-          src="/svg/car.png"
-          alt="Moving car"
-          aria-hidden="true"
-          className="w-[30px] h-[30px] md:w-[60px] md:h-[60px]
-                     top-[-25px] right-[-100px] md:top-[-50px] md:right-[-100px]"
-          style={{
-            position: "absolute",
-            animation: "buyerCarMove 4s linear infinite",
-            transform: "scaleX(-1)",
-            zIndex: 30,
-          }}
-        />
-        <div className="mx-auto w-full max-w-[1280px] px-5 py-6 sm:py-8 md:py-14 md:pl-[9%] lg:pl-[6%]">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-x-10 lg:grid-cols-[1.6fr_1fr_1fr_1fr] lg:gap-x-6">
-            <div className="flex flex-col items-center text-center md:items-start md:text-left sm:col-span-2 lg:col-span-1">
-              <img
-                src="/Lane_Footer_Logo.svg"
-                alt="LANE — By Your Side, Every Ride"
-                className="h-auto w-[clamp(120px,15.6vw,200px)] px-4 py-2"
-              />
-              <div className="mt-5 flex justify-center md:justify-start items-center gap-3 md:mt-6">
-                {socialLinks.map(({ Icon, href, label }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    className="flex items-center justify-center rounded-full bg-black text-white transition-transform duration-300 hover:scale-110 h-[36px] w-[36px] sm:h-[40px] sm:w-[40px] md:h-[3vw] md:w-[3vw] xl:h-[44px] xl:w-[44px]"
-                  >
-                    <Icon className="text-[15px] sm:text-[17px] xl:text-[20px]" />
-                  </a>
-                ))}
-              </div>
-              <p
-                className="mt-5 font-['Bricolage_Grotesque'] font-semibold text-black md:mt-6
-                           text-[clamp(18px,1.72vw,22px)]"
-              >
-                We do cool things here!
-              </p>
-            </div>
-
-            {footerColumns.map((col) => (
-              <div key={col.title} className="text-center md:text-left">
-                <FooterHeading>{col.title}</FooterHeading>
-                <ul className="flex flex-col gap-3 md:gap-3.5">
-                  {col.links.map((link) => (
-                    <li key={link.text}>
-                      <a
-                        href={link.href}
-                        className="font-['Bricolage_Grotesque'] font-medium text-black
-                                   transition-colors duration-200 hover:text-[#00CE84]
-                                   text-[clamp(15px,1.6vw,16px)]"
-                      >
-                        {link.text}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-
-            <div className="text-center md:text-left">
-              <FooterHeading>Contact Us</FooterHeading>
-              <ul className="flex flex-col gap-3 md:gap-3.5">
-                {contactLinks.map(({ Icon, text, href, external }) => (
-                  <li key={text}>
-                    <a
-                      href={href}
-                      target={external ? "_blank" : "_self"}
-                      rel={external ? "noopener noreferrer" : undefined}
-                      className="group flex justify-center md:justify-start items-center gap-2.5 font-['Bricolage_Grotesque'] font-medium text-black transition-colors duration-200 hover:text-[#00CE84] text-[clamp(15px,1.25vw,16px)]"
-                    >
-                      <Icon className="shrink-0 text-[16px] text-[#00CE84] xl:text-[18px]" />
-                      {text}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
       {/* ================= LET'S CHAT POP-UP ================= */}
       <LetsChatModal
