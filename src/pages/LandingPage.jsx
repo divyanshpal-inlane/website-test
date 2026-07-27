@@ -112,7 +112,7 @@ const LandingPage = () => {
       {/* ============ FUNDING BANNER ============ */}
       <div className="w-full bg-[#D1B3FF] py-2.5 px-4 text-center">
         <p className="font-['Bricolage_Grotesque'] font-medium text-[#3C4856] text-[13px] sm:text-[16px] md:text-[18px]">
-          We Have <span className="font-bold">Raised ₹8.5Cr</span> To Fix How
+          We Have <span className="font-bold">Raised Funding</span> To Fix How
           India Learns Driving
         </p>
       </div>
@@ -218,7 +218,7 @@ const LandingPage = () => {
           <p className="font-['Bricolage_Grotesque'] font-bold text-[#3C4856] text-[15px] sm:text-[18px] tracking-[0.08em] mb-6">
             BACKED BY
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14 md:gap-16">
+          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14 md:gap-16 translate-x-6">
             <img
               src="/investors/dvc.svg"
               alt="DVC"
@@ -227,12 +227,12 @@ const LandingPage = () => {
             <img
               src="/investors/kae-capital.svg"
               alt="Kae Capital"
-              className="h-7 sm:h-9 md:h-11 w-auto"
+              className="h-9 sm:h-11 md:h-14 w-auto self-center object-contain -mt-1"
             />
             <img
               src="/investors/antler.svg"
               alt="Antler"
-              className="h-6 sm:h-8 md:h-9 w-auto"
+              className="h-5 sm:h-7 md:h-8 w-auto"
             />
           </div>
         </div>
@@ -251,7 +251,7 @@ const LandingPage = () => {
                 <h3 className="font-['Bricolage_Grotesque'] font-bold text-black text-[15px] sm:text-[17px]">
                   {testimonial.name}
                 </h3>
-                <span className="text-[13px] sm:text-[15px] text-[#FFB800]">
+                <span className="text-[13px] sm:text-[15px] text-[#FFB800]" style={{ WebkitTextStroke: '1px white' }}>
                   {"★".repeat(testimonial.rating)}
                 </span>
               </div>
@@ -278,7 +278,7 @@ const LandingPage = () => {
                 <h3 className="font-['Bricolage_Grotesque'] font-bold text-black text-[15px] sm:text-[17px]">
                   {testimonial.name}
                 </h3>
-                <span className="text-[13px] sm:text-[15px] text-[#FFB800]">
+                <span className="text-[13px] sm:text-[15px] text-[#FFB800]" style={{ WebkitTextStroke: '1px white' }}>
                   {"★".repeat(testimonial.rating)}
                 </span>
               </div>
