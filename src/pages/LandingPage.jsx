@@ -112,7 +112,7 @@ const LandingPage = () => {
       {/* ============ FUNDING BANNER ============ */}
       <div className="w-full bg-[#D1B3FF] py-2.5 px-4 text-center">
         <p className="font-['Bricolage_Grotesque'] font-medium text-[#3C4856] text-[13px] sm:text-[16px] md:text-[18px]">
-          We Have <span className="font-bold">Raised ₹8.5Cr</span> To Fix How
+          We Have <span className="font-bold">Raised Funding</span> To Fix How
           India Learns Driving
         </p>
       </div>
