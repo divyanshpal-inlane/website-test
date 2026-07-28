@@ -99,6 +99,14 @@ const aboutUsData = [
         // imageScale: "150%",
       },
       {
+        name: "Aryan Jangra",
+        role: "Tech Intern",
+        image: "/team/aryan.jpeg",
+        linkedin: "https://www.linkedin.com/in/aryantechie",
+        // imagePosition: "-10px 30px",
+        // imageScale: "150%",
+      },
+      {
         name: "Sudeep Kumar",
         role: "Tech Intern",
         image: "/team/Sudeep.jpeg",

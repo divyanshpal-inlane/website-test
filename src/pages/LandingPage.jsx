@@ -6,8 +6,12 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  Modal,
+  IconButton,
 } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import styled from "styled-components";
 import { motion, useAnimation, useScroll } from "framer-motion";
 import { Headset } from "lucide-react";
 import RoadSVG from "../components/SVGs/RoadSVG";
@@ -17,9 +21,49 @@ import Testimonial from "../components/Testimonial";
 import Rocket from "../components/SVGs/Rocket";
 import CountUp from "../components/CountUp";
 import LetsChatModal from "../components/LetsChatModal";
-import testimonialsData from "../data/testimonials";
+import heroStripReviews from "../data/heroStripReviews";
 import { Helmet } from "react-helmet-async";
 import { captureUTMsOnLoad } from "../utils/utmTracking";
+
+const STRIP_PHOTOS = [
+  "/team-photo.jpg",
+  "/strip/1.jpeg",
+  "/strip/2.jpeg",
+  "/strip/3.jpeg",
+  "/strip/4.jpeg",
+];
+
+const StripScrollContainer = styled.div`
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+`;
+
+const StripRow = styled.div`
+  display: flex;
+  align-items: stretch;
+  gap: 1.25rem;
+  width: max-content;
+  animation: stripScroll 50s linear infinite;
+
+  &:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes stripScroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (max-width: 600px) {
+    gap: 0.75rem;
+    animation-duration: 32s;
+  }
+`;
 
 const stats = [
   { value: 3700, label: "Confident Learners" },
@@ -46,6 +90,28 @@ const LandingPage = () => {
   const controlsChanges = useAnimation();
   const [queryParams, setQueryParams] = useState("");
   const [chatOpen, setChatOpen] = useState(false);
+  const [stripReviewModalOpen, setStripReviewModalOpen] = useState(false);
+  const [activeStripReview, setActiveStripReview] = useState(null);
+
+  const openStripReview = (review) => {
+    setActiveStripReview(review);
+    setStripReviewModalOpen(true);
+  };
+
+  const closeStripReview = () => {
+    setStripReviewModalOpen(false);
+    setActiveStripReview(null);
+  };
+
+  // photo, review, photo, review... cycling the 5 photos across all 10 reviews.
+  const stripItems = useMemo(() => {
+    const items = [];
+    heroStripReviews.forEach((review, index) => {
+      items.push({ type: "photo", src: STRIP_PHOTOS[index % STRIP_PHOTOS.length] });
+      items.push({ type: "review", ...review });
+    });
+    return items;
+  }, []);
 
   useEffect(() => {
     // Handle scroll animations
@@ -239,56 +305,127 @@ const LandingPage = () => {
         </div>
       </div>
 
-      {/* ============ FEATURED REVIEWS TEASER ============ */}
-      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-14 sm:pb-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-center">
-          {testimonialsData.slice(0, 1).map((testimonial) => (
-            <div
-              key={testimonial.name}
-              className="rounded-[24px] bg-[#D1B3FF] p-5 sm:p-6 order-2 md:order-1"
-            >
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="font-['Bricolage_Grotesque'] font-bold text-black text-[15px] sm:text-[17px]">
-                  {testimonial.name}
-                </h3>
-                <span className="text-[13px] sm:text-[15px] text-[#FFB800]" style={{ WebkitTextStroke: '1px white' }}>
-                  {"★".repeat(testimonial.rating)}
-                </span>
-              </div>
-              <p className="font-['Bricolage_Grotesque'] text-black text-[13px] sm:text-[15px] leading-relaxed line-clamp-5">
-                {testimonial.comment}
-              </p>
-            </div>
-          ))}
-
-          <div className="order-1 md:order-2 rounded-[24px] overflow-hidden border-[3px] border-black">
-            <img
-              src="/team-photo.jpg"
-              alt="The Lane team"
-              className="w-full h-full object-cover"
-            />
-          </div>
-
-          {testimonialsData.slice(1, 2).map((testimonial) => (
-            <div
-              key={testimonial.name}
-              className="rounded-[24px] bg-[#D1B3FF] p-5 sm:p-6 order-3"
-            >
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="font-['Bricolage_Grotesque'] font-bold text-black text-[15px] sm:text-[17px]">
-                  {testimonial.name}
-                </h3>
-                <span className="text-[13px] sm:text-[15px] text-[#FFB800]" style={{ WebkitTextStroke: '1px white' }}>
-                  {"★".repeat(testimonial.rating)}
-                </span>
-              </div>
-              <p className="font-['Bricolage_Grotesque'] text-black text-[13px] sm:text-[15px] leading-relaxed line-clamp-5">
-                {testimonial.comment}
-              </p>
-            </div>
-          ))}
-        </div>
+      {/* ============ FEATURED REVIEWS TEASER (horizontal scroll strip) ============ */}
+      <div className="w-full pb-14 sm:pb-20">
+        <StripScrollContainer>
+          <StripRow>
+            {[...stripItems, ...stripItems].map((item, i) =>
+              item.type === "photo" ? (
+                <div
+                  key={`photo-${i}`}
+                  className="w-[220px] sm:w-[300px] md:w-[340px] h-[220px] sm:h-[260px] rounded-[24px] overflow-hidden border-[3px] border-black flex-none"
+                >
+                  <img
+                    src={item.src}
+                    alt="The Lane team"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ) : (
+                <div
+                  key={`review-${item.name}-${i}`}
+                  onClick={() => openStripReview(item)}
+                  className="w-[260px] sm:w-[340px] md:w-[380px] h-[220px] sm:h-[260px] rounded-[24px] bg-[#D1B3FF] p-5 sm:p-6 flex-none cursor-pointer overflow-hidden"
+                >
+                  <div className="flex justify-between items-start mb-1.5">
+                    <div>
+                      <h3 className="font-['Bricolage_Grotesque'] font-bold text-black text-[15px] sm:text-[17px]">
+                        {item.name}
+                      </h3>
+                      {item.instructor && (
+                        <p className="font-['Bricolage_Grotesque'] text-black/60 text-[11px] sm:text-[12px]">
+                          Instructor: {item.instructor}
+                        </p>
+                      )}
+                    </div>
+                    <span
+                      className="shrink-0 text-[13px] sm:text-[15px] text-[#FFB800]"
+                      style={{ WebkitTextStroke: "1px black" }}
+                    >
+                      {"★".repeat(item.rating)}
+                    </span>
+                  </div>
+                  <p className="font-['Bricolage_Grotesque'] text-black text-[13px] sm:text-[15px] leading-relaxed line-clamp-5">
+                    {item.comment}
+                  </p>
+                </div>
+              )
+            )}
+          </StripRow>
+        </StripScrollContainer>
       </div>
+
+      <Modal
+        open={stripReviewModalOpen}
+        onClose={closeStripReview}
+        aria-labelledby="strip-review-modal-title"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "90%",
+            maxWidth: "600px",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: "16px",
+          }}
+        >
+          <IconButton
+            aria-label="close"
+            onClick={closeStripReview}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          {activeStripReview && (
+            <Box>
+              <Typography
+                id="strip-review-modal-title"
+                variant="h5"
+                fontWeight="bold"
+                fontFamily="Bricolage Grotesque"
+                color="#000000"
+                sx={{ mb: activeStripReview.instructor ? 0.5 : 2 }}
+              >
+                {activeStripReview.name}
+              </Typography>
+              {activeStripReview.instructor && (
+                <Typography
+                  variant="body2"
+                  fontFamily="Bricolage Grotesque"
+                  color="text.secondary"
+                  sx={{ mb: 2 }}
+                >
+                  Instructor: {activeStripReview.instructor}
+                </Typography>
+              )}
+              <div className="flex gap-0.5 mb-2">
+                {[...Array(activeStripReview.rating)].map((_, i) => (
+                  <span key={i} className="text-[20px] text-[#FFB800]">
+                    ★
+                  </span>
+                ))}
+              </div>
+              <Typography
+                variant="body1"
+                fontFamily="Bricolage Grotesque"
+                color="#000000"
+              >
+                {activeStripReview.comment}
+              </Typography>
+            </Box>
+          )}
+        </Box>
+      </Modal>
 
       <LetsChatModal open={chatOpen} onClose={() => setChatOpen(false)} />
 
