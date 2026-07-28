@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   Clock,
@@ -9,9 +9,10 @@ import {
   Car,
   Check,
 } from "lucide-react";
-import BuyerNavbar from "../components/BuyerNavbar";
-import RTOFooter from "../components/RTOFooter";
+import Navbar2 from "../components/Navbar";
+import Footer from "../components/Footer";
 import RTOLeadModal from "../components/RTOLeadModal";
+import SEOHead from "../components/SEOHead";
 import { getServiceBySlug, servicesByCategory } from "../data/rtoServicesData";
 import { getServiceContent } from "../data/rtoServiceContent";
 
@@ -191,11 +192,16 @@ export default function RTOServiceDetailPage() {
   const service = getServiceBySlug(serviceSlug);
   const content = getServiceContent(serviceSlug);
 
+  // SPA nav from the catalogue keeps the old scroll position — force top on every slug change.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [serviceSlug]);
+
   // Unknown slug — don't crash, point the user back to the catalogue.
   if (!service || !content) {
     return (
       <div className="min-h-screen bg-white">
-        <BuyerNavbar
+        <Navbar2
           backgroundColor="#FFFFFF"
           logo="/LANE_LOGO.svg"
           burgerMenu="/rto-hamburger.svg"
@@ -215,7 +221,7 @@ export default function RTOServiceDetailPage() {
             View all services
           </Link>
         </div>
-        <RTOFooter />
+        <Footer />
       </div>
     );
   }
@@ -227,7 +233,14 @@ export default function RTOServiceDetailPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      <BuyerNavbar
+      <SEOHead
+        title={service.metaTitle}
+        description={service.metaDescription}
+        ogImage="/LANE_LOGO.svg"
+        canonical={`/rto-services-k9x24qz7/${service.slug}`}
+      />
+
+      <Navbar2
         backgroundColor="#FFFFFF"
         logo="/LANE_LOGO.svg"
         burgerMenu="/rto-hamburger.svg"
@@ -279,29 +292,19 @@ export default function RTOServiceDetailPage() {
             </p>
           )}
 
-          {/* chips (left) + price pill (right) */}
-          <div className="mt-6 flex flex-col items-center gap-4 md:mt-8 md:flex-row md:justify-between">
-            <div className="flex flex-wrap items-center justify-center gap-2.5 md:justify-start">
-              <span className="rounded-full bg-[#D9FF7A] px-4 py-1.5 font-['Bricolage_Grotesque'] text-[14px] font-semibold text-black">
-                {content.timeline}
-              </span>
-              <span className="rounded-full border border-[#E8E7D9] bg-white px-4 py-1.5 font-['Bricolage_Grotesque'] text-[14px] font-semibold text-black">
-                {service.price}
-              </span>
-              {content.documents?.length > 0 && (
-                <span className="rounded-full border border-[#E8E7D9] bg-white px-4 py-1.5 font-['Bricolage_Grotesque'] text-[14px] font-semibold text-black">
-                  {content.documents.length} docs
-                </span>
-              )}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setChatOpen(true)}
-              className="shrink-0 rounded-full bg-[#D9FF7A] px-6 py-2.5 font-['Bricolage_Grotesque'] text-[clamp(18px,2vw,24px)] font-bold text-black shadow-[0_6px_16px_rgba(0,0,0,0.12)] transition-transform duration-200 hover:scale-[1.03]"
-            >
+          {/* chips (centered) */}
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5 md:mt-8">
+            <span className="rounded-full bg-[#D9FF7A] px-4 py-1.5 font-['Bricolage_Grotesque'] text-[14px] font-semibold text-black">
+              {content.timeline}
+            </span>
+            <span className="rounded-full border border-[#E8E7D9] bg-white px-4 py-1.5 font-['Bricolage_Grotesque'] text-[14px] font-semibold text-black">
               {service.price}
-            </button>
+            </span>
+            {content.documents?.length > 0 && (
+              <span className="rounded-full border border-[#E8E7D9] bg-white px-4 py-1.5 font-['Bricolage_Grotesque'] text-[14px] font-semibold text-black">
+                {content.documents.length} docs
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -395,7 +398,7 @@ export default function RTOServiceDetailPage() {
         <div className="mb-10 flex flex-col gap-4 rounded-[16px] bg-[#20CD87] px-6 py-6 md:flex-row md:items-center md:justify-between md:px-8">
           <div>
             <p className="font-['Bricolage_Grotesque'] text-[18px] font-bold text-white md:text-[20px]">
-              Not ready to pay right now?
+              Still Confused?
             </p>
             <p className="mt-1 font-['Bricolage_Grotesque'] text-[14px] font-medium leading-[1.4] text-white/90 md:text-[15px]">
               Leave your number — we'll call and help you apply when ready.
@@ -406,7 +409,7 @@ export default function RTOServiceDetailPage() {
             onClick={() => setChatOpen(true)}
             className="shrink-0 self-start rounded-[10px] bg-white px-6 py-3 font-['Bricolage_Grotesque'] text-[15px] font-bold text-black transition-transform duration-200 hover:scale-[1.02] md:self-auto md:text-[16px]"
           >
-            Save and Call me
+            Talk to an expert
           </button>
         </div>
 
@@ -469,7 +472,7 @@ export default function RTOServiceDetailPage() {
         onClose={() => setChatOpen(false)}
         service={service.title}
       />
-      <RTOFooter />
+      <Footer />
     </div>
   );
 }

@@ -344,15 +344,15 @@ const ThankYou = () => {
             <img
               src="/traffic-light.svg"
               alt="Green light"
-              className="w-[180px] sm:w-[260px] md:w-[320px] h-auto shrink-0 -ml-6 sm:-ml-10 md:-ml-14 lg:-ml-20 drop-shadow-xl"
+              className="w-[320px] sm:w-[260px] md:w-[320px] h-auto shrink-0 -ml-6 sm:-ml-10 md:-ml-14 lg:-ml-20 drop-shadow-xl"
             />
           </div>
-          {/* Text centred over the full width of the hero */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-            <h1 className="font-['Bricolage_Grotesque'] font-bold text-[#3C4856] leading-tight text-[32px] sm:text-[46px] md:text-[56px] lg:text-[62px]">
+          {/* Text: below the traffic light on mobile; centred overlay on sm+ */}
+          <div className="mt-10 sm:mt-0 sm:absolute sm:inset-0 flex flex-col items-center justify-center text-center px-4">
+            <h1 className="font-['Bricolage_Grotesque'] font-bold text-[#3C4856] leading-tight text-[42px] sm:text-[46px] md:text-[56px] lg:text-[62px]">
               Thank You For
             </h1>
-            <h1 className="font-['Bricolage_Grotesque'] font-extrabold text-[#00CE84] leading-tight text-[36px] sm:text-[52px] md:text-[62px] lg:text-[70px]">
+            <h1 className="font-['Bricolage_Grotesque'] font-extrabold text-[#00CE84] leading-tight text-[46px] sm:text-[52px] md:text-[62px] lg:text-[70px]">
               Choosing Lane!
             </h1>
             <p className="mt-3 font-['Bricolage_Grotesque'] font-semibold text-[#3C4856] text-[17px] sm:text-[22px] md:text-[24px]">
@@ -362,13 +362,13 @@ const ThankYou = () => {
         </div>
 
         {/* ---------- STAT CARDS (sit along the curve) ---------- */}
-        <div className="relative w-full overflow-hidden mt-12 sm:mt-16" style={{ paddingBottom: "220px" }}>
-          {/* Arch curve — peek out from below the cards */}
+        <div className="relative w-full overflow-hidden mt-12 sm:mt-16 pb-10 sm:pb-[220px]">
+          {/* Arch curve — peek out from below the cards (sm+ only) */}
           <img
             src="/Union.svg"
             alt=""
             aria-hidden="true"
-            className="absolute inset-x-0 z-0 pointer-events-none select-none"
+            className="hidden sm:block absolute inset-x-0 z-0 pointer-events-none select-none"
             style={{
               top: "60px",
               width: "100%",
@@ -379,34 +379,38 @@ const ThankYou = () => {
             }}
           />
           <div className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="relative z-10 flex flex-row flex-wrap justify-center items-start gap-3 sm:gap-5 md:gap-6">
+            <div className="relative z-10 grid grid-cols-2 justify-items-center gap-4 my-8 sm:my-0 sm:flex sm:flex-row sm:flex-wrap sm:justify-center items-start sm:gap-5 md:gap-6">
               {stats.map((stat, index) => {
                 const center = (stats.length - 1) / 2;
                 const distance = Math.abs(index - center);
                 // steeper curve drop for outer cards
                 const curveOffset = Math.round(distance * distance * 18);
                 const rotation = index % 2 === 0 ? -3 : 3;
+                const isLast = index === stats.length - 1;
                 return (
                   <div
                     key={stat.label}
-                    className="flex flex-col items-center justify-center rounded-[16px] border border-black
-                               px-4 py-4 sm:px-6 sm:py-5
-                               shadow-[4px_6px_0px_rgba(0,0,0,0.25)]"
+                    className={`flex flex-col items-center justify-center rounded-[16px] border border-black
+                               px-5 py-5 sm:px-6 sm:py-5
+                               shadow-[4px_6px_0px_rgba(0,0,0,0.25)]
+                               sm:[transform:translateY(var(--card-ty))_rotate(var(--card-rot))]
+                               ${isLast ? "col-span-2" : ""}`}
                     style={{
                       backgroundColor: stat.bg,
                       color: stat.text,
-                      transform: `translateY(${curveOffset}px) rotate(${rotation}deg)`,
-                      minWidth: "110px",
+                      minWidth: "140px",
+                      "--card-ty": `${curveOffset}px`,
+                      "--card-rot": `${rotation}deg`,
                     }}
                   >
                     <span
-                      className="font-['Bricolage_Grotesque'] font-extrabold text-[20px] sm:text-[24px] md:text-[28px] whitespace-nowrap"
+                      className="font-['Bricolage_Grotesque'] font-extrabold text-[26px] sm:text-[24px] md:text-[28px] whitespace-nowrap"
                       style={{ color: stat.text }}
                     >
                       <CountUp target={stat.value} suffix={stat.suffix} decimals={stat.decimals} />
                     </span>
                     <span
-                      className="font-['Bricolage_Grotesque'] font-medium text-[11px] sm:text-[13px] mt-1 whitespace-nowrap"
+                      className="font-['Bricolage_Grotesque'] font-medium text-[13px] sm:text-[13px] mt-1 whitespace-nowrap"
                       style={{ color: stat.text }}
                     >
                       {stat.label}
@@ -421,7 +425,7 @@ const ThankYou = () => {
         {/* ============ REST OF PAGE (same cream bg, no seam) ============ */}
         <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* ---------- YOU'RE NOT BEHIND ---------- */}
-          <div className="relative z-10 -mt-8 sm:-mt-10 text-center">
+          <div className="relative z-10 mt-6 sm:-mt-10 text-center">
             <MarkerHeading>You're Not Behind</MarkerHeading>
           </div>
 

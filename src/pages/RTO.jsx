@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, Clock, ChevronDown } from "lucide-react";
-import BuyerNavbar from "../components/BuyerNavbar";
+import Navbar2 from "../components/Navbar";
 import RTOLeadModal from "../components/RTOLeadModal";
-import RTOFooter from "../components/RTOFooter";
+import Footer from "../components/Footer";
 import {
   SERVICE_CATEGORIES,
   servicesByCategory,
@@ -30,7 +30,7 @@ import {
  */
 const STEPS = [
   { n: 1, label: "Pick service" },
-  { n: 2, label: "Upload docs" },
+  { n: 2, label: "Lane picks your docs" },
   { n: 3, label: "Pay online" },
   { n: 4, label: "Lane processes at RTO" },
   { n: 5, label: "Delivered to your door" },
@@ -38,8 +38,8 @@ const STEPS = [
 
 // Per-card cyan variants: fading (light) → strong, left to right.
 const STATS = [
-  { value: "14+", label: "Services", bg: "#ADEBFF" },
-  { value: "4.8★", label: "Rating", bg: "#83E1FB" },
+  { value: "17+", label: "Services", bg: "#ADEBFF" },
+  { value: "4.6★", label: "Rating", bg: "#83E1FB" },
   { value: "1,000+", label: "Cases done", bg: "#57D6F7" },
 ];
 
@@ -213,7 +213,7 @@ export default function RTOHeroSection() {
   return (
     <section className="relative w-full overflow-x-hidden bg-white">
       {/* ================= NAVBAR (logo + dashed road top border) ================= */}
-      <BuyerNavbar
+      <Navbar2
         backgroundColor="#FFFFFF"
         logo="/LANE_LOGO.svg"
         burgerMenu="/rto-hamburger.svg"
@@ -256,7 +256,7 @@ export default function RTOHeroSection() {
                              text-[clamp(32px,4vw,56px)]"
                   style={{ fontVariationSettings: '"opsz" 14, "wdth" 100' }}
                 >
-                  RTO done
+                  RTO done in bangalore
                 </span>
               </span>
 
@@ -281,7 +281,7 @@ export default function RTOHeroSection() {
           </div>
 
           {/* ---------- CTA BUTTONS ---------- */}
-          <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-center md:gap-[28px]">
+          <div className="mt-4 flex w-full flex-col items-center gap-2.5 sm:flex-row sm:justify-center md:mt-6 md:gap-5">
             <button
               type="button"
               onClick={() =>
@@ -295,10 +295,10 @@ export default function RTOHeroSection() {
                          font-['Bricolage_Grotesque'] font-bold text-white
                          shadow-[0_10px_28px_rgba(0,0,0,0.18)]
                          transition-transform duration-300 hover:scale-[1.02]
-                         h-[48px] w-full max-w-[220px]
-                         text-[15px] sm:h-[52px] sm:max-w-[240px] sm:text-[15px]
-                         md:h-[56px] md:w-[280px] md:max-w-none md:text-[17px]
-                         lg:h-[64px] lg:w-[320px] lg:text-[18px]"
+                         h-[42px] w-full max-w-[190px]
+                         text-[13px] sm:h-[46px] sm:max-w-[210px] sm:text-[14px]
+                         md:h-[48px] md:w-[240px] md:max-w-none md:text-[15px]
+                         lg:h-[52px] lg:w-[260px] lg:text-[16px]"
               style={{ fontVariationSettings: '"opsz" 14, "wdth" 100' }}
             >
               Browse services
@@ -312,47 +312,14 @@ export default function RTOHeroSection() {
                          font-['Bricolage_Grotesque'] font-bold text-black
                          shadow-[0_10px_28px_rgba(0,0,0,0.18)]
                          transition-transform duration-300 hover:scale-[1.02]
-                         h-[48px] w-full max-w-[220px]
-                         text-[15px] sm:h-[52px] sm:max-w-[240px] sm:text-[15px]
-                         md:h-[56px] md:w-[280px] md:max-w-none md:text-[17px]
-                         lg:h-[64px] lg:w-[320px] lg:text-[18px]"
+                         h-[42px] w-full max-w-[190px]
+                         text-[13px] sm:h-[46px] sm:max-w-[210px] sm:text-[14px]
+                         md:h-[48px] md:w-[240px] md:max-w-none md:text-[15px]
+                         lg:h-[52px] lg:w-[260px] lg:text-[16px]"
               style={{ fontVariationSettings: '"opsz" 14, "wdth" 100' }}
             >
-              Get a callback
+              Talk to an expert
             </button>
-          </div>
-        </div>
-      </div>
-
-      {/* ================= SEARCH BAR (floats over hero → white boundary) ================= */}
-      <div className="relative z-20 mx-auto -mt-8 w-full max-w-[680px] px-5 md:-mt-10">
-        <div className="relative">
-          <div
-            className="flex w-full items-center rounded-full
-                       border-2 border-[#e8e8e4] bg-[#00ce84]
-                       p-1 shadow-[0_6px_20px_rgba(0,0,0,0.28)]
-                       md:p-2"
-          >
-            <label
-              className="flex w-full items-center gap-3 rounded-full bg-white
-                         px-5 py-2.5 shadow-[0_4px_8.4px_rgba(0,0,0,0.25)]
-                         md:px-6 md:py-3"
-            >
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search — try 'duplicate' or 'name change'..."
-                className="w-full min-w-0 bg-transparent font-['Bricolage_Grotesque']
-                           text-black outline-none
-                           placeholder:text-black/80
-                           text-[clamp(14px,1.4vw,17px)]"
-              />
-              <Search
-                className="h-5 w-5 shrink-0 text-black md:h-[22px] md:w-[22px]"
-                strokeWidth={2.2}
-              />
-            </label>
           </div>
         </div>
       </div>
@@ -458,7 +425,7 @@ export default function RTOHeroSection() {
                            text-[clamp(32px,4vw,56px)]"
                 style={{ fontVariationSettings: '"opsz" 14, "wdth" 100' }}
               >
-                All Services
+                All Services in bangalore
               </span>
             </span>
             <p
@@ -467,6 +434,37 @@ export default function RTOHeroSection() {
             >
               Tap a card to see documents, timeline &amp; pricing.
             </p>
+          </div>
+
+          {/* ---------- SEARCH BAR ---------- */}
+          <div className="relative z-20 mx-auto mt-7 w-full max-w-[680px] md:mt-9">
+            <div
+              className="flex w-full items-center rounded-full
+                         border-2 border-[#e8e8e4] bg-[#00ce84]
+                         p-1 shadow-[0_6px_20px_rgba(0,0,0,0.28)]
+                         md:p-2"
+            >
+              <label
+                className="flex w-full items-center gap-3 rounded-full bg-white
+                           px-5 py-2.5 shadow-[0_4px_8.4px_rgba(0,0,0,0.25)]
+                           md:px-6 md:py-3"
+              >
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search — try 'duplicate' or 'name change'..."
+                  className="w-full min-w-0 bg-transparent font-['Bricolage_Grotesque']
+                             text-black outline-none
+                             placeholder:text-black/80
+                             text-[clamp(14px,1.4vw,17px)]"
+                />
+                <Search
+                  className="h-5 w-5 shrink-0 text-black md:h-[22px] md:w-[22px]"
+                  strokeWidth={2.2}
+                />
+              </label>
+            </div>
           </div>
 
           {/* ---------- TABS ---------- */}
@@ -645,9 +643,10 @@ export default function RTOHeroSection() {
           <p className="font-['Bricolage_Grotesque'] font-medium text-[#6B6F68] text-[clamp(14px,1.6vw,18px)]">
             Still have questions? We're here 24/7.
           </p>
-          <button
-            type="button"
-            onClick={() => setChatOpen(true)}
+          <a
+            href="https://wa.me/917338098798"
+            target="_blank"
+            rel="noopener noreferrer"
             className="rounded-full border-[3px] border-white
                        bg-gradient-to-b from-[#00CE84] to-[#00BC78]
                        px-8 py-3.5 font-['Bricolage_Grotesque'] font-bold text-white
@@ -655,13 +654,13 @@ export default function RTOHeroSection() {
                        transition-transform duration-300 hover:scale-[1.02]
                        text-[clamp(15px,1.8vw,19px)]"
           >
-            Didn't find your answer?
-          </button>
+            Chat on WhatsApp
+          </a>
         </div>
       </div>
 
       {/* ================= FOOTER ================= */}
-      <RTOFooter />
+      <Footer />
 
       {/* ================= "GET A CALLBACK" MODAL ================= */}
       <RTOLeadModal open={chatOpen} onClose={() => setChatOpen(false)} />

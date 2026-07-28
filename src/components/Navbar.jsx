@@ -29,12 +29,11 @@ import { locations } from "../data/locations";
 
 const navItems = [
   { label: "Learn To Drive", href: "/courses", icon: "/nav/drive.svg" },
-  // RTO Services — hidden for now (not needed yet), re-enable when ready.
-  // {
-  //   label: "RTO Services",
-  //   href: "/rto-services-k9x24qz7",
-  //   icon: "/nav/rto.svg",
-  // },
+  {
+    label: "RTO Services",
+    href: "/rto-services-k9x24qz7",
+    icon: "/nav/rto.svg",
+  },
   { label: "Buy & Sell Car", href: "/buyer", icon: "/nav/car.svg" },
 ];
 
@@ -193,10 +192,10 @@ const Navbar2 = ({
             />
           </ListItem>
 
-          {/* <ListItem
+          <ListItem
             button
             component={Link}
-            to="/rto-services"
+            to="/rto-services-k9x24qz7"
             onClick={handleClose}
           >
             <ListItemText
@@ -212,7 +211,7 @@ const Navbar2 = ({
                 </Typography>
               }
             />
-          </ListItem> */}
+          </ListItem>
           <ListItem button component={Link} to="/blog" onClick={handleClose}>
             <ListItemText
               primary={
@@ -428,14 +427,15 @@ const Navbar2 = ({
                       component="img"
                       src={item.icon}
                       alt=""
-                      sx={{ width: { xs: 18, sm: 22, md: 28 }, height: { xs: 18, sm: 22, md: 28 } }}
+                      sx={{ width: { xs: 22, sm: 22, md: 28 }, height: { xs: 22, sm: 22, md: 28 } }}
                     />
                     <Typography
                       sx={{
+                        display: { xs: "none", sm: "block" },
                         fontFamily: "Bricolage Grotesque",
                         fontWeight: 600,
                         color: "#000000",
-                        fontSize: { xs: "0.68rem", sm: "0.85rem", md: "1rem" },
+                        fontSize: { sm: "0.85rem", md: "1rem" },
                       }}
                     >
                       {item.label}
