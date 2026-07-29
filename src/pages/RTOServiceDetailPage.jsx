@@ -215,7 +215,7 @@ export default function RTOServiceDetailPage() {
             services below.
           </p>
           <Link
-            to="/rto-services-k9x24qz7"
+            to="/rto-services"
             className="mt-2 rounded-full bg-[#00CE84] px-6 py-3 font-['Bricolage_Grotesque'] font-bold text-white"
           >
             View all services
@@ -237,7 +237,7 @@ export default function RTOServiceDetailPage() {
         title={service.metaTitle}
         description={service.metaDescription}
         ogImage="/LANE_LOGO.svg"
-        canonical={`/rto-services-k9x24qz7/${service.slug}`}
+        canonical={`/rto-services/${service.slug}`}
       />
 
       <Navbar2
@@ -253,7 +253,7 @@ export default function RTOServiceDetailPage() {
           <div className="mx-auto max-w-[1000px] px-5 py-3.5 md:py-4">
             <button
               type="button"
-              onClick={() => navigate("/rto-services-k9x24qz7")}
+              onClick={() => navigate("/rto-services")}
               className="flex items-center gap-2 font-['Bricolage_Grotesque'] text-[15px] font-semibold text-white transition-opacity hover:opacity-80 md:text-[17px]"
             >
               <ArrowLeft className="h-5 w-5" strokeWidth={2.4} />
@@ -450,7 +450,7 @@ export default function RTOServiceDetailPage() {
               {related.map((r) => (
                 <Link
                   key={r.slug}
-                  to={`/rto-services-k9x24qz7/${r.slug}`}
+                  to={`/rto-services/${r.slug}`}
                   className="flex flex-col gap-2 rounded-[14px] border border-[#e8e8e4] px-4 py-4 transition-colors hover:border-[#00CE84]"
                 >
                   <div className="text-[22px]">{r.icon}</div>
