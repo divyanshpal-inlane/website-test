@@ -4,6 +4,7 @@ import { Search, Clock, ChevronDown } from "lucide-react";
 import Navbar2 from "../components/Navbar";
 import RTOLeadModal from "../components/RTOLeadModal";
 import Footer from "../components/Footer";
+import SEOHead from "../components/SEOHead";
 import {
   SERVICE_CATEGORIES,
   servicesByCategory,
@@ -212,6 +213,13 @@ export default function RTOHeroSection() {
 
   return (
     <section className="relative w-full overflow-x-hidden bg-white">
+      <SEOHead
+        title="Trusted RTO Services in Bangalore Online | DL, RC, NOC & More"
+        description="Looking for RTO assistance in Bengaluru? Get help with Driving Licence (DL), Registration Certificate (RC), NOC, ownership transfer & more online."
+        ogImage="/LANE_LOGO.svg"
+        canonical="/rto-services"
+      />
+
       {/* ================= NAVBAR (logo + dashed road top border) ================= */}
       <Navbar2
         backgroundColor="#FFFFFF"
