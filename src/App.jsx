@@ -1,5 +1,7 @@
 import "./App.css";
+import { useEffect } from "react";
 import Homepage from "./pages/Homepage";
+import { captureUTMsOnLoad } from "./utils/utmTracking";
 import {
   createBrowserRouter,
   Outlet,
@@ -211,6 +213,12 @@ const router = createBrowserRouter(
 );
 
 function App() {
+  // Capture attribution on every entry route, not just the landing page —
+  // ads can land on /rto, course pages, etc.
+  useEffect(() => {
+    captureUTMsOnLoad();
+  }, []);
+
   return (
     <HelmetProvider>
       <SignupPopup />
