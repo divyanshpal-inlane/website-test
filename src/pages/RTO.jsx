@@ -208,7 +208,7 @@ export default function RTOHeroSection() {
   const isGlobalSearchFallback =
     query.trim() && services.length > 0 && services.some((s) => s.category !== activeTab);
 
-  const goToService = (slug) => navigate(`/rto-services-k9x24qz7/${slug}`);
+  const goToService = (slug) => navigate(`/rto-services/${slug}`);
 
   return (
     <section className="relative w-full overflow-x-hidden bg-white">

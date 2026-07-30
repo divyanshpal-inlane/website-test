@@ -31,7 +31,7 @@ const navItems = [
   { label: "Learn To Drive", href: "/courses", icon: "/nav/drive.svg" },
   {
     label: "RTO Services",
-    href: "/rto-services-k9x24qz7",
+    href: "/rto-services",
     icon: "/nav/rto.svg",
   },
   { label: "Buy & Sell Car", href: "/buyer", icon: "/nav/car.svg" },
@@ -195,7 +195,7 @@ const Navbar2 = ({
           <ListItem
             button
             component={Link}
-            to="/rto-services-k9x24qz7"
+            to="/rto-services"
             onClick={handleClose}
           >
             <ListItemText

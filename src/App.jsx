@@ -190,11 +190,11 @@ const router = createBrowserRouter(
     },
     {
       // Alias of the catalogue so the detail page's "All services" back-links resolve.
-      path: "/rto-services-k9x24qz7",
+      path: "/rto-services",
       element: <RTO />,
     },
     {
-      path: "/rto-services-k9x24qz7/:serviceSlug",
+      path: "/rto-services/:serviceSlug",
       element: <RTOServiceDetailPage />,
     },
   ],

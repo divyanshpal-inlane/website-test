@@ -100,6 +100,16 @@
       "permanent": true
     },
     {
+      "source": "/rto-services-k9x24qz7",
+      "destination": "/rto-services",
+      "permanent": true
+    },
+    {
+      "source": "/rto-services-k9x24qz7/:serviceSlug",
+      "destination": "/rto-services/:serviceSlug",
+      "permanent": true
+    },
+    {
       "source": "/sell",
       "destination": "/sell-used-car",
       "permanent": true
