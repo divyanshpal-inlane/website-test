@@ -8,6 +8,27 @@ const UTM_KEYS = [
 const FIRST_TOUCH_KEY = "utm_first_touch";
 const LAST_TOUCH_KEY = "utm_last_touch";
 
+// Mediums that count as paid traffic (must match deriveLeadSource in the
+// web-app demo-page-forward-lead edge function).
+const PAID_MEDIUMS = ["cpc", "ppc", "paid", "paidsearch", "paid_search"];
+
+function readGclidFromURL() {
+  return new URLSearchParams(window.location.search).get("gclid") || "";
+}
+
+/**
+ * A gclid with no utm_* params is Google Ads auto-tagging: without this,
+ * the referrer fallback labels the visit google/organic/seo.
+ */
+function gclidAttribution(gclid) {
+  return {
+    utm_source: "google",
+    utm_medium: "cpc",
+    utm_campaign: "",
+    gclid,
+  };
+}
+
 /**
  * Detect channel from document.referrer when no UTMs are present in URL.
  * Returns null if user came directly (no referrer) AND we should treat as direct.
@@ -102,9 +123,12 @@ function readUTMsFromURL() {
  * - ALWAYS updates last-touch with the freshest signal (URL > referrer)
  */
 export function captureUTMsOnLoad() {
+  const gclid = readGclidFromURL();
   const fromURL = readUTMsFromURL();
-  const fromReferrer = !fromURL ? detectFromReferrer() : null;
-  const resolved = fromURL || fromReferrer;
+  const resolved =
+    (fromURL && { ...fromURL, gclid }) ||
+    (gclid && gclidAttribution(gclid)) ||
+    detectFromReferrer();
 
   if (!resolved) return; // nothing to capture
 
@@ -114,6 +138,7 @@ export function captureUTMsOnLoad() {
     utm_campaign: resolved.utm_campaign || "",
     utm_term: resolved.utm_term || "",
     utm_content: resolved.utm_content || "",
+    gclid: resolved.gclid || "",
     captured_at: new Date().toISOString(),
   };
 
@@ -132,16 +157,20 @@ export function captureUTMsOnLoad() {
  * Call this at form submission. Returns the UTMs to attach to the lead.
  * Priority for "last touch":
  *   1. UTMs currently in the URL (freshest possible signal)
- *   2. Last-touch from localStorage
- *   3. Referrer-based detection (computed fresh, not from storage)
- *   4. Hard fallback: direct/none/direct
+ *   2. gclid currently in the URL (Google Ads auto-tagging)
+ *   3. Last-touch from localStorage
+ *   4. Referrer-based detection (computed fresh, not from storage)
+ *   5. Hard fallback: direct/none/direct
  */
 export function resolveUTMsForSubmission() {
+  const gclid = readGclidFromURL();
   const fromURL = readUTMsFromURL();
   let lastTouch;
 
   if (fromURL) {
-    lastTouch = fromURL;
+    lastTouch = { ...fromURL, gclid };
+  } else if (gclid) {
+    lastTouch = gclidAttribution(gclid);
   } else {
     try {
       const stored = JSON.parse(localStorage.getItem(LAST_TOUCH_KEY) || "null");
@@ -174,12 +203,14 @@ export function resolveUTMsForSubmission() {
     utm_campaign: lastTouch.utm_campaign || "",
     utm_term: lastTouch.utm_term || "",
     utm_content: lastTouch.utm_content || "",
+    gclid: lastTouch.gclid || "",
     // First-touch (what is called "old")
     first_utm_source: firstTouch?.utm_source || "",
     first_utm_medium: firstTouch?.utm_medium || "",
     first_utm_campaign: firstTouch?.utm_campaign || "",
     first_utm_term: firstTouch?.utm_term || "",
     first_utm_content: firstTouch?.utm_content || "",
+    first_gclid: firstTouch?.gclid || "",
     first_captured_at: firstTouch?.captured_at || "",
   };
 }
@@ -189,6 +220,15 @@ export function resolveUTMsForSubmission() {
  * Avoids "Website-website" type duplication.
  */
 export function buildLeadSource(utms, formType /* "popup" | "landing" */) {
+  // Paid clicks map to the same "Paid Search" value the backend
+  // (demo-page-forward-lead, google-ad-lead-manager) already sends,
+  // so Cratio needs a single mapping rule for paid traffic.
+  if (
+    utms.gclid ||
+    PAID_MEDIUMS.includes((utms.utm_medium || "").toLowerCase())
+  ) {
+    return "Paid Search";
+  }
   const src = (utms.utm_source || "direct").toLowerCase();
   // If source is generic/internal, fall back to the form type
   if (src === "website" || src === "direct" || src === "") {
