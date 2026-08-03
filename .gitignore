@@ -6,3 +6,7 @@ dist
 **/.DS_Store
 the-local
 /private
+
+# customs
+the-mds
+commit
