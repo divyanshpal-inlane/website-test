@@ -2,55 +2,181 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://inlane.in/</loc>
-    <lastmod>2025-11-09T10:14:04.958Z</lastmod>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://inlane.in/about-us</loc>
-    <lastmod>2025-11-09T10:14:04.959Z</lastmod>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://inlane.in/courses</loc>
-    <lastmod>2025-11-09T10:14:04.959Z</lastmod>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://inlane.in/faqs</loc>
-    <lastmod>2025-11-09T10:14:04.959Z</lastmod>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://inlane.in/blog</loc>
-    <lastmod>2025-11-09T10:14:04.959Z</lastmod>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://inlane.in/driving-school-in/hsr-layout</loc>
-    <lastmod>2025-11-09T10:14:04.959Z</lastmod>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://inlane.in/driving-school-in/tc-palya</loc>
-    <lastmod>2025-11-09T10:14:04.959Z</lastmod>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://inlane.in/driving-school-in/itpl</loc>
-    <lastmod>2025-11-09T10:14:04.959Z</lastmod>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://inlane.in/driving-school-in/kr-puram</loc>
-    <lastmod>2025-11-09T10:14:04.959Z</lastmod>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/dl-renewal</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/dl-address-change-ka</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/dl-name-change</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/dl-address-change-other-state</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/duplicate-dl</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/dl-backlog-digitisation</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/dl-2w-4w-new-addon</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/international-driving-permit</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/rc-name-transfer-car</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/rc-fitness-car</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/rc-transfer-other-state-car</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/non-migration-certificate-car</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/noc-4w-other-state</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/rc-address-change-car</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/rc-name-transfer-bike</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/rc-fitness-bike</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/rc-transfer-other-state-bike</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/non-migration-certificate-bike</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/noc-2w-other-state</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://inlane.in/rto-services/rc-address-change-bike</loc>
+    <lastmod>2026-08-03T10:00:14.330Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
