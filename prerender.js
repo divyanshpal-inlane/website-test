@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { getContentfulSeoData, getLocationSEO } from './src/utils/contentfulSeoData.js'
 import { locations } from './src/data/locations.js'
+import { rtoServices } from './src/data/rtoServicesData.js'
 import { createClient } from 'contentful'
 
 const contentfulClient = createClient({
@@ -118,7 +119,8 @@ async function generatePages() {
   }
   })
   // Generate sitemap
-  const sitemap = generateSitemap(Object.keys(routes))
+  const rtoRoutes = ['/rto-services', ...rtoServices.map(service => `/rto-services/${service.slug}`)]
+  const sitemap = generateSitemap([...Object.keys(routes), ...rtoRoutes])
   fs.writeFileSync('./dist/sitemap.xml', sitemap)
   // console.log('Sitemap generated!')
   
