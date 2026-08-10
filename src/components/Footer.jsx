@@ -156,7 +156,7 @@ const Footer = () => {
     },
     {
       text: "What to Do When You Misplace Your DL",
-      href: "/blog/what-to-do-if-you-lose-your-driving-licence-card-in-india",
+      href: "/blog/how-to-find-vehicle-engine-number-chassis-number-online",
     },
     {
       text: "Beginner Driving Mistakes & Tips",

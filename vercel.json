@@ -131,7 +131,12 @@
     },
     {
       "source": "/blog/what-to-do-if-you-lose-your-driving-licence-card-in-india",
-      "destination": "/blog/what-to-do-if-you-lose-your-driving-license-card-in-india",
+      "destination": "/blog/how-to-find-vehicle-engine-number-chassis-number-online",
+      "permanent": true
+    },
+    {
+      "source": "/blog/what-to-do-if-you-lose-your-driving-license-card-in-india",
+      "destination": "/blog/how-to-find-vehicle-engine-number-chassis-number-online",
       "permanent": true
     },
     {
