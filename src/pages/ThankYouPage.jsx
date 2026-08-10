@@ -8,8 +8,8 @@ import CountUp from "../components/CountUp";
 import testimonialsData from "../data/testimonials";
 
 const stats = [
-  { value: 3700,  suffix: "+", decimals: 0, label: "Confident Learners", bg: "#6BECFF", text: "#000000" },
-  { value: 31000, suffix: "+", decimals: 0, label: "Hours on road",      bg: "#B28FFF", text: "#000000" },
+  { value: 4000,  suffix: "+", decimals: 0, label: "Confident Learners", bg: "#6BECFF", text: "#000000" },
+  { value: 37000, suffix: "+", decimals: 0, label: "Hours on road",      bg: "#B28FFF", text: "#000000" },
   { value: 60,    suffix: "+", decimals: 0, label: "Vetted Instructors",  bg: "#FFC229", text: "#000000" },
   { value: 4.6,   suffix: "★", decimals: 1, label: "Star rated",         bg: "#00CE84", text: "#000000" },
   { value: 15,    suffix: "+", decimals: 0, label: "RTO services",       bg: "#D9FF7A", text: "#000000" },
