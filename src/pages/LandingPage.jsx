@@ -66,8 +66,8 @@ const StripRow = styled.div`
 `;
 
 const stats = [
-  { value: 3700, label: "Confident Learners" },
-  { value: 31000, label: "Hours on road" },
+  { value: 4000, label: "Confident Learners" },
+  { value: 37000, label: "Hours on road" },
   { value: 60, label: "Vetted Instructors" },
   { value: null, staticLabel: "4.6 ★", label: "star rated" },
 ];
