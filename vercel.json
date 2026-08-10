@@ -85,8 +85,8 @@
       "permanent": true
     },
     {
-      "source": "/essential-car-care-tips-for-first-time-owners-practical-guide",
-      "destination": "/driving-test-in-bangalore-complete-guide-2026",
+      "source": "/blog/essential-car-care-tips-for-first-time-owners-practical-guide",
+      "destination": "/blog/must-have-accessories-for-new-car-owners",
       "permanent": true
     },
     {
@@ -127,6 +127,56 @@
     {
       "source": "/blog/how-to-renew-your-driving-license-in-india-a-guide-for-drivers-learners-and-car-enthusiasts",
       "destination": "/blog/how-to-renew-driving-licence-in-bangalore-in-2026-step-by-step-guide",
+      "permanent": true
+    },
+    {
+      "source": "/blog/what-to-do-if-you-lose-your-driving-licence-card-in-india",
+      "destination": "/blog/how-to-find-vehicle-engine-number-chassis-number-online",
+      "permanent": true
+    },
+    {
+      "source": "/blog/what-to-do-if-you-lose-your-driving-license-card-in-india",
+      "destination": "/blog/how-to-find-vehicle-engine-number-chassis-number-online",
+      "permanent": true
+    },
+    {
+      "source": "/blog/how-to-apply-for-a-learners-license-online-in-bangalore-step-by-step-process-2025-update",
+      "destination": "/blog/how-to-apply-for-a-learners-licence-online-in-bangalore-step-by-step-process-2025-update",
+      "permanent": true
+    },
+    {
+      "source": "/blog/check-driving-license-status-online-via-parivahan-driving-school-guide",
+      "destination": "/blog/check-driving-license-status-online-via-parivahan-driving-schools-guide",
+      "permanent": true
+    },
+    {
+      "source": "/blog/driving-test-in-bangalore-complete-guide-2020",
+      "destination": "/blog/driving-test-in-bangalore-complete-guide-2026",
+      "permanent": true
+    },
+    {
+      "source": "/driving-school-in/benniganhalli",
+      "destination": "/driving-school-in/benniganahalli",
+      "permanent": true
+    },
+    {
+      "source": "/driving-school-in/bagur",
+      "destination": "/driving-school-in/begur",
+      "permanent": true
+    },
+    {
+      "source": "/driving-school-in/about-us",
+      "destination": "/about-us",
+      "permanent": true
+    },
+    {
+      "source": "/vehicle-rc-guide",
+      "destination": "/rto-services",
+      "permanent": true
+    },
+    {
+      "source": "/vehicle-rc-guide/",
+      "destination": "/rto-services",
       "permanent": true
     }
   ],
