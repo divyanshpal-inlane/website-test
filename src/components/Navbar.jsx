@@ -1,6 +1,7 @@
 import {
   AppBar,
   Box,
+  Collapse,
   Drawer,
   IconButton,
   Toolbar,
@@ -20,21 +21,17 @@ import {
   Phone as PhoneIcon,
   Email as EmailIcon,
   WhatsApp as WhatsAppIcon,
+  Home as HomeIcon,
 } from "@mui/icons-material";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { locations } from "../data/locations";
 
 const navItems = [
-  { label: "Learn To Drive", href: "/courses", icon: "/nav/drive.svg" },
-  {
-    label: "RTO Services",
-    href: "/rto-services",
-    icon: "/nav/rto.svg",
-  },
-  { label: "Buy & Sell Car", href: "/buyer", icon: "/nav/car.svg" },
+  { label: "Learn To Drive", icon: "/nav/drive.svg" },
+  { label: "Buy & Sell Car", icon: "/nav/car.svg" },
 ];
 
 const Navbar2 = ({
@@ -47,9 +44,30 @@ const Navbar2 = ({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [buySellAnchor, setBuySellAnchor] = useState(null);
+  const [learnDriveAnchor, setLearnDriveAnchor] = useState(null);
+  const [openDrawerGroup, setOpenDrawerGroup] = useState(null);
+  const drivingDrawerOpen = openDrawerGroup === "driving";
+  const buySellDrawerOpen = openDrawerGroup === "buysell";
+  const [hideBottomBar, setHideBottomBar] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setHideBottomBar(
+        currentScrollY > lastScrollY.current && currentScrollY > 80
+      );
+      lastScrollY.current = currentScrollY;
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const openBuySell = (event) => setBuySellAnchor(event.currentTarget);
   const closeBuySell = () => setBuySellAnchor(null);
+
+  const openLearnDrive = (event) => setLearnDriveAnchor(event.currentTarget);
+  const closeLearnDrive = () => setLearnDriveAnchor(null);
 
   const buySellMenuProps = {
     sx: {
@@ -108,7 +126,7 @@ const Navbar2 = ({
         <CloseIcon />
       </IconButton>
 
-      <Box>
+      <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
         <Box
           display="flex"
           justifyContent="center"
@@ -176,27 +194,13 @@ const Navbar2 = ({
             />
           </ListItem>
 
-          <ListItem button component={Link} to="/courses" onClick={handleClose}>
-            <ListItemText
-              primary={
-                <Typography
-                  variant="h5"
-                  sx={{
-                    fontFamily: "Bricolage Grotesque",
-                    textAlign: "center",
-                  }}
-                >
-                  Courses
-                </Typography>
-              }
-            />
-          </ListItem>
-
           <ListItem
             button
-            component={Link}
-            to="/rto-services"
-            onClick={handleClose}
+            onClick={() =>
+              setOpenDrawerGroup((prev) =>
+                prev === "driving" ? null : "driving"
+              )
+            }
           >
             <ListItemText
               primary={
@@ -205,13 +209,139 @@ const Navbar2 = ({
                   sx={{
                     fontFamily: "Bricolage Grotesque",
                     textAlign: "center",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 0.5,
                   }}
                 >
-                  RTO Services
+                  Driving{" "}
+                  {drivingDrawerOpen ? <ExpandLess /> : <ExpandMore />}
                 </Typography>
               }
             />
           </ListItem>
+          <Collapse in={drivingDrawerOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem
+                button
+                component={Link}
+                to="/courses"
+                onClick={handleClose}
+              >
+                <ListItemText
+                  primary={
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontFamily: "Bricolage Grotesque",
+                        textAlign: "center",
+                        color: "text.secondary",
+                      }}
+                    >
+                      Courses
+                    </Typography>
+                  }
+                />
+              </ListItem>
+              <ListItem
+                button
+                component={Link}
+                to="/rto-services"
+                onClick={handleClose}
+              >
+                <ListItemText
+                  primary={
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontFamily: "Bricolage Grotesque",
+                        textAlign: "center",
+                        color: "text.secondary",
+                      }}
+                    >
+                      RTO Services
+                    </Typography>
+                  }
+                />
+              </ListItem>
+            </List>
+          </Collapse>
+
+          <ListItem
+            button
+            onClick={() =>
+              setOpenDrawerGroup((prev) =>
+                prev === "buysell" ? null : "buysell"
+              )
+            }
+          >
+            <ListItemText
+              primary={
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontFamily: "Bricolage Grotesque",
+                    textAlign: "center",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 0.5,
+                  }}
+                >
+                  Buy and Sell{" "}
+                  {buySellDrawerOpen ? <ExpandLess /> : <ExpandMore />}
+                </Typography>
+              }
+            />
+          </ListItem>
+          <Collapse in={buySellDrawerOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem
+                button
+                component={Link}
+                to="/buyer"
+                onClick={handleClose}
+              >
+                <ListItemText
+                  primary={
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontFamily: "Bricolage Grotesque",
+                        textAlign: "center",
+                        color: "text.secondary",
+                      }}
+                    >
+                      Buy Car
+                    </Typography>
+                  }
+                />
+              </ListItem>
+              <ListItem
+                button
+                component={Link}
+                to="/sell-used-car"
+                onClick={handleClose}
+              >
+                <ListItemText
+                  primary={
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontFamily: "Bricolage Grotesque",
+                        textAlign: "center",
+                        color: "text.secondary",
+                      }}
+                    >
+                      Sell Car
+                    </Typography>
+                  }
+                />
+              </ListItem>
+            </List>
+          </Collapse>
+
           <ListItem button component={Link} to="/blog" onClick={handleClose}>
             <ListItemText
               primary={
@@ -223,26 +353,6 @@ const Navbar2 = ({
                   }}
                 >
                   Lane Journal
-                </Typography>
-              }
-            />
-          </ListItem>
-          <ListItem
-            button
-            component={Link}
-            to="/sell-used-car"
-            onClick={handleClose}
-          >
-            <ListItemText
-              primary={
-                <Typography
-                  variant="h5"
-                  sx={{
-                    fontFamily: "Bricolage Grotesque",
-                    textAlign: "center",
-                  }}
-                >
-                  Sell Your Car
                 </Typography>
               }
             />
@@ -266,6 +376,7 @@ const Navbar2 = ({
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
+            disableScrollLock
             transformOrigin={{ horizontal: "center", vertical: "top" }}
             anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
           >
@@ -287,64 +398,64 @@ const Navbar2 = ({
               </MenuItem>
             ))}
           </Menu>
-
-          {/* Social Icons */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              gap: 2,
-              mt: 8,
-              mb: 2,
-            }}
-          >
-            <IconButton
-              component="a"
-              href="https://www.instagram.com/inlane.in/"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                backgroundColor: "black",
-                "&:hover": {
-                  backgroundColor: "black",
-                },
-                color: "white",
-              }}
-            >
-              <InstagramIcon />
-            </IconButton>
-            <IconButton
-              component="a"
-              href="https://x.com/inlane_in/"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                backgroundColor: "black",
-                "&:hover": {
-                  backgroundColor: "black",
-                },
-                color: "white",
-              }}
-            >
-              <XIcon />
-            </IconButton>
-            <IconButton
-              component="a"
-              href="https://www.linkedin.com/company/in-lane/"
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                backgroundColor: "black",
-                "&:hover": {
-                  backgroundColor: "black",
-                },
-                color: "white",
-              }}
-            >
-              <LinkedInIcon />
-            </IconButton>
-          </Box>
         </List>
+      </Box>
+
+      {/* Social Icons */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          gap: 2,
+          py: 2,
+          borderTop: "1px solid rgba(0,0,0,0.1)",
+        }}
+      >
+        <IconButton
+          component="a"
+          href="https://www.instagram.com/inlane.in/"
+          target="_blank"
+          rel="noopener noreferrer"
+          sx={{
+            backgroundColor: "black",
+            "&:hover": {
+              backgroundColor: "black",
+            },
+            color: "white",
+          }}
+        >
+          <InstagramIcon />
+        </IconButton>
+        <IconButton
+          component="a"
+          href="https://x.com/inlane_in/"
+          target="_blank"
+          rel="noopener noreferrer"
+          sx={{
+            backgroundColor: "black",
+            "&:hover": {
+              backgroundColor: "black",
+            },
+            color: "white",
+          }}
+        >
+          <XIcon />
+        </IconButton>
+        <IconButton
+          component="a"
+          href="https://www.linkedin.com/company/in-lane/"
+          target="_blank"
+          rel="noopener noreferrer"
+          sx={{
+            backgroundColor: "black",
+            "&:hover": {
+              backgroundColor: "black",
+            },
+            color: "white",
+          }}
+        >
+          <LinkedInIcon />
+        </IconButton>
       </Box>
     </Box>
   );
@@ -394,7 +505,7 @@ const Navbar2 = ({
                 logo + items + the fixed hamburger all sit on a single line. */}
             <Box
               sx={{
-                display: "flex",
+                display: { xs: "none", sm: "flex" },
                 alignItems: "center",
                 gap: { xs: 2, sm: 3, md: 4 },
                 position: "absolute",
@@ -407,9 +518,9 @@ const Navbar2 = ({
                 return (
                   <Box
                     key={item.label}
-                    {...(isBuySell
-                      ? { component: "button", type: "button", onClick: openBuySell }
-                      : { component: Link, to: item.href })}
+                    component="button"
+                    type="button"
+                    onClick={isBuySell ? openBuySell : openLearnDrive}
                     sx={{
                       display: "flex",
                       alignItems: "center",
@@ -449,8 +560,15 @@ const Navbar2 = ({
               anchorEl={buySellAnchor}
               open={Boolean(buySellAnchor)}
               onClose={closeBuySell}
-              anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
-              transformOrigin={{ horizontal: "center", vertical: "top" }}
+              disableScrollLock
+              anchorOrigin={{
+                horizontal: "center",
+                vertical: isMobile ? "top" : "bottom",
+              }}
+              transformOrigin={{
+                horizontal: "center",
+                vertical: isMobile ? "bottom" : "top",
+              }}
               PaperProps={buySellMenuProps}
               MenuListProps={{ sx: { py: 0 } }}
             >
@@ -472,6 +590,43 @@ const Navbar2 = ({
                 sx={buySellMenuItemSx}
               >
                 Sell Car
+              </MenuItem>
+            </Menu>
+
+            <Menu
+              anchorEl={learnDriveAnchor}
+              open={Boolean(learnDriveAnchor)}
+              onClose={closeLearnDrive}
+              disableScrollLock
+              anchorOrigin={{
+                horizontal: "center",
+                vertical: isMobile ? "top" : "bottom",
+              }}
+              transformOrigin={{
+                horizontal: "center",
+                vertical: isMobile ? "bottom" : "top",
+              }}
+              PaperProps={buySellMenuProps}
+              MenuListProps={{ sx: { py: 0 } }}
+            >
+              <MenuItem
+                component={Link}
+                to="/courses"
+                onClick={closeLearnDrive}
+                sx={{
+                  ...buySellMenuItemSx,
+                  borderBottom: "1px solid rgba(0,0,0,0.35)",
+                }}
+              >
+                Courses
+              </MenuItem>
+              <MenuItem
+                component={Link}
+                to="/rto-services"
+                onClick={closeLearnDrive}
+                sx={buySellMenuItemSx}
+              >
+                RTO Services
               </MenuItem>
             </Menu>
 
@@ -543,6 +698,99 @@ const Navbar2 = ({
           }}
         />
       </Box>
+
+      {isMobile && (
+        <Box
+          sx={{
+            display: "flex",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1200,
+            backgroundColor: "#FFFFFF",
+            borderTop: "1px solid rgba(0,0,0,0.12)",
+            paddingBottom: "env(safe-area-inset-bottom)",
+            transform: hideBottomBar ? "translateY(100%)" : "translateY(0)",
+            transition: "transform 0.25s ease",
+          }}
+        >
+          {/* <Box
+            component={Link}
+            to="/"
+            sx={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 0.5,
+              textDecoration: "none",
+              padding: "8px 4px",
+            }}
+          >
+            <HomeIcon sx={{ width: 26, height: 26, color: "#000000" }} />
+            <Typography
+              sx={{
+                fontFamily: "Bricolage Grotesque",
+                fontWeight: 600,
+                color: "#000000",
+                fontSize: "0.7rem",
+                textAlign: "center",
+              }}
+            >
+              Home
+            </Typography>
+          </Box> */}
+
+          {navItems.map((item) => {
+            const isBuySell = item.label === "Buy & Sell Car";
+            return (
+              <Box
+                key={item.label}
+                component="button"
+                type="button"
+                onClick={isBuySell ? openBuySell : openLearnDrive}
+                sx={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 0.5,
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: "8px 4px",
+                  font: "inherit",
+                }}
+              >
+                <Box
+                  component="img"
+                  src={item.icon}
+                  alt=""
+                  sx={
+                    isBuySell
+                      ? { width: 32, height: 32 }
+                      : { width: 24, height: 24 }
+                  }
+                />
+                <Typography
+                  sx={{
+                    fontFamily: "Bricolage Grotesque",
+                    fontWeight: 600,
+                    color: "#000000",
+                    fontSize: "0.7rem",
+                    textAlign: "center",
+                  }}
+                >
+                  {item.label}
+                </Typography>
+              </Box>
+            );
+          })}
+        </Box>
+      )}
     </Box>
   );
 };
