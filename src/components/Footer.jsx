@@ -136,11 +136,11 @@ const Footer = () => {
     },
     {
       text: "Check Your Driving License Status",
-      href: "/blog/check-driving-license-status-online-via-parivahan-driving-school-guide",
+      href: "/blog/check-driving-license-status-online-via-parivahan-driving-schools-guide",
     },
     {
       text: "Apply for a Learners License Online in Bangalore",
-      href: "/blog/how-to-apply-for-a-learners-license-online-in-bangalore-step-by-step-process-2025-update",
+      href: "/blog/how-to-apply-for-a-learners-licence-online-in-bangalore-step-by-step-process-2025-update",
     },
     {
       text: "Required Documents for every stage of Driving License Application in Bangalore",
@@ -152,7 +152,7 @@ const Footer = () => {
     },
     {
       text: "Driving Test Bangalore",
-      href: "/blog/driving-test-in-bangalore-complete-guide-2020",
+      href: "/blog/driving-test-in-bangalore-complete-guide-2026",
     },
     {
       text: "What to Do When You Misplace Your DL",

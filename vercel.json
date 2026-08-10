@@ -128,6 +128,26 @@
       "source": "/blog/how-to-renew-your-driving-license-in-india-a-guide-for-drivers-learners-and-car-enthusiasts",
       "destination": "/blog/how-to-renew-driving-licence-in-bangalore-in-2026-step-by-step-guide",
       "permanent": true
+    },
+    {
+      "source": "/blog/what-to-do-if-you-lose-your-driving-licence-card-in-india",
+      "destination": "/blog/what-to-do-if-you-lose-your-driving-license-card-in-india",
+      "permanent": true
+    },
+    {
+      "source": "/blog/how-to-apply-for-a-learners-license-online-in-bangalore-step-by-step-process-2025-update",
+      "destination": "/blog/how-to-apply-for-a-learners-licence-online-in-bangalore-step-by-step-process-2025-update",
+      "permanent": true
+    },
+    {
+      "source": "/blog/check-driving-license-status-online-via-parivahan-driving-school-guide",
+      "destination": "/blog/check-driving-license-status-online-via-parivahan-driving-schools-guide",
+      "permanent": true
+    },
+    {
+      "source": "/blog/driving-test-in-bangalore-complete-guide-2020",
+      "destination": "/blog/driving-test-in-bangalore-complete-guide-2026",
+      "permanent": true
     }
   ],
   "rewrites": [
