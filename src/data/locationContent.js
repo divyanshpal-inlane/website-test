@@ -687,8 +687,8 @@ const locationContent = {
     ],
     internalLinks: [
       {
-        text: "Driving School in Benniganhalli",
-        href: "/driving-school-in/benniganhalli",
+        text: "Driving School in Benniganahalli",
+        href: "/driving-school-in/benniganahalli",
       },
       {
         text: "Driving School in Mahadevapura",
@@ -802,8 +802,8 @@ const locationContent = {
         href: "/driving-school-in/kasturi-nagar",
       },
       {
-        text: "Driving School in Benniganhalli",
-        href: "/driving-school-in/benniganhalli",
+        text: "Driving School in Benniganahalli",
+        href: "/driving-school-in/benniganahalli",
       },
     ],
   },

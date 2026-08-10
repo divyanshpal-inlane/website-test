@@ -85,8 +85,8 @@
       "permanent": true
     },
     {
-      "source": "/essential-car-care-tips-for-first-time-owners-practical-guide",
-      "destination": "/driving-test-in-bangalore-complete-guide-2026",
+      "source": "/blog/essential-car-care-tips-for-first-time-owners-practical-guide",
+      "destination": "/blog/must-have-accessories-for-new-car-owners",
       "permanent": true
     },
     {
@@ -147,6 +147,31 @@
     {
       "source": "/blog/driving-test-in-bangalore-complete-guide-2020",
       "destination": "/blog/driving-test-in-bangalore-complete-guide-2026",
+      "permanent": true
+    },
+    {
+      "source": "/driving-school-in/benniganhalli",
+      "destination": "/driving-school-in/benniganahalli",
+      "permanent": true
+    },
+    {
+      "source": "/driving-school-in/bagur",
+      "destination": "/driving-school-in/begur",
+      "permanent": true
+    },
+    {
+      "source": "/driving-school-in/about-us",
+      "destination": "/about-us",
+      "permanent": true
+    },
+    {
+      "source": "/vehicle-rc-guide",
+      "destination": "/rto-services",
+      "permanent": true
+    },
+    {
+      "source": "/vehicle-rc-guide/",
+      "destination": "/rto-services",
       "permanent": true
     }
   ],
