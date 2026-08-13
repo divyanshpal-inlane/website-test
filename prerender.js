@@ -17,7 +17,7 @@ function generateSitemap(routes) {
   const urlEntries = routes.map(route => {
     const url = route === '/' ? baseUrl : `${baseUrl}${route}`
     const priority = route === '/' ? '1.0' : route.startsWith('/blog/') ? '0.7' : '0.8'
-    const changefreq = route.startsWith('/blog/') ? 'weekly' : 'monthly'
+    const changefreq = 'weekly'
     
     return `  <url>
     <loc>${url}</loc>
@@ -57,21 +57,17 @@ async function generatePages() {
 
     console.log(`Found ${blogResponse.items.length} blog posts`)
     blogResponse.items.forEach((post, index) => {
-      let slug = post.fields.slug
-      // If slug is a full URL, extract just the slug part
-      if (slug && slug.includes('/')) {
-        slug = slug.split('/').pop()
-      }
-      
-      // If no slug or empty, generate from title
-      if (!slug) {
-        slug = post.fields.title
-          .toLowerCase()
-          .replace(/[^\w\s-]/g, '')
-          .replace(/\s+/g, '-')
-          .replace(/-+/g, '-')
-          .trim()
-      }
+      // BlogPage.jsx/Blog.jsx only ever resolve a post by generateSlug(title) —
+      // they never read fields.slug. Always deriving the route from the title
+      // here keeps the sitemap in sync with what's actually reachable; a post
+      // with a custom fields.slug that diverges from its title would otherwise
+      // get a sitemap/prerendered URL that 404s on the live site.
+      const slug = post.fields.title
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim()
       console.log(`${index + 1}. Processing: "${post.fields.title}" -> /blog/${slug}`)
       
       routes[`/blog/${slug}`] = {
