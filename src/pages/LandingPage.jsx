@@ -69,7 +69,7 @@ const stats = [
   { value: 4000, label: "Confident Learners" },
   { value: 37000, label: "Hours on road" },
   { value: 60, label: "Vetted Instructors" },
-  { value: null, staticLabel: "4.6 ★", label: "star rated" },
+  { value: null, staticLabel: "4.7 ★", label: "star rated" },
 ];
 
 const LandingPage = () => {
@@ -176,10 +176,41 @@ const LandingPage = () => {
       </Helmet>
 
       {/* ============ FUNDING BANNER ============ */}
-      <div className="w-full bg-[#D1B3FF] py-2.5 px-4 text-center">
-        <p className="font-['Bricolage_Grotesque'] font-medium text-[#3C4856] text-[13px] sm:text-[16px] md:text-[18px]">
+      <div className="w-full bg-[#D1B3FF] py-2.5 overflow-hidden">
+        {/* Mobile: scrolling ticker so the sentence + link never gets clipped */}
+        <div className="sm:hidden flex whitespace-nowrap animate-banner-marquee">
+          {[0, 1].map((i) => (
+            <p
+              key={i}
+              aria-hidden={i === 1 ? "true" : undefined}
+              className="font-['Bricolage_Grotesque'] font-medium text-[#3C4856] text-[13px] shrink-0 px-4"
+            >
+              We Have <span className="font-bold">Raised Funding</span> To Fix
+              How India Learns Driving.{" "}
+              <a
+                href="https://entrepreneur.economictimes.indiatimes.com/news/funding/lane-raises-8-5-cr-funding-led-by-kae-capital/133170006"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline font-semibold"
+              >
+                Read more
+              </a>
+            </p>
+          ))}
+        </div>
+
+        {/* Tablet/Desktop: static centered text, fits on one line */}
+        <p className="hidden sm:block text-center font-['Bricolage_Grotesque'] font-medium text-[#3C4856] sm:text-[16px] md:text-[18px] px-4">
           We Have <span className="font-bold">Raised Funding</span> To Fix How
-          India Learns Driving
+          India Learns Driving.{" "}
+          <a
+            href="https://entrepreneur.economictimes.indiatimes.com/news/funding/lane-raises-8-5-cr-funding-led-by-kae-capital/133170006"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline font-semibold hover:text-[#6C5CE7]"
+          >
+            Read more
+          </a>
         </p>
       </div>
 

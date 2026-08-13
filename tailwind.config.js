@@ -16,6 +16,15 @@ export default {
       screens: {
         "xs": "420px",
       },
+      keyframes: {
+        "banner-marquee": {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+      },
+      animation: {
+        "banner-marquee": "banner-marquee 14s linear infinite",
+      },
     },
   },
   plugins: [aspectRatio],
