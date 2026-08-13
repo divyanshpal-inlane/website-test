@@ -178,6 +178,11 @@
       "source": "/vehicle-rc-guide/",
       "destination": "/rto-services",
       "permanent": true
+    },
+    {
+      "source": "/blog/documents-required-to-sell-car-india-checklist",
+      "destination": "/blog/documents-required-to-sell-a-used-car-in-india-complete-checklist",
+      "permanent": true
     }
   ],
   "rewrites": [
