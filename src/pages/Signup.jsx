@@ -382,7 +382,7 @@ const Signup = () => {
         name: formData.name,
         phone: `${formData.countryCode}${formData.phone}`,
         license: formData.license === "yes" ? "yes" : "no",
-        locality: `${formData?.city?.label || ""}, ${formData?.area?.label || ""}`,
+        locality: `${formData?.city || ""}, ${formData?.area || ""}`,
         marketingConsent: formData.marketingConsent ? "yes" : "no",
         adName: "Signup Form",
         leadSource: buildLeadSource(utmParams, "landing"),
