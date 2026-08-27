@@ -119,7 +119,7 @@ const BuyerFAQs = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isTyping, setIsTyping] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
-  const seo = seoData["/faqs"];
+  const seo = seoData["/buyer/faqs"];
 
   /* ===================== FOOTER DATA ===================== */
 
@@ -263,7 +263,7 @@ const BuyerFAQs = () => {
         description={seo.description}
         keywords={seo.keywords}
         ogImage={seo.ogImage}
-        canonical="/faqs"
+        canonical="/buyer/faqs"
       />
       <style jsx>{`
         @keyframes fadeIn {

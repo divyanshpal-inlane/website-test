@@ -22,7 +22,6 @@ import Rocket from "../components/SVGs/Rocket";
 import CountUp from "../components/CountUp";
 import LetsChatModal from "../components/LetsChatModal";
 import heroStripReviews from "../data/heroStripReviews";
-import { Helmet } from "react-helmet-async";
 import { captureUTMsOnLoad } from "../utils/utmTracking";
 
 const STRIP_PHOTOS = [
@@ -148,33 +147,6 @@ const LandingPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Learn Driving in Just 10 Days | Lane Driving School</title>
-        <meta
-          name="description"
-          content="Drive confidently with Lane's proven curriculum and expert instructors. Flexible schedules, personalized attention, and excellent results await"
-        />
-        <meta
-          name="keywords"
-          content="driving school bangalore, car driving classes, learn driving bangalore, best driving school, driving lessons near me, driving instructor bangalore, automatic car training, driving school registration"
-        />
-        {/* Essential meta tags */}
-        <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://inlane.in" />
-
-        {/* Open Graph Tags */}
-        <meta
-          property="og:title"
-          content="InLane - Modern Driving School in Bangalore"
-        />
-        <meta
-          property="og:description"
-          content="Start your journey to becoming a confident driver with InLane. Professional driving lessons, structured courses, and comprehensive road safety education in Bangalore."
-        />
-        <meta property="og:url" content="https://inlane.in" />
-        <meta property="og:type" content="website" />
-      </Helmet>
-
       {/* ============ FUNDING BANNER ============ */}
       <div className="w-full bg-[#D1B3FF] py-2.5 overflow-hidden">
         {/* Mobile: scrolling ticker so the sentence + link never gets clipped */}
