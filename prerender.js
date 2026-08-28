@@ -48,6 +48,18 @@ async function generatePages() {
     routes[`/driving-school-in/${slug}`] = getLocationSEO(location, contentfulSeoData)
   })
 
+  rtoServices.forEach(service => {
+    routes[`/rto-services/${service.slug}`] = {
+      title: service.metaTitle,
+      description: service.metaDescription,
+      canonical: `https://inlane.in/rto-services/${service.slug}`,
+      ogTitle: service.metaTitle,
+      ogDescription: service.metaDescription,
+      ogImage: '/LANE_LOGO.svg',
+      ogURL: `https://inlane.in/rto-services/${service.slug}`,
+    }
+  })
+
   // Fetch blog posts from Contentful
   try {
     const blogResponse = await contentfulClient.getEntries({
@@ -115,8 +127,7 @@ async function generatePages() {
   }
   })
   // Generate sitemap
-  const rtoRoutes = ['/rto-services', ...rtoServices.map(service => `/rto-services/${service.slug}`)]
-  const sitemap = generateSitemap([...Object.keys(routes), ...rtoRoutes])
+  const sitemap = generateSitemap([...Object.keys(routes), '/rto-services'])
   fs.writeFileSync('./dist/sitemap.xml', sitemap)
   // console.log('Sitemap generated!')
   

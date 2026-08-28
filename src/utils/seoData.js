@@ -38,6 +38,14 @@ export const seoData = {
     ogImage: '/LANE_LOGO.svg',
     canonical: 'https://inlane.in/blog',
     ogTitle: 'Driving Tips & Road Safety Blog - Lane Driving School'
+  },
+  '/buyer/faqs': {
+    title: 'Car Buying FAQs - Lane',
+    description: 'Answers to common questions about buying a car with Lane: inspections, pricing, financing, paperwork, and delivery.',
+    keywords: 'car buying FAQ, used car questions, buy a car, car inspection, car financing',
+    ogImage: '/LANE_LOGO.svg',
+    canonical: 'https://inlane.in/buyer/faqs',
+    ogTitle: 'Car Buying FAQs - Lane'
   }
 }
 
