@@ -132,7 +132,8 @@ const AboutUs = () => {
               </a>
             </div>
 
-            {/* Founder Section */}
+            {/* Founder Section and Team Section temporarily hidden - only the intro paragraph is shown */}
+            {false && (
             <div className="bg-[#D1B3FF] rounded-t-3xl p-4 md:p-8 md:pt-20 w-full bg-logoPurple">
               <div className="flex flex-col items-center gap-3 mb-4">
                 <div className="flex flex-col md:flex-row-reverse justify-around items-start mb-12 w-full md:gap-12 md:w-[80%]">
@@ -292,6 +293,7 @@ const AboutUs = () => {
                 </div>
               </div>
             </div>
+            )}
           </div>
         </div>
       </div>
