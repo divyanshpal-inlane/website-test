@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc' // Use only SWC version
+import react from '@vitejs/plugin-react-swc' // Use SWC version
 import path from 'path'
 
 export default defineConfig({
