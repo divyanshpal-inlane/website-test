@@ -2,7 +2,6 @@
   "buildCommand": "pnpm run build",
   "outputDirectory": "dist",
   "installCommand": "pnpm install",
-  "nodeVersion": "20.x",
   "headers": [
     {
       "source": "/assets/(.*)",
