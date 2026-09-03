@@ -58,7 +58,7 @@ const Footer = () => {
     {
       title: "Customer Support",
       items: [
-        { Icon: PhoneIcon, text: "+91 73169 14676", href: "tel:07316914676" },
+        { Icon: PhoneIcon, text: "+91 80402 66972", href: "tel:+918040266972" },
         {
           Icon: EmailIcon,
           text: "support@inlane.in",
