@@ -697,7 +697,7 @@ const ThankYou = () => {
           We're On WhatsApp, And We Usually Reply In A Few Minutes.
         </p>
         <a
-          href="https://wa.me/917338098798"
+          href="https://wa.me/916366212914"
           target="_blank"
           rel="noopener noreferrer"
           className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#00CE84] px-6 py-3 sm:px-8 sm:py-3.5
