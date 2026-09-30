@@ -45,11 +45,11 @@ const Footer = () => {
   ];
 
   const contactInfo = [
-    { Icon: PhoneIcon, text: "+91 73380 98798", href: "tel:+917338098798" },
+    { Icon: PhoneIcon, text: "+91 63662 12914", href: "tel:+916366212914" },
     {
       Icon: WhatsAppIcon,
       text: "WhatsApp",
-      href: "https://wa.me/917338098798",
+      href: "https://wa.me/916366212914",
     },
     { Icon: EmailIcon, text: "team@inlane.in", href: "mailto:team@inlane.in" },
   ];
