@@ -8,12 +8,18 @@ const tagManagerArgs = {
   gtmId: "GTM-KZ4FQ7B9",
 };
 TagManager.initialize(tagManagerArgs);
+
+// GitHub Pages base path
+const BASE_PATH = process.env.GITHUB_PAGES ? '/website-test' : '';
 const currentPath = window.location.pathname;
+const expectedPath = BASE_PATH + '/';
 const lowercasePath = currentPath.toLowerCase();
-if (currentPath !== lowercasePath && currentPath !== "/") {
+const expectedLowercase = expectedPath.toLowerCase();
+
+if (currentPath !== expectedPath && currentPath !== '/') {
   window.location.replace(
     window.location.origin +
-      lowercasePath +
+      expectedPath +
       window.location.search +
       window.location.hash,
   );

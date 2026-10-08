@@ -50,6 +50,9 @@ import BookingSuccess from "./pages/booking/BookingSuccess";
 import BookingErrorPage from "./pages/booking/BookingErrorPage";
 import ScrollToTop from "./components/ScrollToTop";
 
+// Detect GitHub Pages base path
+const BASE_PATH = process.env.GITHUB_PAGES ? '/website-test' : '';
+
 const Layout = () => {
   return (
     <div className="bg-logoYellow">
@@ -245,6 +248,7 @@ const router = createBrowserRouter(
     },
     // Instant scroll to top on every navigation (fixes "lands at bottom of next page")
     scrollRestoration: () => ({ position: 0, behavior: "instant" }),
+    basename: BASE_PATH,
   },
 );
 
