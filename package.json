@@ -49,7 +49,8 @@
     "react-use": "^17.5.0",
     "react-use-gesture": "^9.1.3",
     "slick-carousel": "^1.8.1",
-    "styled-components": "^6.1.11"
+    "styled-components": "^6.1.11",
+    "three": "^0.186.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.27.2",
