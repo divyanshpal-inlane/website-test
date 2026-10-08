@@ -9,8 +9,8 @@ const tagManagerArgs = {
 };
 TagManager.initialize(tagManagerArgs);
 
-// GitHub Pages base path
-const BASE_PATH = process.env.GITHUB_PAGES ? '/website-test' : '';
+// GitHub Pages base path - only set when VITE_GITHUB_PAGES='true' (set in GitHub Actions)
+const BASE_PATH = import.meta.env.VITE_GITHUB_PAGES === 'true' ? '/website-test' : '';
 const currentPath = window.location.pathname;
 const expectedPath = BASE_PATH + '/';
 const lowercasePath = currentPath.toLowerCase();

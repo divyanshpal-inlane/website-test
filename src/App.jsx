@@ -51,7 +51,7 @@ import BookingErrorPage from "./pages/booking/BookingErrorPage";
 import ScrollToTop from "./components/ScrollToTop";
 
 // Detect GitHub Pages base path
-const BASE_PATH = process.env.GITHUB_PAGES ? '/website-test' : '';
+const BASE_PATH = import.meta.env.VITE_GITHUB_PAGES === 'true' ? '/website-test' : '';
 
 const Layout = () => {
   return (
