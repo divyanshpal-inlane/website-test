@@ -124,6 +124,20 @@
     </script>
     <!-- End Meta Pixel Code -->
 
+    <!-- SPA redirect for GitHub Pages -->
+    <script>
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
+
     <!-- Snap Pixel Code -->
     <script type="text/javascript">
       (function (e, t, n) {
