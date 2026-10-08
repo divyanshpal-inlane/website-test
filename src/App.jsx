@@ -42,6 +42,13 @@ import Buyer from "./pages/Buyer";
 import RTO from "./pages/RTO";
 import RTOServiceDetailPage from "./pages/RTOServiceDetailPage";
 import RefundPolicy from "./pages/RefundPolicy";
+import { BookingProvider } from "./context/BookingContext";
+import BookingFlowPage from "./pages/booking/BookingFlowPage";
+import SchedulePage from "./pages/booking/SchedulePage";
+import ReviewPaymentPage from "./pages/booking/ReviewPaymentPage";
+import BookingSuccess from "./pages/booking/BookingSuccess";
+import BookingErrorPage from "./pages/booking/BookingErrorPage";
+import ScrollToTop from "./components/ScrollToTop";
 
 const Layout = () => {
   return (
@@ -61,6 +68,7 @@ const Layout2 = () => {
         logo="./LANE_LOGO.svg"
         burgerMenu="/PurpleHamburger.png"
       />
+      <ScrollToTop />
       <Outlet />
       <Footer />
     </div>
@@ -86,6 +94,32 @@ const router = createBrowserRouter(
     {
       path: "/about-us",
       element: <AboutUs />,
+    },
+    {
+      path: "/book",
+      element: <Layout2 />,
+      children: [
+        {
+          path: "/book",
+          element: <BookingFlowPage />,
+        },
+        {
+          path: "/book/schedule",
+          element: <SchedulePage />,
+        },
+        {
+          path: "/book/review",
+          element: <ReviewPaymentPage />,
+        },
+        {
+          path: "/book/success",
+          element: <BookingSuccess />,
+        },
+        {
+          path: "/book/slot-conflict",
+          element: <BookingErrorPage />,
+        },
+      ],
     },
     {
       path: "/courses",
@@ -209,6 +243,8 @@ const router = createBrowserRouter(
       v7_partialHydration: true,
       v7_skipActionErrorRevalidation: true,
     },
+    // Instant scroll to top on every navigation (fixes "lands at bottom of next page")
+    scrollRestoration: () => ({ position: 0, behavior: "instant" }),
   },
 );
 
@@ -222,7 +258,9 @@ function App() {
   return (
     <HelmetProvider>
       <SignupPopup />
-      <RouterProvider router={router} />
+      <BookingProvider>
+        <RouterProvider router={router} />
+      </BookingProvider>
     </HelmetProvider>
   );
 }

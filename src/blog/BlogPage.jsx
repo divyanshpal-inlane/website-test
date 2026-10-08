@@ -19,7 +19,7 @@ const generateSlug = (title) => {
 
 const contentfulClient = createClient({
   space: "m7qe3du2pj2h",
-  accessToken: "9B9TTpmwujLpTufPBXwU7FKpPpmmt-lpMTtsGvmzkVE",
+  accessToken: import.meta.env.VITE_CONTENTFUL_ACCESS_TOKEN,
 });
 
 const RichTextContent = ({ node, isActive, links }) => {
@@ -468,35 +468,34 @@ export default function BlogPost() {
                     }
                     links={fields.blogContent.links}
                   />
-                  {/* Mid-Content CTA — appears dynamically based on content size */}
+{/* Mid-Content CTA - appears dynamically based on content size */}
                   {index > 0 && (index + 1) % ctaSpacing === 0 && (index + 1) / ctaSpacing <= 4 && (
                     <div className="my-8 rounded-2xl bg-[#D9FF7A] p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
                       <div>
                         <p className="text-lg font-bold text-gray-800 font-blog">Ready to start driving?</p>
-                        <p className="text-sm text-gray-600 mt-1">Join 35,000+ registrations and 2,000+ active learners — start your journey today! 🚀</p>
+                        <p className="text-sm text-gray-600 mt-1">Join 35,000+ registrations and 2,000+ active learners - start your journey today!</p>
                       </div>
                       <button
                         className="shrink-0 px-6 py-3 font-extrabold text-white rounded-full bg-gradient-to-r from-[#00CE84] to-[#00BC78] hover:from-[#00BC78] hover:to-[#00CE84] transition-all duration-200 shadow-md text-base"
                         onClick={() => window.open('https://inlane.in/signup?utm_source=website&utm_medium=blog&utm_campaign=blog_post&utm_content=cta_blog', '_blank')}
                       >
-                        🚗 Sign Up Now
+                        Sign Up Now
                       </button>
                     </div>
                   )}
+
+                  <div className="mt-12 mb-6 rounded-2xl bg-[#00CE84] p-8 flex flex-col items-center text-center shadow-lg">
+                    <p className="text-2xl font-bold text-white font-blog">Ready to Learn Driving?</p>
+                    <p className="text-white/90 mt-2 text-base">Start your driving journey with expert instructors today!</p>
+                    <button
+                      className="mt-5 px-8 py-3 font-extrabold text-[#00CE84] bg-white rounded-full hover:bg-[#D9FF7A] hover:text-black transition-all duration-200 shadow-md text-lg"
+                      onClick={() => window.open('https://inlane.in/signup?utm_source=website&utm_medium=blog&utm_campaign=blog_post&utm_content=cta_blog', '_blank')}
+                    >
+                      Sign Up for Free
+                    </button>
+                  </div>
                 </div>
               ))}
-            </div>
-
-            {/* End of Article CTA */}
-            <div className="mt-12 mb-6 rounded-2xl bg-[#00CE84] p-8 flex flex-col items-center text-center shadow-lg">
-              <p className="text-2xl font-bold text-white font-blog">Ready to Learn Driving?</p>
-              <p className="text-white/90 mt-2 text-base">Start your driving journey with expert instructors today!</p>
-              <button
-                className="mt-5 px-8 py-3 font-extrabold text-[#00CE84] bg-white rounded-full hover:bg-[#D9FF7A] hover:text-black transition-all duration-200 shadow-md text-lg"
-                onClick={() => window.open('https://inlane.in/signup?utm_source=website&utm_medium=blog&utm_campaign=blog_post&utm_content=cta_blog', '_blank')}
-              >
-                Sign Up for Free
-              </button>
             </div>
 
             {/* Categories */}
@@ -508,27 +507,27 @@ export default function BlogPost() {
               )}
               {fields.everythingCars && (
                 <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
-                  Everything Cars 🚗
+                  Everything Cars
                 </span>
               )}
               {fields.roadTrips && (
                 <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
-                  Road trips🛣️
+                  Road trips
                 </span>
               )}
-              {fields.theNewDriversCircle && (
+              {fields.newDriversCircle && (
                 <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
-                  The New Driver's Circle 😊🛞
+                  The New Driver&apos;s Circle
                 </span>
               )}
               {fields.laneUpdates && (
                 <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
-                  Lane Updates 📧
+                  Lane Updates
                 </span>
               )}
               {fields.rtoQueries && (
                 <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
-                  RTO Queries❓
+                  RTO Queries
                 </span>
               )}
             </div>
@@ -539,7 +538,7 @@ export default function BlogPost() {
             </div>
           </div>
 
-          {/* Right Space — Sticky CTA (desktop only) */}
+          {/* Right Space - Sticky CTA (desktop only) */}
           <div className="hidden md:block md:w-1/6 ml-4">
             <div className="sticky top-24 flex flex-col items-center gap-4">
               {/* Sticky CTA Card */}
@@ -570,8 +569,7 @@ export default function BlogPost() {
       {/* Mobile Sticky Bottom CTA */}
       <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white border-t border-gray-200 shadow-2xl px-4 py-3 flex items-center justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-bold text-gray-800 truncate font-blog">Ready to drive? 🚗</p>
-          <p className="text-xs text-gray-500 truncate">Join InLane — learn in just 10 days!</p>
+          <p className="text-sm font-bold text-gray-800 truncate font-blog">Ready to drive? <span className="text-xs text-gray-500 truncate">Join InLane - learn in just 10 days!</span></p>
         </div>
         <button
           className="shrink-0 px-5 py-2.5 font-extrabold text-white rounded-full bg-gradient-to-r from-[#00CE84] to-[#00BC78] hover:from-[#00BC78] hover:to-[#00CE84] transition-all duration-200 text-sm shadow-md"
@@ -584,3 +582,5 @@ export default function BlogPost() {
     </div>
   );
 }
+
+

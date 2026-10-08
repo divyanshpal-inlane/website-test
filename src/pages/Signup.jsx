@@ -362,7 +362,17 @@ const Signup = () => {
     let clientId = localStorage.getItem(key);
 
     if (!clientId) {
-      clientId = crypto.randomUUID(); // UUID v4
+      // crypto.randomUUID only exists on secure contexts (HTTPS / localhost).
+      // Fallback UUID v4 generator so it works on plain-HTTP previews too.
+      if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+        clientId = crypto.randomUUID();
+      } else {
+        clientId = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+          const r = (Math.random() * 16) | 0;
+          const v = c === "x" ? r : (r & 0x3) | 0x8;
+          return v.toString(16);
+        });
+      }
       localStorage.setItem(key, clientId);
     }
 

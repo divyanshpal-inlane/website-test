@@ -85,6 +85,20 @@ body {
   min-height: var(--min-content-height, auto);
 }
 
+/* Smooth expand/collapse animation for booking flow branch sections */
+.booking-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.28s ease;
+}
+.booking-collapse > div {
+  min-height: 0;
+  overflow: hidden;
+}
+.booking-collapse.open {
+  grid-template-rows: 1fr;
+}
+
 /* Specific fixes for your MUI components */
 .css-1m8vdma {
   min-height: 200px; /* Adjust based on your content */

@@ -10,3 +10,18 @@ the-local
 # customs
 the-mds
 commit
+
+# local backups / secrets (never commit)
+.env.local-docker-bak
+.env.rcfz-test-bak
+
+# npm lockfile conflicts with the committed pnpm lockfile
+package-lock.json
+
+# local dev logs
+vite-dev.log
+vite-err.log
+vite-out.log
+
+# stray recursive artifact from an accidental copy
+8f4812f5-e484-44bc-8971-9104f4ad5c46

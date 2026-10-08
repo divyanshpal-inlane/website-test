@@ -1,0 +1,1 @@
+create unique index if not exists ux_Admin_id on public."Admin" (id);

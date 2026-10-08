@@ -19,7 +19,7 @@ const generateSlug = (title) => {
 // Create client instance outside component to prevent re-creation
 const contentfulClient = createClient({
   space: "m7qe3du2pj2h",
-  accessToken: "9B9TTpmwujLpTufPBXwU7FKpPpmmt-lpMTtsGvmzkVE",
+  accessToken: import.meta.env.VITE_CONTENTFUL_ACCESS_TOKEN,
 });
 
 const Blog = () => {
@@ -33,31 +33,31 @@ const Blog = () => {
   const [contentTypes, setContentTypes] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
 
-  const content = "By Your Side, Every Ride 🚗 Every Ride 🚗 By Your Side,";
+  const content = "By Your Side, Every Ride ";
 
   const categories = [
     "All",
-    "Everything Cars 🚗",
-    "RTO Queries❓",
-    "Driver's Circle 😊🛞",
-    "Lane Updates 📧",
-    "Road trips🛣️",
+    "Everything Cars ",
+    "RTO Queries",
+    "Driver's Circle ",
+    "Lane Updates",
+    "Road trips",
   ];
   const categoryBorderColors = {
-    "Everything Cars 🚗": "border-[#00CE84] bg-[#00CE84]/25",
-    "RTO Queries❓": "border-[#D1B3FF] bg-[#D1B3FF]/25",
-    "Driver's Circle 😊🛞": "border-[#D9FF7A] bg-[#D9FF7A]/25",
-    "Lane Updates 📧": "border-[#00CE84] bg-[#00CE84]/25",
-    "Road trips🛣️": "border-[#D1B3FF] bg-[#D1B3FF]/25",
+    "Everything Cars ": "border-[#00CE84] bg-[#00CE84]/25",
+    "RTO Queries": "border-[#D1B3FF] bg-[#D1B3FF]/25",
+    "Driver's Circle ": "border-[#D9FF7A] bg-[#D9FF7A]/25",
+    "Lane Updates": "border-[#00CE84] bg-[#00CE84]/25",
+    "Road trips": "border-[#D1B3FF] bg-[#D1B3FF]/25",
     All: "border-[#D9FF7A] bg-[#D9FF7A]/25",
   };
 
   const BlogColors = {
-    "Everything Cars 🚗": "bg-[#00CE84]",
-    "RTO Queries❓": "bg-[#D1B3FF]",
-    "Driver's Circle 😊🛞": "bg-[#D9FF7A]",
-    "Lane Updates 📧": "bg-[#00CE84]",
-    "Road trips🛣️": "bg-[#D1B3FF]",
+    "Everything Cars ": "bg-[#00CE84]",
+    "RTO Queries": "bg-[#D1B3FF]",
+    "Driver's Circle ": "bg-[#D9FF7A]",
+    "Lane Updates": "bg-[#00CE84]",
+    "Road trips": "bg-[#D1B3FF]",
     All: "bg-[#D9FF7A]",
   };
 
@@ -69,11 +69,11 @@ const Blog = () => {
   // Helper function to get categories for a post
   const getPostCategories = (fields) => {
     const categoryMap = {
-      everythingCars: "Everything Cars 🚗",
-      rtoQueries: "RTO Queries❓",
-      theNewDriversCircle: "Driver's Circle 😊🛞",
-      laneUpdates: "Lane Updates 📧",
-      roadTrips: "Road trips🛣️",
+      everythingCars: "Everything Cars ",
+      rtoQueries: "RTO Queries",
+      theNewDriversCircle: "Driver's Circle ",
+      laneUpdates: "Lane Updates",
+      roadTrips: "Road trips",
     };
 
     return Object.entries(categoryMap)
@@ -131,11 +131,11 @@ const Blog = () => {
         // Add category filter if not "All"
         if (selectedCategory !== "All") {
           const categoryFieldMap = {
-            "Everything Cars 🚗": "everythingCars",
-            "RTO Queries❓": "rtoQueries",
-            "The New Driver's Circle 😊🛞": "theNewDriversCircle",
-            "Lane Updates 📧": "laneUpdates",
-            "Road trips🛣️": "roadTrips",
+            "Everything Cars ": "everythingCars",
+            "RTO Queries": "rtoQueries",
+            "The New Driver's Circle ": "theNewDriversCircle",
+            "Lane Updates": "laneUpdates",
+            "Road trips": "roadTrips",
           };
 
           const contentfulField = categoryFieldMap[selectedCategory];
@@ -272,7 +272,7 @@ const Blog = () => {
                 key={index} 
                 className="text-7xl md:text-7xl lg:text-8xl xl:text-9xl font-semibold text-[#00CE84]"
               >
-                By Your Side, Every Ride 🚗
+                By Your Side, Every Ride
               </span>
             ))}
           </div>
@@ -291,7 +291,6 @@ const Blog = () => {
             }
           }
 
-          /* Ensure smooth animation */
           @media (prefers-reduced-motion: no-preference) {
             .animate-scroll {
               animation-play-state: running;
@@ -304,7 +303,7 @@ const Blog = () => {
         {/* <h1 className="text-5xl font-semibold p-4 mb-8 text-start text-[#00CE84] sm:hidden block">
           By Your Side
           <br />
-          Every Ride 🚗
+          Every Ride
         </h1> */}
 
         <div className="relative mb-6 mx-auto w-full md:w-1/2 max-w-4xl">
@@ -451,3 +450,8 @@ const Blog = () => {
 };
 
 export default Blog;
+
+
+
+
+

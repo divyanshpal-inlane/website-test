@@ -215,7 +215,7 @@ const LandingPage = () => {
         {/* ---------- CTA BUTTONS ---------- */}
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
-            to="/courses"
+            to="/book"
             className="group relative flex items-center justify-center gap-2
                        overflow-hidden rounded-full
                        border-[3px] border-white
