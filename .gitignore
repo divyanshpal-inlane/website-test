@@ -16,7 +16,7 @@ commit
 .env.rcfz-test-bak
 
 # npm lockfile conflicts with the committed pnpm lockfile
-package-lock.json
+# package-lock.json
 
 # local dev logs
 vite-dev.log
