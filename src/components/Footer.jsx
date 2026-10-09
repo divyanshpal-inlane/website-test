@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography, Link, useMediaQuery, useTheme } from "@mui/material";
 import {
-  Instagram as InstagramIcon,
-  X as XIcon,
-  LinkedIn as LinkedInIcon,
-  Phone as PhoneIcon,
-  Email as EmailIcon,
-  WhatsApp as WhatsAppIcon,
-  LocationOn as LocationIcon,
-} from "@mui/icons/material";
+  Instagram,
+  X,
+  Linkedin,
+  Phone,
+  Mail,
+  MessageSquare,
+  MapPin,
+} from "lucide-react";
 import AssetImage from "./AssetImage";
 
 const Footer = () => {
@@ -40,28 +40,28 @@ const Footer = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const socialIcons = [
-    { Icon: InstagramIcon, href: "https://www.instagram.com/inlane.in/" },
-    { Icon: XIcon, href: "https://x.com/inlane_in/" },
-    { Icon: LinkedInIcon, href: "https://www.linkedin.com/company/in-lane/" },
+    { Icon: Instagram, href: "https://www.instagram.com/inlane.in/" },
+    { Icon: X, href: "https://x.com/inlane_in/" },
+    { Icon: Linkedin, href: "https://www.linkedin.com/company/in-lane/" },
   ];
 
   const contactInfo = [
-    { Icon: PhoneIcon, text: "+91 63662 12914", href: "tel:+916366212914" },
+    { Icon: Phone, text: "+91 63662 12914", href: "tel:+916366212914" },
     {
-      Icon: WhatsAppIcon,
+      Icon: MessageSquare,
       text: "WhatsApp",
       href: "https://wa.me/916366212914",
     },
-    { Icon: EmailIcon, text: "team@inlane.in", href: "mailto:team@inlane.in" },
+    { Icon: Mail, text: "team@inlane.in", href: "mailto:team@inlane.in" },
   ];
 
   const contactSections = [
     {
       title: "Customer Support",
       items: [
-        { Icon: PhoneIcon, text: "+91 80402 66972", href: "tel:08040266972" },
+        { Icon: Phone, text: "+91 80402 66972", href: "tel:08040266972" },
         {
-          Icon: EmailIcon,
+          Icon: Mail,
           text: "support@inlane.in",
           href: "mailto:support@inlane.in",
         },
@@ -70,7 +70,7 @@ const Footer = () => {
   ];
 
   const locationInfo = {
-    Icon: LocationIcon,
+    Icon: MapPin,
     text: "3rd floor, Akruti Chambers, Stage 2, Hoysala Nagar, Indiranagar, Bengaluru, Karnataka 560038",
     href: "https://maps.google.com/?q=3rd+floor,+Akruti+Chambers,+Stage+2,+Hoysala+Nagar,+Indiranagar,+Bengaluru,+Karnataka+560038",
   };
