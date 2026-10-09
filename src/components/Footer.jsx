@@ -8,7 +8,8 @@ import {
   Email as EmailIcon,
   WhatsApp as WhatsAppIcon,
   LocationOn as LocationIcon,
-} from "@mui/icons-material";
+} from "@mui/icons/material";
+import AssetImage from "./AssetImage";
 
 const Footer = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -168,11 +169,13 @@ const Footer = () => {
     },
   ];
 
+  const baseUrl = import.meta.env.BASE_URL || '/';
+
   const styles = {
     footerContainer: {
       bgcolor: "background.paper",
       paddingTop: { xs: 3, sm: 4, md: 6 },
-      backgroundImage: `url("/NavbarRoad.svg")`,
+      backgroundImage: `url("${baseUrl}NavbarRoad.svg")`,
       backgroundRepeat: "no-repeat",
       backgroundSize: "100% auto",
       backgroundPosition: "top center",
@@ -316,8 +319,8 @@ const Footer = () => {
         sx={{ ...styles.footerContainer, position: "relative" }}
       >
         {isVisible && (
-          <img
-            src="/svg/car.png"
+          <AssetImage
+            assetSrc="/svg/car.png"
             alt="Moving car"
             className="w-[30px] h-[30px] md:w-[60px] md:h-[60px] top-[-25px] right-[-100px] md:top-[-50px] md:right-[-100px]"
             style={{ ...styles.carAnimation, animationDelay: "0s" }}
@@ -330,8 +333,8 @@ const Footer = () => {
             {/* Logo + Social */}
             <Box mb={3}>
               <Box sx={{ maxWidth: "187px" }}>
-                <img
-                  src="/Lane_Footer_Logo.svg"
+                <AssetImage
+                  assetSrc="/Lane_Footer_Logo.svg"
                   alt="Logo"
                   style={{ width: "100%", height: "auto" }}
                 />
@@ -425,8 +428,8 @@ const Footer = () => {
             {/* Logo + Social */}
             <Box flex={1.5} mb={4} mt={6}>
               <Box>
-                <img
-                  src="/Lane_Footer_Logo.svg"
+                <AssetImage
+                  assetSrc="/Lane_Footer_Logo.svg"
                   style={{ maxWidth: "173px", height: "auto" }}
                   alt="Logo"
                 />

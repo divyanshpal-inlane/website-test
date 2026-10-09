@@ -24,12 +24,14 @@ import LetsChatModal from "../components/LetsChatModal";
 import heroStripReviews from "../data/heroStripReviews";
 import { captureUTMsOnLoad } from "../utils/utmTracking";
 
+const baseUrl = import.meta.env.BASE_URL || '/';
+
 const STRIP_PHOTOS = [
-  "/team-photo.jpg",
-  "/strip/1.jpeg",
-  "/strip/2.jpeg",
-  "/strip/3.jpeg",
-  "/strip/4.jpeg",
+  `${baseUrl}team-photo.jpg`,
+  `${baseUrl}strip/1.jpeg`,
+  `${baseUrl}strip/2.jpeg`,
+  `${baseUrl}strip/2.jpeg`,
+  `${baseUrl}strip/4.jpeg`,
 ];
 
 const StripScrollContainer = styled.div`

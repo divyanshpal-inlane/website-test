@@ -16,6 +16,11 @@ const expectedPath = BASE_PATH + '/';
 const lowercasePath = currentPath.toLowerCase();
 const expectedLowercase = expectedPath.toLowerCase();
 
+// Expose base URL globally for components that need it
+if (typeof window !== 'undefined') {
+  window.__BASE_URL__ = import.meta.env.BASE_URL || '/';
+}
+
 if (currentPath !== expectedPath && currentPath !== '/') {
   window.location.replace(
     window.location.origin +
