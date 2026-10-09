@@ -30,6 +30,6 @@ export default defineConfig({
     sourcemap: false
   },
   optimizeDeps: {
-    include: ['react', 'react-dom']
+    include: ['react', 'react-dom', '@mui/icons/material']
   }
 })
