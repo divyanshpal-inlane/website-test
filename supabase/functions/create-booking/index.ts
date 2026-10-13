@@ -23,10 +23,12 @@ import {
   computeCoursePlan,
   candidateStartMinutes,
   validateConsecutiveRule,
+  validateLearnerWideConsecutive,
   type InstructorLike,
   type ScheduleBlock,
 } from "../_shared/availability.ts";
 import { singleInstructorForSlots } from "../_shared/planEdit.ts";
+import { toOneRow } from "../_shared/embed.ts";
 import {
   addDaysISO,
   dateToWeekdayLower,
@@ -68,6 +70,10 @@ interface CreateBookingRequest {
   has_a_DL?: boolean;
   twoWheelerLicenseState?: string | null;
   kaLicence?: boolean | null;
+  // "Is your 4-wheeler licence from Karnataka?" — asked of DL holders on the
+  // schedule page. When false, the licence needs migration/address change,
+  // which is folded into Learner.address_change_required (same as the 2W path).
+  kaLicence4w?: boolean | null;
   addonIds?: string[];
   femaleInstructorPreference?: boolean;
   installmentMode?: string;
@@ -219,6 +225,17 @@ serve(async (req) => {
               "Please tell us where your 2-wheeler licence was issued.",
             );
           })()
+      : null;
+
+    // "Is your 4W licence from Karnataka?" (DL holders, optional answer on the
+    // schedule page). false => licence migration / address change needed, so the
+    // LM address_change_required flag must be set — same operational meaning as
+    // the 2W answer. Absent/invalid => null (no response change), keeping this
+    // backward-compatible for clients that don't send it.
+    const kaLicence4w = body.has_a_DL
+      ? typeof body.kaLicence4w === "boolean"
+        ? body.kaLicence4w
+        : null
       : null;
 
     // Case type: classes_only (driving only), course_rto (driving + RTO
@@ -641,7 +658,7 @@ serve(async (req) => {
       has_two_wheeler_license:
         twoWheelerState === "active_dl" || twoWheelerState === "ll_only",
       ...(kaLicence == null ? {} : { two_wheeler_licence_in_ka: kaLicence }),
-      address_change_required: kaLicence === false,
+      address_change_required: kaLicence === false || kaLicence4w === false,
       LL_received: twoWheelerState === "ll_only",
       needs_scheduling: !learnerWillSelfSchedule,
     };
@@ -791,12 +808,23 @@ serve(async (req) => {
     // ---------------------------------------------------------------------------
     let enrollmentId: string | null = null;
     if (!isRtoOnly) {
+      // Map the booking case type to the webapp enrolment vocabulary so the
+      // learner app can route the post-booking document journey. The learner
+      // webapp reads enrolment.case_type via useLearnerServiceEnrollment, whose
+      // CHECK constraint allows only classes_only | rto_only | lessons_with_rto.
+      const enrollmentCaseType = isClassesOnly ? "classes_only" : "lessons_with_rto";
       const { data: enrollmentRow, error: enrollmentError } = await client
         .from("enrollment")
         .insert([
           {
             learner_id: learnerId,
             course_id: courseId,
+            case_type: enrollmentCaseType,
+            // Tag funnel-created enrollments so the learner webapp can scope its
+            // post-booking document-upload nudge to funnel-originated learners
+            // and never nag pre-existing/admin-created ones (migration
+            // 20261012120000_enrollment_funnel_source.sql).
+            acquired_via_funnel: true,
             payment_id: null,
             status: "pending",
             payment_status: "pending",
@@ -981,6 +1009,49 @@ serve(async (req) => {
           end_time: l.end_time,
           instructor_id: plan.instructorId!,
         }));
+      }
+
+      // Learner-WIDE per-day rule (mirrors confirm_booking_slots v2). The
+      // reserve RPC's consecutive scan is booking-scoped, but confirm-booking's
+      // is learner-wide; without this guard a learner could reserve AND PAY for
+      // a lesson that confirm later cancels money-safe (e.g. a Demo at 06:30
+      // next to the same learner's tentative 12:00 lesson that day). Expired
+      // pending holds are ignored (the engine treats them as free as well).
+      {
+        const { data: otherRows, error: otherError } = await client
+          .from("Schedule")
+          .select("date, start_time, end_time, status, booking:booking_id(created_at)")
+          .eq("learner_id", learnerId)
+          .in("status", ["pending_payment", "booked", "tentative"]);
+        if (otherError) throw otherError;
+        const holdMs = config.hold_minutes * 60_000;
+        const liveExisting = (otherRows ?? [])
+          .filter((r) => {
+            if (r.status !== "pending_payment") return true;
+            const parent = toOneRow(r.booking as { created_at?: string } | { created_at?: string }[] | null);
+            const createdAt = parent?.created_at ? Date.parse(parent.created_at) : NaN;
+            return Number.isFinite(createdAt) && createdAt + holdMs > Date.now();
+          })
+          .map((r) => ({
+            date: String(r.date),
+            start_time: String(r.start_time),
+            end_time: String(r.end_time),
+          }));
+        const learnerRuleError = validateLearnerWideConsecutive(
+          liveExisting,
+          slotsToReserve.map((s) => ({
+            date: s.date,
+            start_time: s.start_time,
+            end_time: s.end_time,
+          })),
+        );
+        if (learnerRuleError) {
+          throw new BookingError(
+            409,
+            "slot_conflict",
+            `These lessons clash with lessons you already have booked (${learnerRuleError}). Please pick a different day or time.`,
+          );
+        }
       }
 
       const { data: rpcResult, error: rpcError } = await client.rpc("reserve_booking_slots", {

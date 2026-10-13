@@ -168,6 +168,7 @@ serve(async (req) => {
               learner_id: learnerId,
               services: rtoAddonCodes,
               status: "payment_received",
+              acquired_via_funnel: true,
             })
             .select("id")
             .single();

@@ -663,6 +663,56 @@ export function validateConsecutiveRule(
   return null;
 }
 
+export interface LearnerDayLesson {
+  date: string;
+  start_time: string;
+  end_time: string;
+}
+
+/**
+ * Learner-WIDE per-day booking rule, mirroring confirm_booking_slots v2
+ * (20261008120000 §consecutive scan): across ALL of the learner's active
+ * lessons, at most 2 on the same calendar day and any two same-day lessons
+ * must sit exactly back-to-back (prev.end === cur.start). Without this check
+ * at reserve-time, a learner could reserve and PAY for a combination that
+ * confirm-booking cancels money-safe after payment (e.g. a Demo Class at
+ * 06:30 booked next to a tentative 12:00 Flyover lesson of the same learner
+ * on the same day — reserve's scan is booking-scoped, confirm's is
+ * learner-wide; the divergence made the Demo silently de-schedule).
+ *
+ * `existing` = the learner's currently-active rows from other bookings
+ * (booked / tentative / still-live pending_payment holds; callers must have
+ * already filtered out expired pending holds). `proposed` = the plan about
+ * to be reserved. Returns a violation reason or null.
+ */
+export function validateLearnerWideConsecutive(
+  existing: LearnerDayLesson[],
+  proposed: LearnerDayLesson[],
+): string | null {
+  const byDate = new Map<string, Array<{ start: number; end: number }>>();
+  for (const l of [...existing, ...proposed]) {
+    const slot = {
+      start: timeToMinutes(String(l.start_time ?? "")),
+      end: timeToMinutes(String(l.end_time ?? "")),
+    };
+    if (!Number.isFinite(slot.start) || !Number.isFinite(slot.end)) continue;
+    const day = byDate.get(l.date) ?? [];
+    day.push(slot);
+    byDate.set(l.date, day);
+  }
+  for (const [date, daySlots] of byDate) {
+    if (daySlots.length > 2) return `More than 2 lessons on ${date}.`;
+    if (daySlots.length < 2) continue;
+    const sorted = [...daySlots].sort((a, b) => a.start - b.start);
+    for (let i = 1; i < sorted.length; i++) {
+      if (sorted[i].start !== sorted[i - 1].end) {
+        return `Same-day lessons on ${date} are not consecutive.`;
+      }
+    }
+  }
+  return null;
+}
+
 function feasibleInstructorsAt(
   input: AvailabilityInput,
   free: Map<string, Map<string, number[]>>,

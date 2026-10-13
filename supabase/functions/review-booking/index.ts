@@ -12,14 +12,17 @@
 // No docs are returned here: the hosted app looks up the learner's uploaded
 // documents directly (ll_applications / ll_documents / LL bucket by phone).
 //
-// Admin-only: requires valid JWT with admin role or email in admin allowlist.
+// Admin-only: the caller's JWT signature is validated, then access is granted
+// when the email is on the admin allowlist OR the user's phone resolves to a
+// row in the `Admin` table (see _shared/admin.ts — admins log in by phone).
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 import { handleOptions, jsonResponse } from "../_shared/cors.ts";
 import { errorResponse, BookingError } from "../_shared/errors.ts";
 import { serviceClient } from "../_shared/client.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.47.10";
+import { verifyAdmin } from "../_shared/admin.ts";
+import { toOneRow } from "../_shared/embed.ts";
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -32,13 +35,6 @@ const SUPPORT = {
   hours: "6:30 AM to 8:00 PM (IST), Monday - Sunday",
 };
 
-// Admin emails allowlist - add emails of users who should have access
-const ADMIN_EMAILS = new Set([
-  "admin@inlane.in",
-  "ops@inlane.in",
-  "support@inlane.in",
-]);
-
 // Type definitions for the list query result
 interface ListBookingRow {
   id: string;
@@ -46,33 +42,18 @@ interface ListBookingRow {
   total_amount: number | null;
   installment1_amount: number | null;
   created_at: string;
-  Learner: Array<{ id: string; name: string | null; phone: string | null; email: string | null }>;
+  Learner:
+    | { id: string; name: string | null; phone: string | null; email: string | null }
+    | { id: string; name: string | null; phone: string | null; email: string | null }[]
+    | null;
   Courses: { id: string; name: string | null } | null;
   Schedule: Array<{
     id: number | string;
     date: string;
     start_time: string;
     end_time: string;
-    Instructor: { id: string; name: string | null } | null;
+    Instructor: { id_instructor: string; name: string | null } | null;
   }>;
-}
-
-function getUserFromAuth(req: Request): { email: string } | null {
-  const authHeader = req.headers.get("Authorization");
-  if (!authHeader?.startsWith("Bearer ")) return null;
-  const jwt = authHeader.slice(7);
-  try {
-    const payload = JSON.parse(atob(jwt.split(".")[1]));
-    return { email: payload.email ?? "" };
-  } catch {
-    return null;
-  }
-}
-
-async function verifyAdmin(req: Request): Promise<boolean> {
-  const user = getUserFromAuth(req);
-  if (!user?.email) return false;
-  return ADMIN_EMAILS.has(user.email.toLowerCase());
 }
 
 function escapeHtml(value: string): string {
@@ -189,21 +170,54 @@ serve(async (req) => {
   const options = handleOptions(req);
   if (options) return options;
 
-  // Admin-only access
-  const isAdmin = await verifyAdmin(req);
-  if (!isAdmin) {
-    return jsonResponse(
-      { error: { code: "forbidden", message: "Admin access required." } },
-      403,
-    );
-  }
-
   try {
     const client = serviceClient();
-    const body = (await req.json()) as {
-      action?: string;
-      bookingId?: string;
-    };
+
+    // Admin-only access: validate the JWT, then allow the email allowlist or a
+    // phone that resolves to an `Admin` row (admins log in by phone).
+    const admin = await verifyAdmin(req, client);
+    if (!admin.ok) {
+      console.warn("review-booking: admin check failed", {
+        reason: admin.reason,
+        email: admin.email,
+        phone: admin.phone,
+      });
+      return jsonResponse(
+        { error: { code: "forbidden", message: "Admin access required." } },
+        403,
+      );
+    }
+
+    // The hosted app only ever POSTs; anything else (e.g. a GET) is a client
+    // mistake, not a server failure — answer 405 instead of crashing in
+    // `req.json()` below.
+    if (req.method !== "POST") {
+      return jsonResponse(
+        { error: { code: "method_not_allowed", message: "Use POST." } },
+        405,
+      );
+    }
+
+    // Parse defensively: a malformed/absent JSON body is a 422 client error,
+    // never a 500.
+    let body: { action?: string; bookingId?: string };
+    try {
+      const raw = await req.text();
+      body = raw ? (JSON.parse(raw) as { action?: string; bookingId?: string }) : {};
+    } catch {
+      throw new BookingError(
+        422,
+        "validation_error",
+        "Request body must be valid JSON.",
+      );
+    }
+    if (typeof body !== "object" || body === null || Array.isArray(body)) {
+      throw new BookingError(
+        422,
+        "validation_error",
+        "Request body must be a JSON object.",
+      );
+    }
 
     const action = String(body.action ?? "").trim();
     if (!["list", "approve", "reject"].includes(action)) {
@@ -222,35 +236,50 @@ serve(async (req) => {
           `id, case_type, total_amount, installment1_amount, created_at,
            Learner!inner(id, name, phone, email),
            Courses(id, name),
-           Schedule!booking_id(id, date, start_time, end_time, Instructor(id, name))`,
+           Schedule!booking_id!inner(id, date, start_time, end_time, Instructor(id_instructor, name))`,
         )
         .eq("Schedule.status", "tentative")
+        // Only reviewable bookings: the RPC refuses anything whose status is
+        // not confirmed/payment_completed (409 invalid_state), so the list must
+        // not surface rows approve/reject could never act on (e.g. an
+        // abandoned 'created' booking with stray tentative rows).
+        .in("status", ["confirmed", "payment_completed"])
         .order("created_at", { ascending: false });
       if (error) throw error;
 
       const requests = (rows as ListBookingRow[] || []).map((b) => {
-        const learner = b.Learner || [];
+        // `Learner` is embedded as a to-one object (PostgREST many-to-one);
+        // `toOneRow` also tolerates an array if the relationship ever flips.
+        const learner = toOneRow(b.Learner);
         const course = b.Courses;
-        const slots = (b.Schedule || []).map((s) => ({
-          scheduleId: s.id,
-          date: String(s.date),
-          start_time: String(s.start_time),
-          end_time: String(s.end_time),
-          instructorId: s.Instructor?.id ?? null,
-          instructorName: s.Instructor?.name ?? null,
-        }));
+        const slots = (b.Schedule || [])
+          .map((s) => ({
+            scheduleId: s.id,
+            date: String(s.date),
+            start_time: String(s.start_time),
+            end_time: String(s.end_time),
+            instructorId: s.Instructor?.id_instructor ?? null,
+            instructorName: s.Instructor?.name ?? null,
+          }))
+          // Deterministic, chronological slot order for the UI (PostgREST
+          // embeds carry no ORDER BY, so without this the order follows the
+          // embedding row order).
+          .sort((x, y) =>
+            x.date.localeCompare(y.date) ||
+            x.start_time.localeCompare(y.start_time)
+          );
         return {
           bookingId: b.id,
           caseType: b.case_type,
           totalAmount: b.total_amount,
           installment1Amount: b.installment1_amount,
           createdAt: b.created_at,
-          learner: learner[0]
+          learner: learner
             ? {
-                id: learner[0].id,
-                name: learner[0].name ?? null,
-                phone: learner[0].phone ?? null,
-                email: learner[0].email ?? null,
+                id: learner.id,
+                name: learner.name ?? null,
+                phone: learner.phone ?? null,
+                email: learner.email ?? null,
               }
             : null,
           course: course
@@ -305,6 +334,9 @@ serve(async (req) => {
     }
 
     // Reject: after the atomic slot release, email the learner with next steps.
+    // The email is BEST-EFFORT: the slots are already released at this point, so
+    // an SMTP failure must never turn a successful reject into a 500 — the
+    // admin retry would then confusingly hit `alreadyApplied`.
     let sent = false;
     if (action === "reject") {
       const { data: learner } = await client
@@ -312,14 +344,29 @@ serve(async (req) => {
         .select("id, Learner!inner(id, name, email)")
         .eq("id", body.bookingId)
         .maybeSingle();
-      const l = (learner as { Learner?: Record<string, unknown>[] } | null);
-      const learnerEmail = l?.Learner?.[0]?.email;
-      const learnerName = l?.Learner?.[0]?.name;
+      // `Learner` embeds as a to-one object — never index `[0]` on it (that
+      // silently skipped every rejection email). `toOneRow` handles both shapes.
+      const embed = (learner ?? null) as {
+        Learner?: Parameters<typeof toOneRow>[0];
+      } | null;
+      const row = toOneRow(embed?.Learner) as
+        | { id?: string; name?: string | null; email?: string | null }
+        | null;
+      const learnerEmail = row?.email;
+      const learnerName = row?.name;
       if (typeof learnerEmail === "string" && learnerEmail.trim()) {
-        sent = await sendRejectEmail(
-          learnerEmail.trim(),
-          typeof learnerName === "string" ? learnerName : "",
-        );
+        try {
+          sent = await sendRejectEmail(
+            learnerEmail.trim(),
+            typeof learnerName === "string" ? learnerName : "",
+          );
+        } catch (emailError) {
+          // Released slots + ok response still stand; surface only in logs.
+          console.error("review-booking: reject email failed", {
+            bookingId: body.bookingId,
+            error: emailError instanceof Error ? emailError.message : emailError,
+          });
+        }
       }
     }
 
