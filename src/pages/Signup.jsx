@@ -208,6 +208,17 @@ const Signup = () => {
         : iconStyles.large;
   }, [isSmallScreen, isMediumScreen, iconStyles]);
 
+  // The signup page IS the lead-capture form: record that the visitor opened
+  // it. Once per session per form (deterministic client_event_id dedupes a
+  // React remount / StrictMode double-invoke).
+  useEffect(() => {
+    void trackFunnelEvent(
+      "lead_capture_started",
+      { form: "signup_page", page_type: "signup" },
+      { target: "signup_page" },
+    );
+  }, []);
+
   // Load country codes on component mount
   useEffect(() => {
     let isMounted = true;

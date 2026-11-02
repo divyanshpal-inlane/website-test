@@ -82,6 +82,13 @@ const SignupPopup = () => {
     const timer = setTimeout(() => {
       setIsVisible(true);
       localStorage.setItem("popup_show_count", "1");
+      // The lead form is now open. Once per session per form (the deterministic
+      // client_event_id dedupes a React remount or a retried send).
+      void trackFunnelEvent(
+        "lead_capture_started",
+        { form: "homepage_popup", page_type: "marketing_home" },
+        { target: "homepage_popup" },
+      );
     }, 2000);
     return () => clearTimeout(timer);
   }, []);
