@@ -1,5 +1,6 @@
 import { GraduationCap } from "lucide-react";
 import { formatINR } from "../../services/bookingApi";
+import { trackFunnelEvent } from "../../utils/funnelTracking";
 
 export default function CourseSelector({ courses, courseId, onChange }) {
   return (
@@ -24,7 +25,19 @@ export default function CourseSelector({ courses, courseId, onChange }) {
               <button
                 key={course.id}
                 type="button"
-                onClick={() => onChange(course)}
+                onClick={() => {
+                  onChange(course);
+                  // Funnel: `course_selected` — the plan the customer picked.
+                  void trackFunnelEvent(
+                    "course_selected",
+                    {
+                      course_id: String(course.id ?? ""),
+                      course_code: course.code == null ? null : String(course.code),
+                      course_price: Number(course.price) || 0,
+                    },
+                    { target: String(course.id ?? "") },
+                  );
+                }}
                 className={`text-left rounded-2xl border p-5 transition-all ${
                   active
                     ? "border-[#00ce84] ring-2 ring-[#00ce84]/30 bg-white"

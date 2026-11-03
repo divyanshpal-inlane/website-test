@@ -18,6 +18,7 @@ import {
   resolveUTMsForSubmission,
   buildLeadSource,
 } from "../utils/utmTracking";
+import { getFunnelSessionId } from "../utils/funnelTracking";
 
 // Fetch country codes
 const fetchCountryCodes = async () => {
@@ -141,74 +142,103 @@ const SignupPopup = () => {
 
       setIsSubmitting(true);
 
-      console.log(
-        "🔍 DEBUG: utmParams at form submission:",
-        resolveUTMsForSubmission(),
-      );
+      const utmParams = resolveUTMsForSubmission();
+
+      // Original delivery payloads (fallback when the server cannot forward)
+      const googleSheetsUrl =
+        "https://script.google.com/macros/s/AKfycbz45poihO1GSt_f-UxHHWltKWHh8mDNyaXPcFzbIURMvTVKj1qPn9STBILUaMiGme7r/exec";
+      const payload = {
+        email: formData.email,
+        name: formData.name,
+        phone: `${formData.countryCode}${formData.phone}`,
+        license: formData.license === "yes" ? "yes" : "no",
+        locality: `${formData?.city || ""}, ${formData?.area || ""}`,
+        adName: "Popup Signup Form",
+        leadSource: buildLeadSource(utmParams, "popup"),
+      };
+      const cratioPayload = {
+        ...utmParams,
+        ...payload,
+        timestamp: new Date().toISOString(),
+      };
 
       try {
-        const googleSheetsUrl =
-          "https://script.google.com/macros/s/AKfycbz45poihO1GSt_f-UxHHWltKWHh8mDNyaXPcFzbIURMvTVKj1qPn9STBILUaMiGme7r/exec";
-
-        // UTM params matching the popup signup URL
-        // const utmParams = {
-        //   utm_source: "website",
-        //   utm_medium: "popup",
-        //   utm_campaign: "signup_popup",
-        //   utm_content: "homepage_popup",
-        // };
-        const utmParams = resolveUTMsForSubmission();
-        console.log("📤 Submitting form with UTM parameters:", utmParams);
-
-        const payload = {
-          email: formData.email,
-          name: formData.name,
-          phone: `${formData.countryCode}${formData.phone}`,
-          license: formData.license === "yes" ? "yes" : "no",
-          locality: `${formData?.city || ""}, ${formData?.area || ""}`,
-          adName: "Popup Signup Form",
-          leadSource: buildLeadSource(utmParams, "popup"),
-        };
-
-        console.log("📊 Google Sheets Payload:", payload);
-
-        // Cratio payload mirrors Signup.jsx: spread utmParams first, then payload fields
-        const cratioPayload = {
-          ...utmParams, // includes both last-touch and first_* fields
-          ...payload,
-          timestamp: new Date().toISOString(),
-        };
-
-        console.log(
-          "🎯 Cratio Webhook Payload (includes all UTM params):",
-          cratioPayload,
-        );
-
-        const [, cratioResponse] = await Promise.all([
-          fetch(googleSheetsUrl, {
-            method: "POST",
-            mode: "no-cors",
-            cache: "no-cache",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          }),
-          fetch(import.meta.env.VITE_CRATIO_WEBHOOK_URL, {
-            method: "POST",
-            mode: "no-cors",
-            cache: "no-cache",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
+        // Primary path: capture-lead writes the lead to the funnel DB,
+        // emits lead_captured, and forwards to Cratio + Sheets.
+        // If it cannot forward, returns clientFallback: true.
+        let clientFallback = true;
+        try {
+          const { data, error } = await supabase.functions.invoke("capture-lead", {
+            body: {
+              phone: formData.phone,
+              country_code: formData.countryCode.replace(/\D/g, ""),
+              name: formData.name,
+              email: formData.email,
+              city: formData.city || null,
+              area: formData.area || null,
+              license: formData.license === "yes" ? "yes" : "no",
+              dl_status: formData.license === "yes" ? "has_dl" : "no_dl",
+              source: "homepage_popup",
+              ad_name: "Popup Signup Form",
+              sheets_target: "signup",
+              client_session_id: getFunnelSessionId(),
+              marketing_consent: null,
+              page_path: "/",
+              attribution: {
+                utm_source: utmParams.utm_source,
+                utm_medium: utmParams.utm_medium,
+                utm_campaign: utmParams.utm_campaign,
+                utm_term: utmParams.utm_term,
+                utm_content: utmParams.utm_content,
+                gclid: utmParams.gclid,
+              },
+              first_touch: {
+                first_utm_source: utmParams.first_utm_source,
+                first_utm_medium: utmParams.first_utm_medium,
+                first_utm_campaign: utmParams.first_utm_campaign,
+                first_utm_term: utmParams.first_utm_term,
+                first_utm_content: utmParams.first_utm_content,
+                first_gclid: utmParams.first_gclid,
+                first_captured_at: utmParams.first_captured_at,
+              },
             },
-            body: JSON.stringify(cratioPayload),
-          }),
-        ]);
+          });
 
-        if (cratioResponse.type === "opaque") {
-          console.log("✅ Cratio webhook request sent successfully");
+          if (!error && data?.ok) {
+            clientFallback = data.clientFallback === true;
+          } else if (error) {
+            console.error("capture-lead error:", error.message);
+          }
+        } catch (captureError) {
+          // capture-lead unreachable — fall through to original delivery
         }
 
-        console.log("✅ Popup form submission completed successfully");
+        // Fallback: original direct delivery (only if server couldn't forward)
+        if (clientFallback) {
+          const [, cratioResponse] = await Promise.all([
+            fetch(googleSheetsUrl, {
+              method: "POST",
+              mode: "no-cors",
+              cache: "no-cache",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            }),
+            fetch(import.meta.env.VITE_CRATIO_WEBHOOK_URL, {
+              method: "POST",
+              mode: "no-cors",
+              cache: "no-cache",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              body: JSON.stringify(cratioPayload),
+            }),
+          ]);
+
+          if (cratioResponse?.type === "opaque") {
+            console.log("Cratio webhook delivered (fallback path)");
+          }
+        }
 
         // GA event (non-blocking)
         try {

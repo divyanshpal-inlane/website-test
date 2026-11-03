@@ -16,6 +16,10 @@ import { serviceClient } from "../_shared/client.ts";
 import { fetchServiceZones, fetchActiveAreas } from "../_shared/queries.ts";
 import { readBookingFlowConfig } from "../_shared/config.ts";
 import { resolveServiceability, type ServiceabilityInput } from "../_shared/serviceability.ts";
+import {
+  deriveCoordinateClientEventId,
+  emitServerEvent,
+} from "../_shared/funnelEvents.ts";
 
 function parseCoordinate(raw: unknown): number {
   const n = Number(raw);
@@ -44,7 +48,14 @@ serve(async (req) => {
       );
     }
 
-    const body = (await req.json()) as { latitude?: unknown; longitude?: unknown };
+    const body = (await req.json()) as {
+      latitude?: unknown;
+      longitude?: unknown;
+      /** Funnel session id (uuid4) supplied by the website. */
+      client_session_id?: unknown;
+      /** How the visitor supplied the point: gps | search | map_pin | manual. */
+      input_source?: unknown;
+    };
 
     const hasLat = body.latitude !== undefined && body.latitude !== null && body.latitude !== "";
     const hasLng = body.longitude !== undefined && body.longitude !== null && body.longitude !== "";
@@ -73,6 +84,34 @@ serve(async (req) => {
       );
     }
 
+    const inputSource =
+      typeof body.input_source === "string" && body.input_source
+        ? body.input_source.slice(0, 24)
+        : "unknown";
+
+    // `serviceability_check_started` opens the check, so a slow or failed
+    // lookup (the gap before `location_entered`) is observable as a drop-off
+    // rather than an invisible hole. Emitted only after the coordinates
+    // validate, so a malformed request never counts as a visitor action.
+    try {
+      await emitServerEvent(client as never, {
+        eventName: "serviceability_check_started",
+        clientSessionId:
+          typeof body.client_session_id === "string" ? body.client_session_id : null,
+        occurredAt: new Date().toISOString(),
+        properties: { input_source: inputSource },
+        // Coordinate-derived (never persisted) but a distinct prefix, so a
+        // retried request collapses while a genuinely new point does not.
+        clientEventId: await deriveCoordinateClientEventId("svc-start", lat, lng),
+        userAgent: req.headers.get("user-agent"),
+      });
+    } catch (error) {
+      console.error(
+        "check-location-serviceability: funnel_start_emit_failed",
+        error instanceof Error ? error.message : String(error),
+      );
+    }
+
     const [instructorRows, zones, activeAreas] = await Promise.all([
       client
         .from("Instructor")
@@ -94,6 +133,33 @@ serve(async (req) => {
 
     const input: ServiceabilityInput = { lat, lng, zones, instructors, areas: activeAreas };
     const result = resolveServiceability(input);
+
+    // --- funnel instrumentation (never fatal) ------------------------------
+    // `location_entered` fires for EVERY completed check (serviceable or not)
+    // because a non-serviceable point is still a location the customer
+    // entered. The raw coordinates are NEVER persisted: the idempotency key
+    // is a hash of them and the properties carry only the resolved area.
+    try {
+      await emitServerEvent(client as never, {
+        eventName: "location_entered",
+        clientSessionId:
+          typeof body.client_session_id === "string" ? body.client_session_id : null,
+        occurredAt: new Date().toISOString(),
+        properties: {
+          area_id: result.areaId ?? null,
+          area_name: result.areaName ?? result.areaLabel ?? null,
+          serviceable: result.serviceable,
+          input_source: inputSource,
+        },
+        clientEventId: await deriveCoordinateClientEventId("loc", lat, lng),
+        userAgent: req.headers.get("user-agent"),
+      });
+    } catch (error) {
+      console.error(
+        "check-location-serviceability: funnel_emit_failed",
+        error instanceof Error ? error.message : String(error),
+      );
+    }
 
     return jsonResponse({
       serviceable: result.serviceable,

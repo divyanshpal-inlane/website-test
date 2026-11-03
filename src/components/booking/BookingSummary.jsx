@@ -9,7 +9,6 @@ const fmtSlot = (s) =>
   })}, ${s.start} – ${s.end}`;
 
 export default function BookingSummary({ config, form, heldSlots }) {
-  const isRtoOnly = form.caseType === "rto_only";
   const course = (config?.courses || []).find((c) => c.id === form.courseId);
   const addons = (config?.addons || []).filter((a) => (form.addonIds || []).includes(a.id));
   const included = (config?.courseAddons || [])
@@ -52,14 +51,6 @@ export default function BookingSummary({ config, form, heldSlots }) {
             </div>
             <p className="font-semibold">{formatINR(course.price)}</p>
           </div>
-        ) : isRtoOnly ? (
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="font-semibold text-gray-900">RTO paperwork</p>
-              <p className="text-gray-500">Application + document handling by our team</p>
-            </div>
-            <p className="font-semibold">{formatINR(addonsTotal)}</p>
-          </div>
         ) : (
           <p className="font-semibold text-gray-900">—</p>
         )}
@@ -91,12 +82,7 @@ export default function BookingSummary({ config, form, heldSlots }) {
 
         <div className="h-px bg-gray-200" />
 
-        {isRtoOnly ? (
-          <p className="rounded-xl bg-gray-50 p-3 text-gray-600">
-            RTO paperwork: our team will reach out to collect your documents and start the
-            application.
-          </p>
-        ) : slots.length > 0 ? (
+        {slots.length > 0 ? (
           <div>
             <p className="flex items-center gap-1.5 font-medium text-gray-900 mb-1.5">
               <CalendarDays className="h-4 w-4 text-[#00ce84]" />

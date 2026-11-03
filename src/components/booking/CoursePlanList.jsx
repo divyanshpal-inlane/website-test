@@ -29,6 +29,7 @@ export default function CoursePlanList({
   onChangeLesson,
   onPickCandidate,
   onCancelEdit,
+  disableEditLesson = null,
 }) {
   const candidateDates = useMemo(() => {
     const seen = [];
@@ -66,6 +67,12 @@ export default function CoursePlanList({
   return (
     <section className="rounded-2xl border border-[#D9FF7A] bg-[#F7FFE0] p-6">
       <h3 className="text-lg font-semibold mb-1">{title || "Your full schedule"}</h3>
+      {/* TEMP-TEST (instructor name in slots) */}
+      {lessons[0]?.instructorName && (
+        <p className="text-sm font-semibold text-[#0B7A52] mb-1">
+          Trainer: {lessons[0].instructorName}
+        </p>
+      )}
       <p className="text-sm text-gray-600 mb-4">
         {lessons.length}{slotDurationMinutes ? ` ${slotDurationMinutes}-minute` : ""} lessons with a
         single trainer. Change any lesson here before you book, or after we hold your spot.
@@ -83,6 +90,12 @@ export default function CoursePlanList({
                   <span className="font-medium text-gray-900">
                     Lesson {l.lesson} · {fmtLesson(l)}
                   </span>
+                  {/* TEMP-TEST (instructor name in slots) */}
+                  {l.instructorName && (
+                    <span className="text-xs text-gray-500 truncate max-w-[10rem]" title={l.instructorName}>
+                      {l.instructorName}
+                    </span>
+                  )}
                 </span>
                 <span className="flex items-center gap-3">
                   <span className="font-semibold text-gray-700">
@@ -91,7 +104,12 @@ export default function CoursePlanList({
                   <button
                     type="button"
                     onClick={() => (isEditing ? onCancelEdit() : onChangeLesson(l.lesson))}
-                    className="inline-flex items-center gap-1 rounded-full border border-gray-300 px-3 py-1 text-xs font-semibold text-gray-700 hover:border-[#00ce84] hover:text-[#00ce84] transition-colors"
+                    disabled={
+                      candidateLoading ||
+                      loading ||
+                      (disableEditLesson != null && l.lesson === disableEditLesson)
+                    }
+                    className="inline-flex items-center gap-1 rounded-full border border-gray-300 px-3 py-1 text-xs font-semibold text-gray-700 hover:border-[#00ce84] hover:text-[#00ce84] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isEditing ? (
                       <>
@@ -132,10 +150,18 @@ export default function CoursePlanList({
                                 key={`${s.date}|${s.start}`}
                                 type="button"
                                 onClick={() => onPickCandidate(editingLesson, s)}
-                                className="rounded-lg border border-gray-300 px-2 py-2 flex items-center justify-center gap-1 text-sm font-medium text-gray-700 hover:border-[#00ce84] hover:text-[#00ce84] transition-all"
+                                className="rounded-lg border border-gray-300 px-2 py-2 flex flex-col items-center justify-center gap-0.5 text-sm font-medium text-gray-700 hover:border-[#00ce84] hover:text-[#00ce84] transition-all"
                               >
-                                <Clock className="h-3.5 w-3.5" />
-                                {s.start}
+                                <span className="flex items-center gap-1">
+                                  <Clock className="h-3.5 w-3.5" />
+                                  {s.start}
+                                </span>
+                                {/* TEMP-TEST (instructor name in slots) */}
+                                {s.instructorName && (
+                                  <span className="text-[10px] font-normal text-gray-500 truncate max-w-full" title={s.instructorName}>
+                                    {s.instructorName}
+                                  </span>
+                                )}
                               </button>
                             ))}
                           </div>

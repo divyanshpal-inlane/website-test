@@ -550,7 +550,10 @@ export function planLessonsForInstructor(
   totalLessons: number,
   duration: number,
 ): CoursePlanLesson[] | null {
-  const sortedDates = [...dates].sort();
+  // De-duplicate before sorting: a repeated date would otherwise be iterated
+  // twice, letting the planner exceed the 2-lessons-per-day rule (and, in the
+  // preferred planner, book the same slot twice).
+  const sortedDates = [...new Set(dates)].sort();
   const dayIndex = sortedDates.indexOf(firstDate);
   if (dayIndex < 0) return null;
 
@@ -785,6 +788,136 @@ export function computeCoursePlan(
       input.dates || [],
       pointer.date,
       startMinute,
+      totalLessons,
+      duration,
+    )!,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Preferred-slots course plan ("3 preferred times" flow).
+//
+//   Customer picks a Start Date and ranks up to 3 preferred daily times.
+//   Walking forward one calendar day at a time from the Start Date:
+//     - try preference #1 for that day; if free, book it and move to the
+//       next day.
+//     - else try preference #2, then preference #3 (in rank order) — this
+//       covers "the day has other availability but my usual time is taken".
+//     - if NONE of the (up to 3) preferred times are free that day — whether
+//       because the whole day is blocked or just because none of the
+//       customer's choices happen to be open — the day is skipped entirely
+//       and the same ranked preferences are tried again on the NEXT day.
+//   At most one lesson is placed per calendar day (no same-day doubling),
+//   so the booking window may run longer than the course's lesson count when
+//   days are skipped. One instructor teaches every lesson, same as the
+//   legacy `computeCoursePlan` engine above.
+// ---------------------------------------------------------------------------
+
+/**
+ * One instructor's plan under the "3 preferred times" model. Returns null
+ * when `startDate` isn't in `dates`, there are no preferences, or the
+ * instructor can't fit `totalLessons` within the given date window.
+ */
+export function planCoursePreferred(
+  freeByDate: Map<string, number[]>,
+  dates: string[],
+  startDate: string,
+  preferredStartMinutes: number[],
+  totalLessons: number,
+  duration: number,
+): CoursePlanLesson[] | null {
+  if (!Array.isArray(preferredStartMinutes) || preferredStartMinutes.length === 0) return null;
+  // De-duplicate before sorting so a repeated date cannot receive two lessons
+  // (this planner places exactly one lesson per calendar day).
+  const sortedDates = [...new Set(dates)].sort();
+  const startIndex = sortedDates.indexOf(startDate);
+  if (startIndex < 0) return null;
+
+  const rows: Array<{ date: string; start: number; end: number }> = [];
+  for (let d = startIndex; d < sortedDates.length && rows.length < totalLessons; d++) {
+    const date = sortedDates[d];
+    const free = new Set(freeByDate.get(date) || []);
+    for (const pref of preferredStartMinutes) {
+      if (free.has(pref)) {
+        rows.push({ date, start: pref, end: pref + duration });
+        break; // one lesson per day — move on to the next calendar day
+      }
+    }
+    // None of the ranked preferences were free this day: skip it entirely
+    // (covers both "full day unavailable" and "none of my 3 choices are
+    // open today" — both resolve to trying the same preferences tomorrow).
+  }
+
+  if (rows.length < totalLessons) return null;
+
+  return rows.map((r, i) => ({
+    lesson: i + 1,
+    date: r.date,
+    day: dateToWeekdayLower(r.date),
+    start_time: minutesToTime(r.start),
+    end_time: minutesToTime(r.end),
+  }));
+}
+
+function feasibleInstructorsForPreferred(
+  input: AvailabilityInput,
+  free: Map<string, Map<string, number[]>>,
+  startDate: string,
+  preferredStartMinutes: number[],
+  totalLessons: number,
+): InstructorLike[] {
+  const eligible = areaEligibleInstructors(input);
+  const duration = Math.floor(input.slotConfig.slotDurationMinutes);
+  const dates = input.dates || [];
+  const out: InstructorLike[] = [];
+  for (const instr of eligible) {
+    const byDate = free.get(instr.id);
+    if (!byDate) continue;
+    if (planCoursePreferred(byDate, dates, startDate, preferredStartMinutes, totalLessons, duration)) {
+      out.push(instr);
+    }
+  }
+  return out;
+}
+
+/**
+ * Full course plan under the "3 preferred times" model, starting from
+ * `startDate`. The chosen instructor is the deterministically best one (area
+ * match, then load, then distance) among those who can complete the whole
+ * course this way; identity stays server-side.
+ */
+export function computeCoursePlanPreferred(
+  input: AvailabilityInput,
+  startDate: string,
+  preferredStartMinutes: number[],
+  totalLessons: number,
+): CoursePlan {
+  const eligible = areaEligibleInstructors(input);
+  const duration = Math.floor(input.slotConfig.slotDurationMinutes);
+  const free = buildInstructorFreeGrid(input, eligible);
+  const feasible = feasibleInstructorsForPreferred(input, free, startDate, preferredStartMinutes, totalLessons);
+
+  if (feasible.length === 0) {
+    return { ok: false, totalLessons };
+  }
+
+  const instructorId = pickBestInstructor(feasible, {
+    femalePreference: input.femalePreference,
+    femaleMode: input.femaleMode ?? "off",
+    learner: input.learner ?? null,
+    learnerArea: input.learnerArea,
+    loadById: instructorBookingLoad(input.blocks, input.holdMinutes, input.now ?? new Date()),
+  });
+
+  return {
+    ok: true,
+    instructorId,
+    totalLessons,
+    lessons: planCoursePreferred(
+      free.get(instructorId)!,
+      input.dates || [],
+      startDate,
+      preferredStartMinutes,
       totalLessons,
       duration,
     )!,

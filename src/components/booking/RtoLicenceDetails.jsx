@@ -1,9 +1,15 @@
-import { Bike, CarFront, Info } from "lucide-react";
+import { Bike, Info } from "lucide-react";
+import { trackFunnelEvent } from "../../utils/funnelTracking";
 
+// This section only exists on the "No 4-wheeler licence" branch of the
+// flow: 4W? No -> Ask 2W licence? -> (if yes) Ask K/A licence? -> (if no)
+// educate about address/licence migration. It renders nothing for 4W-licence
+// holders — that branch goes straight from the 4W question to the plan,
+// with no further licence questions.
 const TWO_WHEELER_OPTIONS = [
-  { value: "none", label: "No 2-wheeler licence" },
-  { value: "ll_only", label: "Learner's licence" },
-  { value: "active_dl", label: "Full 2-wheeler DL" },
+  { value: "none", label: "No 2-wheeler licence", dlStatus: "no_dl" },
+  { value: "ll_only", label: "Learner's licence", dlStatus: "two_wheeler_ll_only" },
+  { value: "active_dl", label: "Full 2-wheeler DL", dlStatus: "two_wheeler_active_dl" },
 ];
 
 const KA_OPTIONS = [
@@ -12,39 +18,46 @@ const KA_OPTIONS = [
 ];
 
 export default function RtoLicenceDetails({ form, onChange }) {
-  const { has_a_DL, twoWheelerLicenseState, kaLicence, kaLicence4w } = form || {};
+  const { has_a_DL, twoWheelerLicenseState, kaLicence } = form || {};
+
+  // Only asked when the customer has no 4-wheeler licence.
+  if (has_a_DL !== false) return null;
 
   const has2W =
     twoWheelerLicenseState === "ll_only" || twoWheelerLicenseState === "active_dl";
-  const showKA4W = has_a_DL === true;
-  const showKA2W = has_a_DL === false && has2W;
-  const showCard = (showKA4W && kaLicence4w === false) || (showKA2W && kaLicence === false);
+  const showKA = has2W;
+  const showEducationCard = showKA && kaLicence === false;
 
-  const migration4W = showKA4W && kaLicence4w === false;
-  const migration2W = showKA2W && kaLicence === false;
-
-  const setTwoWheeler = (state) =>
+  const setTwoWheeler = (state, dlStatus) => {
     onChange({
       twoWheelerLicenseState: state,
       kaLicence: state === "none" ? null : kaLicence,
     });
+    // Funnel: `dl_status_selected` — the 2-wheeler branch of the coarse DL
+    // qualification. Distinct idempotency target from the 4-wheeler answer.
+    void trackFunnelEvent(
+      "dl_status_selected",
+      { dl_status: dlStatus },
+      { target: dlStatus },
+    );
+  };
 
   return (
     <div className="space-y-4">
       <section className="rounded-2xl border border-gray-200 bg-white p-5">
         <div className="flex items-center gap-2 mb-1">
           <Bike className="h-5 w-5 text-[#00ce84]" />
-          <h2 className="text-lg font-semibold">Your two-wheeler licence (optional)</h2>
+          <h2 className="text-lg font-semibold">Do you have a two-wheeler licence?</h2>
         </div>
         <p className="text-gray-500 text-sm mb-4">
-          These answers decide which RTO services we can offer below.
+          This helps us offer the right RTO paperwork on the next step.
         </p>
         <div className="flex flex-wrap gap-2">
           {TWO_WHEELER_OPTIONS.map((o) => (
             <button
               key={o.value}
               type="button"
-              onClick={() => setTwoWheeler(o.value)}
+              onClick={() => setTwoWheeler(o.value, o.dlStatus)}
               className={`px-4 py-2 rounded-full border text-sm font-medium transition-colors ${
                 twoWheelerLicenseState === o.value
                   ? "bg-gray-900 border-gray-900 text-white"
@@ -57,42 +70,14 @@ export default function RtoLicenceDetails({ form, onChange }) {
         </div>
       </section>
 
-      {showKA4W && (
-        <section className="rounded-2xl border border-gray-200 bg-white p-5">
-          <div className="flex items-center gap-2 mb-1">
-            <CarFront className="h-5 w-5 text-[#00ce84]" />
-            <h2 className="text-lg font-semibold">Is your 4-wheeler licence from Karnataka?</h2>
-          </div>
-          <p className="text-gray-500 text-sm mb-4">
-            If it's from another state, our team can help migrate it to Karnataka after you book.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {KA_OPTIONS.map((o) => (
-              <button
-                key={String(o.value)}
-                type="button"
-                onClick={() => onChange({ kaLicence4w: o.value })}
-                className={`px-4 py-2 rounded-full border text-sm font-medium transition-colors ${
-                  kaLicence4w === o.value
-                    ? "bg-gray-900 border-gray-900 text-white"
-                    : "bg-white border-gray-300 text-gray-700 hover:border-gray-900"
-                }`}
-              >
-                {o.label}
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {showKA2W && (
+      {showKA && (
         <section className="rounded-2xl border border-gray-200 bg-white p-5">
           <div className="flex items-center gap-2 mb-1">
             <Bike className="h-5 w-5 text-[#00ce84]" />
             <h2 className="text-lg font-semibold">Is your 2-wheeler licence from Karnataka?</h2>
           </div>
           <p className="text-gray-500 text-sm mb-4">
-            This lets us know whether your licence needs to be migrated to your current state.
+            This lets us know whether your licence needs to be migrated to Karnataka.
           </p>
           <div className="flex flex-wrap gap-2">
             {KA_OPTIONS.map((o) => (
@@ -113,7 +98,7 @@ export default function RtoLicenceDetails({ form, onChange }) {
         </section>
       )}
 
-      {(migration4W || migration2W) && (
+      {showEducationCard && (
         <div className="booking-collapse open">
           <div>
             <div className="rounded-2xl border border-[#F2C14E] bg-[#FFF8E6] p-5">
@@ -122,12 +107,12 @@ export default function RtoLicenceDetails({ form, onChange }) {
                 <div>
                   <h3 className="font-semibold text-gray-900">Address change & licence migration</h3>
                   <p className="text-sm text-gray-600 mt-1">
-                    Since your {migration4W ? "4-wheeler" : "2-wheeler"} licence is from another
-                    state, you'll need to migrate it to Karnataka (address change / transfer). There
-                    are applicable RTO fees and migration charges for this. Our team will guide you
-                    through the process after you book — and our{" "}
-                    <span className="font-semibold">DL Address Change</span> service below will
-                    handle the whole application for you.
+                    Since your 2-wheeler licence is from another state, your address/licence records
+                    will likely need to be updated to Karnataka before you can apply for a 4-wheeler
+                    Learner's Licence (LL) and Driving Licence (DL). There are applicable RTO fees and
+                    migration charges for this. Our team will guide you through the process after you
+                    book — and our <span className="font-semibold">DL Address Change</span> service
+                    below can handle the whole application for you.
                   </p>
                 </div>
               </div>

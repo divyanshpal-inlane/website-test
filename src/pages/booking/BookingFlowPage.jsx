@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Alert, Button } from "@mui/material";
 import { useBooking } from "../../context/BookingContext";
@@ -5,11 +6,27 @@ import { useBookingConfig } from "../../hooks/useBookingConfig";
 import { bookingStep2Label } from "../../services/bookingSteps";
 import BookingStepper from "../../components/booking/BookingStepper";
 import BookingLocationSelector from "../../components/booking/BookingLocationSelector";
-import PackageSelector from "../../components/booking/PackageSelector";
 import LicenceDetails from "../../components/booking/LicenceDetails";
+import RtoLicenceDetails from "../../components/booking/RtoLicenceDetails";
 import CourseSelector from "../../components/booking/CourseSelector";
-import { offeredRtoAddons } from "../../components/booking/RtoServiceSelector";
+import { trackFunnelEvent } from "../../utils/funnelTracking";
 
+// ---------------------------------------------------------------------------
+// Step 1 follows this exact decision tree — nothing outside it is offered:
+//
+//   4W Licence?
+//   |- Yes -> Select Plan -> (step 2) Add-on -> Slot -> Payment
+//   `- No  -> Ask 2W Licence?
+//             |- Yes -> Ask K/A Licence?
+//             |        |- Yes -> Select Plan -> (step 2) Add-on -> Payment
+//             |        `- No  -> Educate (address change + migration) ->
+//             |                  Select Plan -> (step 2) Add-on -> Payment
+//             `- No  -> Select Plan -> (step 2) Add-on -> Payment
+//
+// "Select Plan" (the course) always happens here, on step 1. "Select
+// Add-on" always happens on step 2 (SchedulePage); "Select Slot" only
+// happens there too, and only for 4W-licence holders.
+// ---------------------------------------------------------------------------
 export default function BookingFlowPage() {
   const { config, loading: configLoading, error: configError, refetch } = useBookingConfig();
   const { form, setForm } = useBooking();
@@ -17,52 +34,64 @@ export default function BookingFlowPage() {
   const location = useLocation();
   const notice = location.state?.notice;
 
-  const isRtoOnly = form.caseType === "rto_only";
+  // ---------------------------------------------------------------------------
+  // Funnel instrumentation (fire-and-forget; a tracking failure must never
+  // break the booking flow).
+  //
+  // `home_viewed` — the funnel's step-1 surface. The deterministic
+  // `client_event_id` collapses a StrictMode double-render / re-mount into a
+  // single row on the server.
+  // ---------------------------------------------------------------------------
+  useEffect(() => {
+    void trackFunnelEvent("home_viewed", { page_type: "booking_flow" });
+  }, []);
+
+  // `course_list_viewed` — once the plan catalogue is known. The course ids
+  // are stored as a comma-separated string (the event log rejects arrays).
+  const courseListKey = (config?.courses || []).map((c) => String(c.id)).join(",");
+  const courseListTracked = useRef(false);
+  useEffect(() => {
+    if (courseListTracked.current || !courseListKey) return;
+    courseListTracked.current = true;
+    const courses = config.courses || [];
+    void trackFunnelEvent(
+      "course_list_viewed",
+      {
+        course_count: courses.length,
+        course_ids: courseListKey,
+        dl_status:
+          form.has_a_DL === true
+            ? "has_dl"
+            : form.has_a_DL === false
+              ? "no_dl"
+              : "unknown",
+      },
+      { target: courseListKey },
+    );
+  }, [courseListKey, config, form.has_a_DL]);
 
   const handleArea = (patch) => {
     setForm(patch);
   };
 
+  // Changing an earlier licence answer can invalidate later answers in the
+  // tree (e.g. switching back to "Yes, I have a 4W licence" drops the whole
+  // 2W/K/A sub-tree) and any RTO add-ons already picked for the old branch.
   const handleLicenceChange = (patch) => {
-    const licenceTouched =
-      patch.has_a_DL !== undefined ||
-      patch.twoWheelerLicenseState !== undefined ||
-      patch.kaLicence !== undefined ||
-      patch.kaLicence4w !== undefined;
-    if (!licenceTouched) {
-      setForm(patch);
+    if (patch.has_a_DL !== undefined) {
+      setForm({
+        ...patch,
+        twoWheelerLicenseState: null,
+        kaLicence: null,
+        addonIds: [],
+      });
       return;
     }
-    const next = { ...form, ...patch };
-    const keptIds = (form.addonIds || []).filter((id) => {
-      const addon = (config?.addons || []).find((a) => a.id === id);
-      return addon && offeredRtoAddons(next, [addon]).length > 0;
-    });
-    setForm(
-      keptIds.length === (form.addonIds || []).length
-        ? patch
-        : { ...patch, addonIds: keptIds },
-    );
-  };
-
-  const handleCaseType = (caseType) => {
-    const switchingToRtoOnly = caseType === "rto_only";
-    setForm({
-      caseType,
-      ...(switchingToRtoOnly
-        ? {
-            courseId: null,
-            course: null,
-            courseName: null,
-            coursePrice: null,
-            firstSlot: null,
-            planPreview: null,
-          }
-        : {}),
-      addonIds: [],
-      firstSlot: null,
-      planPreview: null,
-    });
+    if (patch.twoWheelerLicenseState !== undefined || patch.kaLicence !== undefined) {
+      setForm({ ...patch, addonIds: [] });
+      return;
+    }
+    setForm(patch);
   };
 
   const handleCourse = (course) => {
@@ -74,10 +103,21 @@ export default function BookingFlowPage() {
     });
   };
 
+  // Follows the tree exactly:
+  //   4W No -> Ask 2W Licence? -> (if yes) Ask K/A Licence?
+  const needsTwoWheeler = form.has_a_DL === false;
+  const twoWheelerAnswered = needsTwoWheeler ? form.twoWheelerLicenseState != null : true;
+  const needsKaFor2W =
+    needsTwoWheeler &&
+    (form.twoWheelerLicenseState === "ll_only" || form.twoWheelerLicenseState === "active_dl");
+  const kaAnswered = needsKaFor2W ? form.kaLicence !== null && form.kaLicence !== undefined : true;
+
   const ready =
     form.serviceable === true &&
     form.has_a_DL !== null &&
-    (isRtoOnly || Boolean(form.courseId));
+    twoWheelerAnswered &&
+    kaAnswered &&
+    Boolean(form.courseId);
 
   const empty =
     !configLoading &&
@@ -95,7 +135,7 @@ export default function BookingFlowPage() {
         </p>
       </div>
 
-      <BookingStepper step={1} step2Label={bookingStep2Label(form.caseType)} />
+      <BookingStepper step={1} step2Label={bookingStep2Label(form.has_a_DL)} />
 
       {notice && (
         <Alert severity="info" className="mb-6">
@@ -123,7 +163,7 @@ export default function BookingFlowPage() {
           message="Check back soon, or talk to our team to get started today."
         />
       ) : (
-<>
+        <>
           <div className="space-y-10">
             <BookingLocationSelector form={form} onChange={handleArea} />
 
@@ -132,30 +172,18 @@ export default function BookingFlowPage() {
               onChange={handleLicenceChange}
             />
 
-            <PackageSelector
-              value={form.caseType}
-              onChange={handleCaseType}
-              has_a_DL={form.has_a_DL}
-            />
-
-            {!isRtoOnly && (
-              <CourseSelector courses={config.courses} courseId={form.courseId} onChange={handleCourse} />
+            {form.has_a_DL === false && (
+              <RtoLicenceDetails form={form} onChange={handleLicenceChange} />
             )}
+
+            <CourseSelector courses={config.courses} courseId={form.courseId} onChange={handleCourse} />
           </div>
 
           <div className="mt-10 flex flex-col items-center gap-3">
             <Button
               variant="contained"
               disabled={!ready}
-              onClick={() => {
-                navigate(
-                  form.has_a_DL === true ||
-                    isRtoOnly ||
-                    form.caseType === "course_rto"
-                    ? "/book/schedule"
-                    : "/book/review",
-                );
-              }}
+              onClick={() => navigate("/book/schedule")}
               sx={{
                 bgcolor: "#00ce84",
                 "&:hover": { bgcolor: "#00B97A" },
@@ -203,12 +231,3 @@ function StateCard({ title, message, actionLabel, onAction }) {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-

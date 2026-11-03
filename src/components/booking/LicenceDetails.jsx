@@ -1,4 +1,5 @@
 import { CarFront } from "lucide-react";
+import { trackFunnelEvent } from "../../utils/funnelTracking";
 
 export default function LicenceDetails({ has_a_DL, onChange }) {
   return (
@@ -23,7 +24,17 @@ export default function LicenceDetails({ has_a_DL, onChange }) {
             <button
               key={String(value)}
               type="button"
-              onClick={() => onChange({ has_a_DL: value })}
+              onClick={() => {
+                onChange({ has_a_DL: value });
+                // Funnel: `dl_status_selected` — the coarse DL qualification.
+                // Fire-and-forget: a tracking failure must never break the
+                // booking flow.
+                void trackFunnelEvent(
+                  "dl_status_selected",
+                  { dl_status: value ? "has_dl" : "no_dl" },
+                  { target: value ? "has_dl" : "no_dl" },
+                );
+              }}
               className={`text-left rounded-2xl border p-5 transition-all ${
                 active
                   ? "border-[#00ce84] ring-2 ring-[#00ce84]/30 bg-white"

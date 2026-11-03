@@ -19,8 +19,10 @@ const initialForm = {
   has_a_DL: null,
   twoWheelerLicenseState: null,
   kaLicence: null,
-  kaLicence4w: null,
-  firstSlot: null,
+  startDate: null,
+  // Ranked daily time preferences, e.g. ["07:00", "18:00", "19:00"]. Tried
+  // in order on every course day starting at startDate.
+  preferredSlots: [],
   planPreview: null,
   selectedSlots: [],
   customer: {

@@ -19,12 +19,77 @@ import { errorResponse, BookingError } from "../_shared/errors.ts";
 import { serviceClient } from "../_shared/client.ts";
 import { readBookingFlowConfig } from "../_shared/config.ts";
 import { getHalfPaymentLessons } from "../_shared/pricing.ts";
+import {
+  deriveHashedClientEventId,
+  emitServerEvent,
+} from "../_shared/funnelEvents.ts";
+import { findLeadByPhone } from "../_shared/funnelStore.ts";
+import { phoneToLast10 } from "../_shared/funnelTaxonomy.ts";
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 interface ApproveRequest {
   bookingId?: string;
+  /** Funnel session id (uuid4) supplied by the website. */
+  client_session_id?: string | null;
+}
+
+/**
+ * Resolve the funnel lead id for a learner phone number (last 10 digits).
+ * Returns null when the learner has no funnel lead yet — the events are then
+ * recorded against the session only.
+ */
+async function resolveLeadId(
+  client: unknown,
+  phone: unknown,
+): Promise<string | null> {
+  try {
+    const normalized = phoneToLast10(String(phone ?? ""));
+    if (!normalized) return null;
+    const lead = await findLeadByPhone(client as never, normalized);
+    return lead?.id ? String(lead.id) : null;
+  } catch (error) {
+    console.error(
+      "approve-booking-payment: funnel_resolve_lead_failed",
+      error instanceof Error ? error.message : String(error),
+    );
+    return null;
+  }
+}
+
+/**
+ * Emit a payment funnel event. Never throws — instrumentation must never be
+ * able to fail a payment.
+ */
+async function emitPaymentFunnelEvent(
+  client: unknown,
+  args: {
+    body: ApproveRequest;
+    userAgent: string | null;
+    leadId: string | null;
+    eventName: "payment_initiated" | "payment_success" | "payment_failed";
+    clientEventId: string;
+    properties: Record<string, unknown>;
+  },
+): Promise<void> {
+  try {
+    await emitServerEvent(client as never, {
+      eventName: args.eventName,
+      clientSessionId: args.body.client_session_id ?? null,
+      leadId: args.leadId,
+      occurredAt: new Date().toISOString(),
+      properties: args.properties,
+      clientEventId: args.clientEventId,
+      userAgent: args.userAgent,
+    });
+  } catch (error) {
+    console.error(
+      "approve-booking-payment: funnel_emit_failed",
+      args.eventName,
+      error instanceof Error ? error.message : String(error),
+    );
+  }
 }
 
 serve(async (req) => {
@@ -93,6 +158,27 @@ serve(async (req) => {
       );
     }
     if (status === "failed") {
+      // A previously failed payment attempt. Record it so the failure-rate
+      // metric is measured rather than assumed to be zero. `leadId` is left
+      // null on purpose: the session's own lead link is used as the fallback.
+      await emitPaymentFunnelEvent(client, {
+        body,
+        userAgent: req.headers.get("user-agent"),
+        leadId: null,
+        eventName: "payment_failed",
+        clientEventId: await deriveHashedClientEventId(
+          "pay-fail",
+          bookingId,
+          "booking_failed",
+        ),
+        properties: {
+          installment_mode: String(booking.installment_mode ?? "full"),
+          amount: Number(booking.total_amount ?? booking.base_amount ?? 0),
+          gateway: "razorpay",
+          error_code: "booking_failed",
+          reason: "The booking was already marked as failed.",
+        },
+      });
       throw new BookingError(422, "payment_failed", "This booking cannot continue.");
     }
     if (status === "abandoned") {
@@ -148,6 +234,13 @@ serve(async (req) => {
     if (!learner) {
       throw new BookingError(404, "learner_not_found", "Learner record not found.");
     }
+
+    // --- funnel instrumentation (never fatal) ------------------------------
+    // Resolve the funnel lead for this learner so the payment events are
+    // attached to the lead (not just to a session). The lead was created by
+    // create-booking / capture-lead, both of which dedupe on the last 10
+    // phone digits.
+    const leadId = await resolveLeadId(client, learner.phone);
 
     // --- LL application for RTO services (create BEFORE payment so we don't have
     // a payment without a pipeline entry). If this fails, we return an error and
@@ -224,6 +317,23 @@ serve(async (req) => {
         : Array.from({ length: totalLessons }, (_, i) => i + 1);
     }
 
+    // --- funnel instrumentation (never fatal) ------------------------------
+    // `payment_initiated` fires exactly once per booking, right before the
+    // charge. A replay of an already-approved booking returns early and never
+    // reaches this point, so the event is not duplicated.
+    await emitPaymentFunnelEvent(client, {
+      body,
+      userAgent: req.headers.get("user-agent"),
+      leadId,
+      eventName: "payment_initiated",
+      clientEventId: await deriveHashedClientEventId("pay-init", bookingId),
+      properties: {
+        installment_mode: installmentMode,
+        amount: paidAmount,
+        gateway: "razorpay",
+      },
+    });
+
     const { data: paymentRow, error: paymentError } = await client
       .from("payment")
       .insert([
@@ -244,7 +354,30 @@ serve(async (req) => {
       ])
       .select("id, gateway_reference")
       .single();
-    if (paymentError) throw paymentError;
+    if (paymentError) {
+      // --- funnel instrumentation (never fatal) ---------------------------
+      // A real payment failure, not a replay: emit `payment_failed` so the
+      // failure-rate metric is measured rather than assumed to be zero.
+      await emitPaymentFunnelEvent(client, {
+        body,
+        userAgent: req.headers.get("user-agent"),
+        leadId,
+        eventName: "payment_failed",
+        clientEventId: await deriveHashedClientEventId(
+          "pay-fail",
+          bookingId,
+          "payment_write_failed",
+        ),
+        properties: {
+          installment_mode: installmentMode,
+          amount: paidAmount,
+          gateway: "razorpay",
+          error_code: "payment_write_failed",
+          reason: "The payment record could not be written.",
+        },
+      });
+      throw paymentError;
+    }
     const paymentId = String(paymentRow.id);
 
     if (enrollment) {
@@ -282,6 +415,23 @@ const { error: bookingError } = await client
       amount: paidAmount,
       installmentMode,
       unlocked: unlockedLessons.length,
+    });
+
+    // --- funnel instrumentation (never fatal) ------------------------------
+    // `payment_success` fires only after the payment row is `completed` AND
+    // the booking has been advanced to "payment_completed".
+    await emitPaymentFunnelEvent(client, {
+      body,
+      userAgent: req.headers.get("user-agent"),
+      leadId,
+      eventName: "payment_success",
+      clientEventId: await deriveHashedClientEventId("pay-ok", paymentId),
+      properties: {
+        installment_mode: installmentMode,
+        amount: paidAmount,
+        gateway: "razorpay",
+        payment_id: paymentId,
+      },
     });
 
     return jsonResponse({

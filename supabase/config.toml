@@ -420,6 +420,17 @@ verify_jwt = false
 [functions.send-booking-onboarding-email]
 verify_jwt = false
 
+# Acquisition-funnel instrumentation (Phase 0).
+# Public endpoints consumed by the anonymous website funnel (no user session),
+# so JWT verification is disabled. They enforce their own gates: a strict
+# per-event property allowlist, a client-allowed event list, idempotency keys
+# and layered rate limits. No service-role credential ever reaches the browser.
+[functions.track-event]
+verify_jwt = false
+
+[functions.capture-lead]
+verify_jwt = false
+
 # Admin-only ops endpoint (called from the hosted app's logged-in Schedule
 # Management view). Unlike the public funnel endpoints it REQUIRES a valid JWT
 # because it exposes learner PII.

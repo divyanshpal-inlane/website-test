@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useBooking } from "../../context/BookingContext";
@@ -21,6 +21,7 @@ import BookingSummary from "../../components/booking/BookingSummary";
 import CustomerDetails from "../../components/booking/CustomerDetails";
 import PaymentSection from "../../components/booking/PaymentSection";
 import ScheduleReview from "../../components/booking/ScheduleReview";
+import { trackFunnelEvent } from "../../utils/funnelTracking";
 
 const PHONE_RE = /^\d{10}$/;
 
@@ -36,12 +37,41 @@ export default function ReviewPaymentPage() {
   const [formError, setFormError] = useState(null);
   const [notice, setNotice] = useState(null);
 
+  // ---------------------------------------------------------------------------
+  // Funnel instrumentation (fire-and-forget).
+  //
+  // `plan_page_viewed` — the customer reached the review / plan page. It fires
+  // once per visit (the deterministic `client_event_id` collapses a StrictMode
+  // double-render, a re-mount and a retry into a single row on the server).
+  // ---------------------------------------------------------------------------
+  const planPageTracked = useRef(false);
+  useEffect(() => {
+    if (planPageTracked.current || !form.courseId) return;
+    planPageTracked.current = true;
+    const course =
+      form.course ||
+      (config?.courses || []).find((c) => c.id === form.courseId) ||
+      null;
+    void trackFunnelEvent(
+      "plan_page_viewed",
+      {
+        course_id: form.courseId ? String(form.courseId) : null,
+        course_code: course?.code == null ? null : String(course.code),
+        total_lessons:
+          Number(course?.totalLessons ?? course?.total_lessons ?? 0) || 0,
+        plan_mode: form.has_a_DL === true ? "direct" : "assign_later",
+      },
+      { target: String(form.courseId ?? "") },
+    );
+  }, [form.courseId, form.course, form.has_a_DL, config]);
+
   if (configLoading) {
     return <div className="grid place-items-center py-32 text-gray-400">Loading…</div>;
   }
 
-  const isRtoOnly = form.caseType === "rto_only";
-  const direct = form.has_a_DL === true && !isRtoOnly;
+  // Only 4W-licence holders went through "Select Slot" on step 2 and hold a
+  // schedule to pay for; everyone else is assigned a trainer after payment.
+  const direct = form.has_a_DL === true;
   const isDirect = direct;
   const booking = bookingResult?.booking || null;
   const heldSlots = booking?.heldSlots || null;
@@ -123,16 +153,13 @@ export default function ReviewPaymentPage() {
         has_a_DL: form.has_a_DL,
         twoWheelerLicenseState: form.twoWheelerLicenseState,
         kaLicence: form.kaLicence,
-        kaLicence4w: form.kaLicence4w,
         femaleInstructorPreference: form.femalePreference,
         addonIds: form.addonIds,
         installmentMode: form.installmentMode,
         latitude: form.latitude,
         longitude: form.longitude,
         locationName: form.locationName,
-        firstSlot: form.firstSlot
-          ? { date: form.firstSlot.date, start: form.firstSlot.start }
-          : undefined,
+        firstSlot: undefined,
         slots:
           form.planPreview?.ok === true && Array.isArray(form.planPreview.lessons)
             ? form.planPreview.lessons.map((l) => ({
@@ -171,7 +198,7 @@ export default function ReviewPaymentPage() {
         const confirmed = await confirmBooking(booking.bookingId);
         navigate("/book/success", {
           replace: true,
-          state: { bookingId: booking.bookingId, confirmed: confirmed.success !== false, rtoOnly: isRtoOnly },
+          state: { bookingId: booking.bookingId, confirmed: confirmed.success !== false },
         });
         return;
       }
@@ -189,16 +216,13 @@ export default function ReviewPaymentPage() {
           has_a_DL: form.has_a_DL,
           twoWheelerLicenseState: form.twoWheelerLicenseState,
           kaLicence: form.kaLicence,
-          kaLicence4w: form.kaLicence4w,
           femaleInstructorPreference: form.femalePreference,
           addonIds: form.addonIds,
           installmentMode: effectiveInstallmentMode,
           latitude: form.latitude,
           longitude: form.longitude,
           locationName: form.locationName,
-          firstSlot: form.firstSlot
-            ? { date: form.firstSlot.date, start: form.firstSlot.start }
-            : undefined,
+          firstSlot: undefined,
           slots:
             form.planPreview?.ok === true && Array.isArray(form.planPreview.lessons)
               ? form.planPreview.lessons.map((l) => ({
@@ -263,7 +287,7 @@ export default function ReviewPaymentPage() {
           amount: Number(booking.amounts.total),
           email: customer.email || "",
           phone: customer.phone,
-          paymentType: isRtoOnly ? "custom" : "course",
+          paymentType: "course",
           name: customer.name,
           installmentType: booking.installment.mode === "first_half" ? "first_half" : "full",
           totalAmount: Number(booking.amounts.total),
@@ -294,7 +318,7 @@ export default function ReviewPaymentPage() {
         amount: Number(booking.amounts.total),
         currency: order.currency || "INR",
         name: "Lane Driving School",
-        description: isRtoOnly ? "RTO Services" : booking.courseName,
+        description: booking.courseName,
         prefill: { name: customer.name, email: customer.email, phone: customer.phone },
         mode: getBookingRules(config).paymentMode,
       });
@@ -321,7 +345,7 @@ export default function ReviewPaymentPage() {
 
       navigate("/book/success", {
         replace: true,
-        state: { bookingId: booking.bookingId, confirmed: confirmed.success !== false, rtoOnly: isRtoOnly },
+        state: { bookingId: booking.bookingId, confirmed: confirmed.success !== false },
       });
     } catch (e) {
       if (redirectOnConflict(e)) return;
@@ -343,35 +367,20 @@ export default function ReviewPaymentPage() {
       <div className="text-center mb-10">
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">Almost done!</h1>
         <p className="text-gray-500 mt-2">
-          {isRtoOnly
-            ? "Review your RTO services, add your details, and pay online."
-            : isDirect && !booking
-              ? "Review your plan, add your details, and hold your lesson times."
-              : "Review your schedule, then pay online."}
+          {isDirect && !booking
+            ? "Review your plan, add your details, and hold your lesson times."
+            : "Review your schedule, then pay online."}
         </p>
       </div>
 
-      <BookingStepper step={3} step2Label={bookingStep2Label(form.caseType)} />
+      <BookingStepper step={3} step2Label={bookingStep2Label(form.has_a_DL)} />
 
       <button
         type="button"
-        onClick={() =>
-          navigate(
-            isDirect || isRtoOnly || form.caseType === "course_rto"
-              ? "/book/schedule"
-              : "/book",
-          )
-        }
+        onClick={() => navigate("/book/schedule")}
         className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 mb-4"
       >
-        <ArrowLeft className="h-4 w-4" /> Back to{" "}
-        {isDirect
-          ? "schedule"
-          : isRtoOnly
-            ? "RTO services"
-            : form.caseType === "course_rto"
-              ? "schedule & RTO"
-              : "plan"}
+        <ArrowLeft className="h-4 w-4" /> Back to {isDirect ? "schedule" : "add-ons"}
       </button>
 
       {bookingResult?.booking?.replay === true && (
@@ -382,20 +391,6 @@ export default function ReviewPaymentPage() {
 
       {notice && (
         <p className="text-sm text-green-700 bg-green-50 rounded-xl p-3 mb-6">{notice}</p>
-      )}
-
-      {/* LL-scheduling note for non-DL classes_only learners */}
-      {form.caseType === "classes_only" && form.has_a_DL !== true && (
-        <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 mb-6">
-          <div className="flex items-start gap-3">
-            <span className="h-2.5 w-2.5 rounded-full bg-blue-500 shrink-0 mt-1.5" aria-hidden="true" />
-            <p className="text-sm text-blue-800">
-              <span className="font-semibold">Driving classes only:</span> Since you don't have a learner's licence yet,
-              your lessons will be scheduled after your LL is issued. Our team will contact you to
-              arrange the LL test and then book your lessons.
-            </p>
-          </div>
-        </div>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -409,6 +404,7 @@ export default function ReviewPaymentPage() {
                 areaName={form.areaName}
                 customer={form.customer}
                 onChange={setCustomer}
+                locationName={form.locationName}
               />
               <PaymentSection
                 totalAmount={totalAmount}
@@ -433,7 +429,7 @@ export default function ReviewPaymentPage() {
                 onChanged={updateHeldSlots}
                 onHoldExpired={(message) => {
                   resetKey();
-                  setForm({ firstSlot: null, planPreview: null });
+                  setForm({ startDate: null, preferredSlots: [], planPreview: null });
                   navigate("/book", { replace: true, state: { notice: message } });
                 }}
               />
@@ -457,6 +453,7 @@ export default function ReviewPaymentPage() {
                 areaName={form.areaName}
                 customer={form.customer}
                 onChange={setCustomer}
+                locationName={form.locationName}
               />
               <PaymentSection
                 totalAmount={totalAmount}

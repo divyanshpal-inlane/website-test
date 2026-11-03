@@ -92,3 +92,59 @@ export async function fetchActiveAreas(client: any): Promise<Array<{ id: string;
   if (error) throw error;
   return ((data ?? []) as Array<{ id: string; name: string }>);
 }
+
+// ---------------------------------------------------------------------------
+// Instructor roster
+// ---------------------------------------------------------------------------
+
+/**
+ * Every column the booking engine reads off an Instructor row. Kept in ONE
+ * place so the roster can never drift between the functions that read it
+ * (a missing column makes PostgREST reject the WHOLE select - see the note
+ * above `fetchAllScheduleWindow`).
+ *
+ * `gender` is nullable free text; anything other than "female" is treated as
+ * not female by `isFemale()` in availability.ts.
+ */
+export const INSTRUCTOR_ROSTER_COLUMNS =
+  "id_instructor, name, areas, radius, latitude, longitude, gender, unavailability, status, enabled";
+
+/**
+ * Load the schedulable instructor roster.
+ *
+ * IMPORTANT: supabase-js does NOT throw on a PostgREST error - it resolves to
+ * `{ data: null, error }`. A failed select therefore used to look EXACTLY like
+ * "this area has no instructors", which surfaced as a bogus
+ * `location_not_serviceable` (422) for every caller instead of an honest
+ * server error. Every roster read goes through this helper so the failure can
+ * never be silent again.
+ */
+export async function fetchInstructorRoster(
+  client: any,
+): Promise<Array<Record<string, unknown>>> {
+  const { data, error } = await client
+    .from("Instructor")
+    .select(INSTRUCTOR_ROSTER_COLUMNS)
+    .or("enabled.is.null,enabled.eq.true")
+    .or("status.is.null,status.eq.active");
+  if (error) throw error;
+  return ((data ?? []) as Array<Record<string, unknown>>);
+}
+
+/**
+ * Load a single instructor by id. Returns null only when the row genuinely
+ * does not exist - a failed query throws instead of masquerading as
+ * "instructor not found".
+ */
+export async function fetchInstructorById(
+  client: any,
+  instructorId: string,
+): Promise<Record<string, unknown> | null> {
+  const { data, error } = await client
+    .from("Instructor")
+    .select(INSTRUCTOR_ROSTER_COLUMNS)
+    .eq("id_instructor", instructorId)
+    .maybeSingle();
+  if (error) throw error;
+  return (data as Record<string, unknown> | null) ?? null;
+}

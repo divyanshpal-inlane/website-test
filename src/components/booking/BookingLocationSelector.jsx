@@ -15,7 +15,11 @@ const PIN_ICON_URI = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
    </svg>`,
 )}`;
 
-export default function BookingLocationSelector({ form, onChange }) {
+export default function BookingLocationSelector({
+  form,
+  onChange,
+  hideHeading = false,
+}) {
   const inputRef = useRef(null);
   const mapElRef = useRef(null);
   const mapRef = useRef(null);
@@ -51,7 +55,7 @@ export default function BookingLocationSelector({ form, onChange }) {
     };
   }, []);
 
-  const checkAndUpdate = useCallback(async (latitude, longitude, locationName) => {
+  const checkAndUpdate = useCallback(async (latitude, longitude, locationName, inputSource = "unknown") => {
     setChecking(true);
     setError(null);
     const fail = () => {
@@ -62,12 +66,13 @@ export default function BookingLocationSelector({ form, onChange }) {
         longitude: null,
         locationName,
         serviceable: false,
-        firstSlot: null,
+        startDate: null,
+        preferredSlots: [],
         planPreview: null,
       });
     };
     try {
-const result = await checkLocationServiceability({ latitude, longitude });
+const result = await checkLocationServiceability({ latitude, longitude, input_source: inputSource });
 
       const areaLabel = result.areaName || "Not serviceable";
       console.log(
@@ -85,7 +90,8 @@ const result = await checkLocationServiceability({ latitude, longitude });
           longitude,
           locationName,
           serviceable: true,
-          firstSlot: null,
+          startDate: null,
+          preferredSlots: [],
           planPreview: null,
         });
       } else {
@@ -118,7 +124,7 @@ const result = await checkLocationServiceability({ latitude, longitude });
 
   // Single entry point for any picked location: move pin, zoom map, check serviceability
   const applyLocation = useCallback(
-    (lat, lng, label) => {
+    (lat, lng, label, inputSource = "search") => {
       const map = mapRef.current;
       const gm = window.google?.maps;
       if (!gm) return;
@@ -150,7 +156,7 @@ const result = await checkLocationServiceability({ latitude, longitude });
             const dLabel = await labelFor(dLat, dLng);
             if (inputRef.current) inputRef.current.value = dLabel;
             setSelected({ lat: dLat, lng: dLng, label: dLabel });
-            checkAndUpdate(dLat, dLng, dLabel);
+            checkAndUpdate(dLat, dLng, dLabel, "map_pin");
           })();
         });
       }
@@ -161,7 +167,7 @@ const result = await checkLocationServiceability({ latitude, longitude });
       }
 
       setSelected({ lat, lng, label });
-      checkAndUpdate(lat, lng, label);
+      checkAndUpdate(lat, lng, label, inputSource);
     },
     [checkAndUpdate, labelFor],
   );
@@ -185,7 +191,7 @@ const result = await checkLocationServiceability({ latitude, longitude });
       const lng = e.latLng.lng();
       void (async () => {
         const label = await labelFor(lat, lng);
-        applyLocation(lat, lng, label);
+        applyLocation(lat, lng, label, "map_click");
       })();
     });
   }, [maps, selected, applyLocation, labelFor]);
@@ -250,7 +256,7 @@ const result = await checkLocationServiceability({ latitude, longitude });
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        applyLocation(latitude, longitude, "Current location (GPS)");
+        applyLocation(latitude, longitude, "Current location (GPS)", "gps");
       },
       (err) => {
         let msg = "Couldn't get your location. ";
@@ -276,13 +282,19 @@ const result = await checkLocationServiceability({ latitude, longitude });
 
   return (
     <section>
-      <div className="flex items-center gap-2 mb-1">
-        <MapPin className="h-5 w-5 text-[#00ce84]" />
-        <h2 className="text-xl font-semibold">Where do you want your driving lessons?</h2>
-      </div>
-      <p className="text-gray-500 text-sm mb-4">
-        Search for your area or click the map — then drag the pin to your exact pickup point.
-      </p>
+      {/* Heading is suppressed when the caller already renders this copy itself
+          (e.g. the pre-funnel location entry page). */}
+      {!hideHeading && (
+        <>
+          <div className="flex items-center gap-2 mb-1">
+            <MapPin className="h-5 w-5 text-[#00ce84]" />
+            <h2 className="text-xl font-semibold">Where do you want your driving lessons?</h2>
+          </div>
+          <p className="text-gray-500 text-sm mb-4">
+            Search for your area or click the map — then drag the pin to your exact pickup point.
+          </p>
+        </>
+      )}
 
       {/* Search input */}
       <div className="flex gap-2 mb-3">

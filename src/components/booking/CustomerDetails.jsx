@@ -1,7 +1,27 @@
+import { useEffect } from "react";
 import { TextField, FormHelperText } from "@mui/material";
-import { UserRound } from "lucide-react";
+import { UserRound, MapPin } from "lucide-react";
+import { trackFunnelEvent } from "../../utils/funnelTracking";
 
-export default function CustomerDetails({ areaName, customer, onChange }) {
+export default function CustomerDetails({ areaName, customer, onChange, locationName }) {
+  // The customer-details form has been reached. Once per session per form: the
+  // deterministic client_event_id absorbs a re-render, a back-navigation or a
+  // StrictMode double-invoke.
+  useEffect(() => {
+    void trackFunnelEvent(
+      "lead_capture_started",
+      { form: "booking_flow", page_type: "review" },
+      { target: "booking_flow" },
+    );
+  }, []);
+
+  // Auto-fill address from map location when locationName is available
+  useEffect(() => {
+    if (locationName && !customer.address) {
+      onChange({ address: locationName });
+    }
+  }, [locationName, customer.address, onChange]);
+
   return (
     <section>
       <div className="flex items-center gap-2 mb-1">
@@ -13,8 +33,11 @@ export default function CustomerDetails({ areaName, customer, onChange }) {
       </p>
 
       <div className="rounded-2xl border border-gray-200 bg-white p-5 text-sm text-gray-600 mb-5">
-        <span>
-          <span className="font-medium text-gray-900">Area:</span> {areaName || "—"}
+        <span className="flex items-center gap-1.5">
+          <MapPin className="h-4 w-4 text-gray-400" />
+          <span>
+            <span className="font-medium text-gray-900">Area:</span> {areaName || "—"}
+          </span>
         </span>
       </div>
 
@@ -47,14 +70,6 @@ export default function CustomerDetails({ areaName, customer, onChange }) {
           fullWidth
           size="small"
           autoComplete="email"
-        />
-        <TextField
-          label="City (optional)"
-          value={customer.city}
-          onChange={(e) => onChange({ city: e.target.value })}
-          fullWidth
-          size="small"
-          autoComplete="address-level2"
         />
       </div>
 

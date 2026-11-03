@@ -13,16 +13,16 @@ import CloseIcon from "@mui/icons-material/Close";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { motion, useAnimation, useScroll } from "framer-motion";
-import { Headset } from "lucide-react";
+import { MapPin, Rocket, Headset } from "lucide-react";
 import RoadSVG from "../components/SVGs/RoadSVG";
 import RoadSvg_Sm from "../components/SVGs/RoadSvg_Mobile";
 import { Link } from "react-router-dom";
 import Testimonial from "../components/Testimonial";
-import Rocket from "../components/SVGs/Rocket";
 import CountUp from "../components/CountUp";
 import LetsChatModal from "../components/LetsChatModal";
 import heroStripReviews from "../data/heroStripReviews";
 import { captureUTMsOnLoad } from "../utils/utmTracking";
+import { trackFunnelEvent } from "../utils/funnelTracking";
 
 const baseUrl = import.meta.env.BASE_URL || '/';
 
@@ -130,6 +130,7 @@ const LandingPage = () => {
 
     // Capture URL parameters
     captureUTMsOnLoad();
+    void trackFunnelEvent("home_viewed", { page_type: "home" });
 
     // Capture URL parameters for query string
     const params = new URLSearchParams(window.location.search);
@@ -214,37 +215,64 @@ const LandingPage = () => {
           platform.
         </p>
 
-        {/* ---------- CTA BUTTONS ---------- */}
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+        {/* ---------- HERO CTA BUTTONS ---------- */}
+        <div className="mt-10 flex flex-col items-center justify-center gap-5">
+          {/* Primary CTA: Book Driving Lessons */}
           <Link
             to="/book"
             className="group relative flex items-center justify-center gap-2
                        overflow-hidden rounded-full
                        border-[3px] border-white
                        bg-gradient-to-b from-[#00CE84] to-[#00BC78]
-                       shadow-[0_10px_28px_rgba(0,0,0,0.14)]
+                       shadow-[0_10px_28px_rgba(0,206,132,0.28)]
                        transition-all duration-300 hover:scale-[1.02]
-                       h-[48px] w-full max-w-[240px] px-6
-                       sm:h-[52px] sm:w-auto"
+                       h-[48px] w-full max-w-[280px] px-6
+                       sm:h-[52px] sm:w-auto
+                       whitespace-nowrap"
           >
-            <Rocket color={{ color: "#FFFFFF", width: 18, height: 18 }} />
+            <MapPin color="#FFFFFF" size={18} strokeWidth={2.2} />
             <span className="font-['Bricolage_Grotesque'] font-bold text-white text-[15px] sm:text-[16px]">
-              Explore Courses
+              Book Driving Lessons
             </span>
           </Link>
-          <Link
-            to="/signup"
-            className="flex items-center justify-center gap-2 rounded-full
-                       bg-white shadow-[0_10px_28px_rgba(0,0,0,0.1)]
-                       transition-all duration-300 hover:scale-[1.02]
-                       h-[48px] w-full max-w-[240px] px-6
-                       sm:h-[52px] sm:w-auto"
-          >
-            <Headset className="w-5 h-5 text-black" strokeWidth={2.2} />
-            <span className="font-['Bricolage_Grotesque'] font-bold text-black text-[15px] sm:text-[16px]">
-              Talk to an expert
-            </span>
-          </Link>
+
+          {/* Secondary CTAs: Explore Courses + Talk to an expert */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              to="/courses"
+              className="flex items-center justify-center gap-2 rounded-full
+                         bg-white shadow-[0_10px_28px_rgba(0,0,0,0.1)]
+                         transition-all duration-300 hover:scale-[1.02]
+                         h-[48px] w-full max-w-[240px] px-6
+                         sm:h-[52px] sm:w-auto
+                         whitespace-nowrap"
+            >
+              <Rocket className="w-[18px] h-[18px] text-black" strokeWidth={2.2} />
+              <span className="font-['Bricolage_Grotesque'] font-bold text-black text-[15px] sm:text-[16px]">
+                Explore Courses
+              </span>
+            </Link>
+            <Link
+              to="/signup"
+              onClick={() =>
+                void trackFunnelEvent("expert_contact_requested", {
+                  cta_location: "hero",
+                  page_type: "home",
+                })
+              }
+              className="flex items-center justify-center gap-2 rounded-full
+                         bg-white shadow-[0_10px_28px_rgba(0,0,0,0.1)]
+                         transition-all duration-300 hover:scale-[1.02]
+                         h-[48px] w-full max-w-[240px] px-6
+                         sm:h-[52px] sm:w-auto
+                         whitespace-nowrap"
+            >
+              <Headset className="w-5 h-5 text-black" strokeWidth={2.2} />
+              <span className="font-['Bricolage_Grotesque'] font-bold text-black text-[15px] sm:text-[16px]">
+                Talk to an expert
+              </span>
+            </Link>
+          </div>
         </div>
       </div>
 

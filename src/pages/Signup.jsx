@@ -33,6 +33,8 @@ import {
   buildLeadSource,
 } from "../utils/utmTracking";
 
+import { getFunnelSessionId } from "../utils/funnelTracking";
+
 // Fetch country codes and flags
 const fetchCountryCodes = async () => {
   try {
@@ -185,6 +187,7 @@ const Signup = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+
   // Memoize theme and screen size checks to prevent unnecessary recalculations
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -311,12 +314,6 @@ const Signup = () => {
       e.preventDefault();
       if (isSubmitting) return;
 
-      // Debug: Log utmParams at submission time
-      console.log(
-        "🔍 DEBUG: utmParams at form submission:",
-        resolveUTMsForSubmission(),
-      );
-      console.log("🔍 DEBUG: location.search:", location.search);
 
       // Validation
       if (!formData.email || !formData.name || !formData.phone) {
@@ -338,9 +335,112 @@ const Signup = () => {
 
       setIsSubmitting(true);
 
+      const utmParams = resolveUTMsForSubmission();
+
+      // Original delivery payloads (fallback when the server cannot forward)
+      const googleSheetsUrl =
+        "https://script.google.com/macros/s/AKfycbz45poihO1GSt_f-UxHHWltKWHh8mDNyaXPcFzbIURMvTVKj1qPn9STBILUaMiGme7r/exec";
+      const payload = {
+        email: formData.email,
+        name: formData.name,
+        phone: `${formData.countryCode}${formData.phone}`,
+        license: formData.license === "yes" ? "yes" : "no",
+        locality: `${formData?.city || ""}, ${formData?.area || ""}`,
+        marketingConsent: formData.marketingConsent ? "yes" : "no",
+        adName: "Signup Form",
+        leadSource: buildLeadSource(utmParams, "landing"),
+      };
+      const cratioPayload = {
+        ...utmParams,
+        ...payload,
+        timestamp: new Date().toISOString(),
+      };
+
       try {
-        await submitToGoogleSheets(formData);
-        await sendEventToGA("landing_page_signup", formData.phone ?? "");
+        // Primary path: capture-lead writes the lead to the funnel DB,
+        // emits lead_captured, and forwards to Cratio + Sheets.
+        // If it cannot forward, returns clientFallback: true.
+        let clientFallback = true;
+        try {
+          const { data, error } = await supabase.functions.invoke("capture-lead", {
+            body: {
+              phone: formData.phone,
+              country_code: formData.countryCode.replace(/\D/g, ""),
+              name: formData.name,
+              email: formData.email,
+              city: formData.city || null,
+              area: formData.area || null,
+              license: formData.license === "yes" ? "yes" : "no",
+              dl_status: formData.license === "yes" ? "has_dl" : "no_dl",
+              source: "signup_page",
+              ad_name: "Signup Form",
+              sheets_target: "signup",
+              client_session_id: getFunnelSessionId(),
+              marketing_consent: formData.marketingConsent ? true : null,
+              page_path: "/signup",
+              attribution: {
+                utm_source: utmParams.utm_source,
+                utm_medium: utmParams.utm_medium,
+                utm_campaign: utmParams.utm_campaign,
+                utm_term: utmParams.utm_term,
+                utm_content: utmParams.utm_content,
+                gclid: utmParams.gclid,
+              },
+              first_touch: {
+                first_utm_source: utmParams.first_utm_source,
+                first_utm_medium: utmParams.first_utm_medium,
+                first_utm_campaign: utmParams.first_utm_campaign,
+                first_utm_term: utmParams.first_utm_term,
+                first_utm_content: utmParams.first_utm_content,
+                first_gclid: utmParams.first_gclid,
+                first_captured_at: utmParams.first_captured_at,
+              },
+            },
+          });
+
+          if (!error && data?.ok) {
+            clientFallback = data.clientFallback === true;
+          } else if (error) {
+            console.error("capture-lead error:", error.message);
+          }
+        } catch (captureError) {
+          // capture-lead unreachable — fall through to original delivery
+        }
+
+        // Fallback: original direct delivery (only if server could not forward)
+        if (clientFallback) {
+          await Promise.all([
+            fetch(googleSheetsUrl, {
+              method: "POST",
+              mode: "no-cors",
+              cache: "no-cache",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            }),
+            fetch(import.meta.env.VITE_CRATIO_WEBHOOK_URL, {
+              method: "POST",
+              mode: "no-cors",
+              cache: "no-cache",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              body: JSON.stringify(cratioPayload),
+            }),
+          ]);
+        }
+
+        // GA event (non-blocking, fire-and-forget)
+        try {
+          await supabase.functions.invoke("ga-event-manager", {
+            body: {
+              eventSource: "landing_page_signup",
+              clientId: getOrCreateClientId() ?? "",
+              leadData: { phone: formData.phone },
+            },
+          });
+        } catch (_) {}
+
         navigate("/thank-you", {
           state: {
             name: formData.name,
@@ -348,8 +448,8 @@ const Signup = () => {
           },
         });
       } catch (error) {
+        console.error("Signup submission error:", error);
         alert("Submission might have failed. Please try again.");
-        console.error("Submission error:", error);
       } finally {
         setIsSubmitting(false);
       }
@@ -383,8 +483,6 @@ const Signup = () => {
   const submitToGoogleSheets = useCallback(async (formData) => {
     try {
       const utmParams = resolveUTMsForSubmission();
-      console.log("📤 Submitting form with UTM parameters:", utmParams);
-
       const googleSheetsUrl =
         "https://script.google.com/macros/s/AKfycbz45poihO1GSt_f-UxHHWltKWHh8mDNyaXPcFzbIURMvTVKj1qPn9STBILUaMiGme7r/exec";
       const payload = {
@@ -397,8 +495,6 @@ const Signup = () => {
         adName: "Signup Form",
         leadSource: buildLeadSource(utmParams, "landing"),
       };
-
-      console.log("📊 Google Sheets Payload:", payload);
 
       // Submit to Google Sheets
       const googleSheetsPromise = fetch(googleSheetsUrl, {
@@ -418,11 +514,6 @@ const Signup = () => {
         timestamp: new Date().toISOString(),
       };
 
-      console.log(
-        "🎯 Cratio Webhook Payload (includes all UTM params):",
-        cratioPayload,
-      );
-
       const cratioPromise = fetch(import.meta.env.VITE_CRATIO_WEBHOOK_URL, {
         method: "POST",
         mode: "no-cors",
@@ -440,14 +531,12 @@ const Signup = () => {
         cratioPromise,
       ]);
 
-      if (cratioResponse.type === "opaque") {
-        console.log("✅ Cratio webhook request sent successfully");
+      if (cratioResponse?.type === "opaque") {
+        console.log("Cratio webhook delivered");
       }
-
-      console.log("✅ Form submission completed successfully");
       return { status: "success" };
     } catch (error) {
-      console.error("❌ Form submission error:", error);
+      console.error("Form submission error:", error);
       throw error;
     }
   }, []);
@@ -474,7 +563,6 @@ const Signup = () => {
       }
 
       if (data) {
-        console.log("Event sent to GA successfully:", data);
         return data;
       }
     } catch (error) {

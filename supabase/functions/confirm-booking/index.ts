@@ -17,11 +17,86 @@ import { handleOptions, jsonResponse } from "../_shared/cors.ts";
 import { errorResponse, BookingError } from "../_shared/errors.ts";
 import { serviceClient } from "../_shared/client.ts";
 import { readBookingFlowConfig } from "../_shared/config.ts";
+import {
+  deriveHashedClientEventId,
+  emitServerEvent,
+} from "../_shared/funnelEvents.ts";
+import { findLeadByPhone } from "../_shared/funnelStore.ts";
+import { phoneToLast10 } from "../_shared/funnelTaxonomy.ts";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 interface ConfirmRequest {
   bookingId?: string;
+  /** Funnel session id (uuid4) supplied by the website. */
+  client_session_id?: string | null;
+}
+
+/**
+ * Resolve the funnel lead id for a learner phone number (last 10 digits).
+ * Returns null when the learner has no funnel lead yet.
+ */
+async function resolveLeadId(
+  client: unknown,
+  phone: unknown,
+): Promise<string | null> {
+  try {
+    const normalized = phoneToLast10(String(phone ?? ""));
+    if (!normalized) return null;
+    const lead = await findLeadByPhone(client as never, normalized);
+    return lead?.id ? String(lead.id) : null;
+  } catch (error) {
+    console.error(
+      "confirm-booking: funnel_resolve_lead_failed",
+      error instanceof Error ? error.message : String(error),
+    );
+    return null;
+  }
+}
+
+/**
+ * Emit the `booking_confirmed` event. Never throws — instrumentation must
+ * never be able to fail a confirmation.
+ */
+async function emitBookingConfirmed(
+  client: unknown,
+  args: {
+    body: ConfirmRequest;
+    userAgent: string | null;
+    leadId: string | null;
+    bookingId: string;
+    courseId: string | null;
+    courseCode: string | null;
+    amount: number;
+    scheduledCount: number;
+  },
+): Promise<void> {
+  try {
+    await emitServerEvent(client as never, {
+      eventName: "booking_confirmed",
+      clientSessionId: args.body.client_session_id ?? null,
+      leadId: args.leadId,
+      occurredAt: new Date().toISOString(),
+      properties: {
+        course_id: args.courseId,
+        course_code: args.courseCode,
+        amount: args.amount,
+        scheduled_count: args.scheduledCount,
+        booking_id: args.bookingId,
+      },
+      clientEventId: await deriveHashedClientEventId(
+        "booking-ok",
+        args.bookingId,
+      ),
+      userAgent: args.userAgent,
+    });
+  } catch (error) {
+    console.error(
+      "confirm-booking: funnel_emit_failed",
+      "booking_confirmed",
+      error instanceof Error ? error.message : String(error),
+    );
+  }
 }
 
 serve(async (req) => {
@@ -87,6 +162,38 @@ serve(async (req) => {
       throw new BookingError(409, "invalid_state", `Cannot confirm a booking in state "${currentStatus}".`);
     }
 
+    // --- funnel instrumentation (never fatal) ------------------------------
+    // Resolve the lead + course metadata once; the `booking_confirmed` event
+    // is emitted on every success path below.
+    const learnerPhone = await (async () => {
+      try {
+        const { data } = await client
+          .from("Learner")
+          .select("phone")
+          .eq("id", booking.learner_id)
+          .maybeSingle();
+        return data?.phone ?? null;
+      } catch {
+        return null;
+      }
+    })();
+    const leadId = await resolveLeadId(client, learnerPhone);
+    const courseId = booking.course_id ? String(booking.course_id) : null;
+    const courseCode = await (async () => {
+      if (!courseId) return null;
+      try {
+        const { data } = await client
+          .from("Courses")
+          .select("code")
+          .eq("id", courseId)
+          .maybeSingle();
+        return data?.code == null ? null : String(data.code);
+      } catch {
+        return null;
+      }
+    })();
+    const bookingAmount = Number(booking.total_amount ?? booking.base_amount ?? 0);
+
     // RTO-only bookings hold no lessons and link no enrollment. Their payment is
     // recorded by approve-booking-payment, which advances the booking to
     // "payment_completed" only AFTER inserting the completed payment row — so
@@ -98,6 +205,16 @@ serve(async (req) => {
           .update({ status: "confirmed", gateway_reference: booking.gateway_reference ?? "auto-approved" })
           .eq("id", bookingId);
         console.log("confirm-booking: confirmed rto_only", { bookingId });
+        await emitBookingConfirmed(client, {
+          body,
+          userAgent: req.headers.get("user-agent"),
+          leadId,
+          bookingId,
+          courseId: null,
+          courseCode: null,
+          amount: bookingAmount,
+          scheduledCount: 0,
+        });
         return jsonResponse({
           success: true,
           schedulingMode: "none",
@@ -175,6 +292,16 @@ serve(async (req) => {
           .from("booking")
           .update({ gateway_reference: payment.gateway_reference ?? booking.gateway_reference })
           .eq("id", bookingId);
+        await emitBookingConfirmed(client, {
+          body,
+          userAgent: req.headers.get("user-agent"),
+          leadId,
+          bookingId,
+          courseId,
+          courseCode,
+          amount: bookingAmount,
+          scheduledCount: 0,
+        });
         return jsonResponse({
           success: true,
           schedulingMode: "assign_later",
@@ -205,6 +332,16 @@ serve(async (req) => {
         .update({ gateway_reference: payment.gateway_reference ?? booking.gateway_reference })
         .eq("id", bookingId);
       console.log("confirm-booking: confirmed", { bookingId, scheduled: rpcOut.scheduled, payment: payment.id });
+      await emitBookingConfirmed(client, {
+        body,
+        userAgent: req.headers.get("user-agent"),
+        leadId,
+        bookingId,
+        courseId,
+        courseCode,
+        amount: bookingAmount,
+        scheduledCount: Number(rpcOut.scheduled ?? 0),
+      });
       return jsonResponse({
         success: true,
         schedulingMode: "direct",
@@ -233,6 +370,16 @@ serve(async (req) => {
       .from("booking")
       .update({ gateway_reference: payment.gateway_reference ?? booking.gateway_reference })
       .eq("id", bookingId);
+    await emitBookingConfirmed(client, {
+      body,
+      userAgent: req.headers.get("user-agent"),
+      leadId,
+      bookingId,
+      courseId,
+      courseCode,
+      amount: bookingAmount,
+      scheduledCount: 0,
+    });
     return jsonResponse({
       success: true,
       schedulingMode: "assign_later",

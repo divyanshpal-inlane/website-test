@@ -21,6 +21,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { handleOptions, jsonResponse } from "../_shared/cors.ts";
 import { errorResponse, BookingError } from "../_shared/errors.ts";
 import { serviceClient } from "../_shared/client.ts";
+import { fetchInstructorById } from "../_shared/queries.ts";
 import { readBookingFlowConfig } from "../_shared/config.ts";
 import {
   buildInstructorFreeGrid,
@@ -55,14 +56,13 @@ async function loadInstructor(
   client: ReturnType<typeof serviceClient>,
   instructorId: string,
 ): Promise<InstructorLike | null> {
-  const { data } = await client
-    .from("Instructor")
-    .select("id_instructor, areas, radius, latitude, longitude, gender, unavailability, status, enabled")
-    .eq("id_instructor", instructorId)
-    .maybeSingle();
+  // Throws on a PostgREST error; returns null ONLY when the row genuinely does
+  // not exist. A failed query used to look exactly like "instructor not found".
+  const data = await fetchInstructorById(client, instructorId);
   if (!data) return null;
   return {
     id: String(data.id_instructor),
+    name: data.name == null ? null : String(data.name), // TEMP-TEST (instructor name in slots)
     areas: (data.areas as string[] | null) || [],
     radiusKm: data.radius == null ? null : Number(data.radius),
     lat: data.latitude == null ? null : Number(data.latitude),
@@ -151,7 +151,17 @@ serve(async (req) => {
         "This held lesson was not found for your booking. It may have expired or been released.",
       );
     }
-    const instructor = await loadInstructor(client, String(scheduleRow.instructor_id));
+    let instructor: InstructorLike | null;
+    try {
+      instructor = await loadInstructor(client, String(scheduleRow.instructor_id));
+    } catch (e) {
+      console.error("change-booking-slot: instructor lookup failed", e);
+      throw new BookingError(
+        500,
+        "service_unavailable",
+        "Could not load instructor data. Please try again.",
+      );
+    }
     if (!instructor) {
       throw new BookingError(
         409,
@@ -270,7 +280,7 @@ serve(async (req) => {
     // -------------------------------------------------------------------------
     const changing = isValidDateISO(String(body.date)) && isValidTime(String(body.start));
     if (!changing) {
-      const slots: Array<{ date: string; start_time: string; end_time: string }> = [];
+      const slots: Array<{ date: string; start_time: string; end_time: string; instructorName?: string | null }> = [];
       for (const date of dateStarts) {
         const minutes = freeByDate.get(date) || [];
         for (const m of minutes) {
@@ -281,6 +291,8 @@ serve(async (req) => {
             date,
             start_time: minutesToTime(m),
             end_time: minutesToTime(m + duration),
+            // TEMP-TEST (instructor name in slots)
+            instructorName: instructor.name ?? null,
           });
         }
       }
@@ -397,7 +409,9 @@ serve(async (req) => {
       date: newDate,
       start_time: newStart,
       end_time: rpcOut.end_time ?? minutesToTime(newStartMinute + duration),
-      heldSlots: rebuiltSelected,
+      // TEMP-TEST (instructor name in slots) — attached at response time only;
+      // booking.selected_slots stays free of display fields.
+      heldSlots: rebuiltSelected.map((l) => ({ ...l, instructorName: instructor.name ?? null })),
     });
   } catch (error) {
     return errorResponse(error);

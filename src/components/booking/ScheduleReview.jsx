@@ -108,6 +108,12 @@ export default function ScheduleReview({ bookingId, heldSlots, holdMinutes, onCh
                   <span className="font-medium text-gray-900">
                     Lesson {l.lesson} · {fmtLesson(l)}
                   </span>
+                  {/* TEMP-TEST (instructor name in slots) */}
+                  {l.instructorName && (
+                    <span className="text-xs text-gray-500 truncate max-w-[10rem]" title={l.instructorName}>
+                      {l.instructorName}
+                    </span>
+                  )}
                 </span>
                 <span className="flex items-center gap-3">
                   <span className="font-semibold text-gray-700">
@@ -146,9 +152,15 @@ export default function ScheduleReview({ bookingId, heldSlots, holdMinutes, onCh
                                 type="button"
                                 disabled={changing}
                                 onClick={() => pickCandidate(c)}
-                                className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:border-[#00ce84] hover:text-[#00ce84] disabled:opacity-50"
+                                className="rounded-lg border border-gray-300 px-3 py-1.5 flex flex-col items-center text-sm font-medium text-gray-700 hover:border-[#00ce84] hover:text-[#00ce84] disabled:opacity-50"
                               >
-                                {c.start_time}
+                                <span>{c.start_time}</span>
+                                {/* TEMP-TEST (instructor name in slots) */}
+                                {c.instructorName && (
+                                  <span className="text-[10px] font-normal text-gray-500 truncate max-w-[8rem]" title={c.instructorName}>
+                                    {c.instructorName}
+                                  </span>
+                                )}
                               </button>
                             ))}
                           </div>

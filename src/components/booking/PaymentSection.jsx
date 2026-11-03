@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Alert, CircularProgress } from "@mui/material";
 import { Lock } from "lucide-react";
 import { formatINR } from "../../services/bookingApi";
+import { trackFunnelEvent } from "../../utils/funnelTracking";
 import BookingErrorNotice from "./BookingErrorNotice";
 
 export default function PaymentSection({
@@ -34,7 +35,21 @@ export default function PaymentSection({
               key={mode}
               type="button"
               disabled={paying}
-              onClick={() => onInstallmentChange(mode)}
+              onClick={() => {
+                onInstallmentChange(mode);
+                // Funnel: `payment_option_selected` — the installment plan the
+                // customer picked. The idempotency target is the mode itself,
+                // so a customer who toggles between options produces at most
+                // one row per distinct mode per session.
+                void trackFunnelEvent(
+                  "payment_option_selected",
+                  {
+                    installment_mode: mode,
+                    amount: isHalf ? Math.round(totalAmount / 2) : totalAmount,
+                  },
+                  { target: mode },
+                );
+              }}
               className={`text-left rounded-2xl border p-4 transition-all ${
                 active
                   ? "border-[#00ce84] ring-2 ring-[#00ce84]/30 bg-white"

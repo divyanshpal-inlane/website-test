@@ -1,4 +1,5 @@
 import { supabase } from "../supabaseClient";
+import { getFunnelSessionId } from "../utils/funnelTracking";
 
 export class BookingApiError extends Error {
   constructor(message, { code, status, details } = {}) {
@@ -51,24 +52,39 @@ export function getBookingConfig() {
   return invoke("get-booking-config", {});
 }
 
-export function checkLocationServiceability({ latitude, longitude }) {
-  return invoke("check-location-serviceability", { latitude, longitude });
+/**
+ * Attach the funnel session id to every booking call.
+ *
+ * The server resolves the lead from this session, so the events it emits
+ * (location_entered, slots_viewed, slot_selected, lead_captured,
+ * payment_*, booking_confirmed) land in the right session and can be
+ * back-stitched onto the lead once it is captured.
+ */
+function withSession(payload) {
+  return { ...(payload || {}), client_session_id: getFunnelSessionId() };
+}
+
+export function checkLocationServiceability({ latitude, longitude, input_source }) {
+  return invoke(
+    "check-location-serviceability",
+    withSession({ latitude, longitude, input_source }),
+  );
 }
 
 export function getBookingSlots(params) {
-  return invoke("get-booking-slots", params);
+  return invoke("get-booking-slots", withSession(params));
 }
 
 export function createBooking(payload) {
-  return invoke("create-booking", payload);
+  return invoke("create-booking", withSession(payload));
 }
 
 export function confirmBooking(bookingId) {
-  return invoke("confirm-booking", { bookingId });
+  return invoke("confirm-booking", withSession({ bookingId }));
 }
 
 export function changeBookingSlot(params) {
-  return invoke("change-booking-slot", params);
+  return invoke("change-booking-slot", withSession(params));
 }
 
 export function createRazorpayOrder(params) {
@@ -80,7 +96,7 @@ export function verifyRazorpayPayment(params) {
 }
 
 export function approveBookingPayment(bookingId) {
-  return invoke("approve-booking-payment", { bookingId });
+  return invoke("approve-booking-payment", withSession({ bookingId }));
 }
 
 export function sendBookingOnboardingEmail(payload) {

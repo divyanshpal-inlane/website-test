@@ -8,16 +8,16 @@ const ICONS = {
   rto_dl_address_change: FileSignature,
 };
 
-// Which RTO services each licence branch is offered. The section itself only
-// appears for course_rto (optional paperwork) and rto_only (required paperwork)
-// packages — classes_only is driving classes only and never shows RTO services.
+// "Select Add-on" — always optional, for every licence branch. Which
+// services are offered depends only on the licence answers collected on
+// step 1 (4W?, then for 4W=No: 2W?, K/A?). A 4-wheeler-licence holder is
+// never asked a 2W/K/A question, so none of these offers ever apply to them
+// — the section simply renders nothing in that case.
 const OFFER_WHEN = {
-  rto_2w_ll_dl: (f) => f.twoWheelerLicenseState === "none",
-  rto_2w_dl: (f) => f.twoWheelerLicenseState === "ll_only",
+  rto_2w_ll_dl: (f) => f.has_a_DL === false && f.twoWheelerLicenseState === "none",
+  rto_2w_dl: (f) => f.has_a_DL === false && f.twoWheelerLicenseState === "ll_only",
   rto_4w_ll_dl: (f) => f.has_a_DL === false,
-  rto_dl_address_change: (f) =>
-    (f.has_a_DL === true && f.kaLicence4w === false) ||
-    (f.has_a_DL === false && f.kaLicence === false),
+  rto_dl_address_change: (f) => f.has_a_DL === false && f.kaLicence === false,
 };
 
 export function offeredRtoAddons(form, addons) {
@@ -29,23 +29,8 @@ export function offeredRtoAddons(form, addons) {
 }
 
 export default function RtoServiceSelector({ form, addons, addonIds = [], onChange }) {
-  const required = form.caseType === "rto_only";
-  if (!required && form.caseType !== "course_rto") return null;
-
   const offers = offeredRtoAddons(form, addons);
-
-  if (offers.length === 0) {
-    if (!required) return null;
-    return (
-      <section className="rounded-2xl border border-gray-200 bg-white p-5">
-        <h2 className="text-lg font-semibold">RTO services</h2>
-        <p className="text-gray-500 text-sm mt-1">
-          No RTO services are available for your licence answers above. Please review your
-          two-wheeler and licence-origin details.
-        </p>
-      </section>
-    );
-  }
+  if (offers.length === 0) return null;
 
   return (
     <div className="booking-collapse open">
@@ -53,14 +38,7 @@ export default function RtoServiceSelector({ form, addons, addonIds = [], onChan
         <section className="rounded-2xl border border-gray-200 bg-white p-5">
           <div className="flex items-center gap-2 mb-1">
             <BadgeCheck className="h-5 w-5 text-[#00ce84]" />
-            <h2 className="text-lg font-semibold">
-              RTO services{required ? "" : " (optional)"}
-            </h2>
-            {required && (
-              <span className="inline-flex items-center rounded-full bg-[#00ce84]/10 px-2 py-0.5 text-[11px] font-semibold text-[#00B97A]">
-                Required
-              </span>
-            )}
+            <h2 className="text-lg font-semibold">RTO services (optional)</h2>
           </div>
           <p className="text-gray-500 text-sm mb-4">
             Let our team handle the paperwork for you — add any of these services and we&apos;ll

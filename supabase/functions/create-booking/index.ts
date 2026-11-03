@@ -11,7 +11,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { handleOptions, jsonResponse } from "../_shared/cors.ts";
 import { errorResponse, BookingError } from "../_shared/errors.ts";
 import { serviceClient } from "../_shared/client.ts";
-import { fetchAllScheduleWindow, fetchServiceZones, fetchActiveAreas } from "../_shared/queries.ts";
+import { fetchAllScheduleWindow, fetchServiceZones, fetchActiveAreas, fetchInstructorRoster } from "../_shared/queries.ts";
 import { readBookingFlowConfig } from "../_shared/config.ts";
 import { resolveServiceability } from "../_shared/serviceability.ts";
 import {
@@ -21,14 +21,21 @@ import {
 } from "../_shared/pricing.ts";
 import {
   computeCoursePlan,
+  computeCoursePlanPreferred,
   candidateStartMinutes,
   validateConsecutiveRule,
   validateLearnerWideConsecutive,
+  minutesToTime,
   type InstructorLike,
   type ScheduleBlock,
 } from "../_shared/availability.ts";
 import { singleInstructorForSlots } from "../_shared/planEdit.ts";
+import {
+  validateCompleteSchedule,
+  validateReservationBatch,
+} from "../_shared/scheduling.ts";
 import { toOneRow } from "../_shared/embed.ts";
+import { captureLead } from "../_shared/funnelEvents.ts";
 import {
   addDaysISO,
   dateToWeekdayLower,
@@ -69,11 +76,10 @@ interface CreateBookingRequest {
   customer?: CustomerInput;
   has_a_DL?: boolean;
   twoWheelerLicenseState?: string | null;
+  // "Is your 2W licence from Karnataka?" — only asked of learners without a
+  // 4W licence who hold a 2W LL/DL. False folds into
+  // Learner.address_change_required (address/licence migration needed).
   kaLicence?: boolean | null;
-  // "Is your 4-wheeler licence from Karnataka?" — asked of DL holders on the
-  // schedule page. When false, the licence needs migration/address change,
-  // which is folded into Learner.address_change_required (same as the 2W path).
-  kaLicence4w?: boolean | null;
   addonIds?: string[];
   femaleInstructorPreference?: boolean;
   installmentMode?: string;
@@ -88,6 +94,13 @@ interface CreateBookingRequest {
   latitude?: unknown;
   longitude?: unknown;
   locationName?: string;
+  // Funnel session id (uuid4) supplied by the website, and the last-touch
+  // attribution. Both are optional: instrumentation must never block a booking.
+  client_session_id?: string | null;
+  attribution?: Record<string, unknown> | null;
+  // Preferred slots flow: start date and ranked preferred times (1-3)
+  startDate?: string;
+  preferredTimes?: string[];
 }
 
 function toMinutes(time: string): number {
@@ -97,6 +110,7 @@ function toMinutes(time: string): number {
 function parseInstructors(rows: Record<string, unknown>[] | null): InstructorLike[] {
   return (rows || []).map((r) => ({
     id: String(r.id_instructor),
+    name: r.name == null ? null : String(r.name), // TEMP-TEST (instructor name in slots)
     areas: (r.areas as string[] | null) || [],
     radiusKm: r.radius == null ? null : Number(r.radius),
     lat: r.latitude == null ? null : Number(r.latitude),
@@ -117,11 +131,9 @@ async function loadRefreshState(
   client: ReturnType<typeof serviceClient>,
   dateStarts: string[],
 ): Promise<RefreshState> {
-  const { data: instructorRows } = await client
-    .from("Instructor")
-    .select("id_instructor, areas, radius, latitude, longitude, gender, unavailability, status, enabled")
-    .or("enabled.is.null,enabled.eq.true")
-    .or("status.is.null,status.eq.active");
+  // Throws on a PostgREST error - a failed select used to resolve to an empty
+  // roster, which looks identical to "no instructor is available".
+  const instructorRows = await fetchInstructorRoster(client);
 
   const dateFrom = dateStarts[0];
   const dateTo = dateStarts[dateStarts.length - 1];
@@ -225,17 +237,6 @@ serve(async (req) => {
               "Please tell us where your 2-wheeler licence was issued.",
             );
           })()
-      : null;
-
-    // "Is your 4W licence from Karnataka?" (DL holders, optional answer on the
-    // schedule page). false => licence migration / address change needed, so the
-    // LM address_change_required flag must be set — same operational meaning as
-    // the 2W answer. Absent/invalid => null (no response change), keeping this
-    // backward-compatible for clients that don't send it.
-    const kaLicence4w = body.has_a_DL
-      ? typeof body.kaLicence4w === "boolean"
-        ? body.kaLicence4w
-        : null
       : null;
 
     // Case type: classes_only (driving only), course_rto (driving + RTO
@@ -386,18 +387,14 @@ serve(async (req) => {
       const [zones, activeAreas, instructorRows] = await Promise.all([
         fetchServiceZones(client),
         fetchActiveAreas(client),
-        client
-          .from("Instructor")
-          .select("id_instructor, areas, radius, latitude, longitude, gender, unavailability, status, enabled")
-          .or("enabled.is.null,enabled.eq.true")
-          .or("status.is.null,status.eq.active"),
+        // Throws on a PostgREST error instead of resolving to an empty roster.
+        fetchInstructorRoster(client),
       ]);
       const result = resolveServiceability({
         lat: locLat,
         lng: locLng,
         zones,
-        instructors:
-          parseInstructors(instructorRows.data as Record<string, unknown>[] | null),
+        instructors: parseInstructors(instructorRows as Record<string, unknown>[] | null),
         areas: activeAreas,
         fallbackLabel: locationName,
       });
@@ -584,13 +581,20 @@ serve(async (req) => {
       : Array.isArray(body.selectedSlots) && body.selectedSlots.length > 0
         ? body.selectedSlots[0]
         : body.firstSlot;
+    const usingPreferredTimes =
+      body.has_a_DL &&
+      !isRtoOnly &&
+      body.startDate &&
+      Array.isArray(body.preferredTimes) &&
+      body.preferredTimes.length > 0;
+
     const learnerWillSelfSchedule =
-      !isRtoOnly && Boolean(body.has_a_DL && (firstSlotRaw ?? hasExplicitSlots));
+      !isRtoOnly && Boolean(body.has_a_DL && ((firstSlotRaw ?? hasExplicitSlots) || usingPreferredTimes));
 
     // Validate the picked first lesson BEFORE any write. These checks need only
     // the request + config, so a bad slot must never leave a Learner / booking /
     // enrollment row behind (no scheduled janitor runs in prod to tidy them up).
-    if (body.has_a_DL && !isRtoOnly) {
+    if (body.has_a_DL && !isRtoOnly && !usingPreferredTimes) {
       if (!firstSlotRaw || !isValidDateISO(String(firstSlotRaw.date)) || !isValidTime(String(firstSlotRaw.start))) {
         throw new BookingError(422, "validation_error", "Pick a first-lesson time to continue.");
       }
@@ -658,7 +662,7 @@ serve(async (req) => {
       has_two_wheeler_license:
         twoWheelerState === "active_dl" || twoWheelerState === "ll_only",
       ...(kaLicence == null ? {} : { two_wheeler_licence_in_ka: kaLicence }),
-      address_change_required: kaLicence === false || kaLicence4w === false,
+      address_change_required: kaLicence === false,
       LL_received: twoWheelerState === "ll_only",
       needs_scheduling: !learnerWillSelfSchedule,
     };
@@ -873,7 +877,7 @@ serve(async (req) => {
     //     the concurrency / double-booking backstop.
     // ---------------------------------------------------------------------------
     let reserved = 0;
-    let heldSlots: Array<{ lesson: number; scheduleId: number; date: string; start_time: string; end_time: string }> = [];
+    let heldSlots: Array<{ lesson: number; scheduleId: number; date: string; start_time: string; end_time: string; instructorName?: string | null }> = [];
     const finalSelectedSlots: Array<{ lesson: number; date: string; start_time: string; end_time: string }> = [];
 
     if (body.has_a_DL && !isRtoOnly) {
@@ -976,6 +980,64 @@ serve(async (req) => {
           end_time: s.end_time,
           instructor_id: instructorId,
         }));
+      } else if (body.startDate && Array.isArray(body.preferredTimes) && body.preferredTimes.length > 0) {
+        const preferredStartDate = String(body.startDate);
+        if (!isValidDateISO(preferredStartDate)) {
+          throw new BookingError(422, "validation_error", "The picked start date is invalid.");
+        }
+        if (body.preferredTimes.length > 3) {
+          throw new BookingError(422, "validation_error", "Pick between 1 and 3 preferred times.");
+        }
+        const gridStarts = new Set(candidateStartMinutes(config).map((m) => m));
+        const preferredMinutes: number[] = [];
+        for (const t of body.preferredTimes) {
+          if (!isValidTime(String(t))) {
+            throw new BookingError(422, "validation_error", "One of the preferred times is invalid.");
+          }
+          const m = timeToMinutes(String(t));
+          if (!gridStarts.has(m)) {
+            throw new BookingError(422, "validation_error", "One of the preferred times is outside the bookable grid.");
+          }
+          preferredMinutes.push(m);
+        }
+        if (new Set(preferredMinutes).size !== preferredMinutes.length) {
+          throw new BookingError(422, "validation_error", "Preferred times must be distinct.");
+        }
+        if (preferredStartDate < dateFrom || preferredStartDate > dateTo) {
+          throw new BookingError(422, "validation_error", "The picked start date is outside the bookable range.");
+        }
+
+        const plan = computeCoursePlanPreferred(
+          engineInput,
+          preferredStartDate,
+          preferredMinutes,
+          courseTotalLessons,
+        );
+
+        if (!plan.ok || !plan.lessons || plan.lessons.length !== courseTotalLessons) {
+          throw new BookingError(
+            409,
+            "slot_conflict",
+            `The selected start date and preferred times can't form a full ${courseTotalLessons}-lesson schedule anymore. Please go back and adjust your preferences.`,
+          );
+        }
+
+        const ruleError = validateConsecutiveRule(plan.lessons);
+        if (ruleError) {
+          throw new BookingError(
+            409,
+            "slot_conflict",
+            `The generated schedule violates the booking rules (${ruleError}). Please pick different preferences.`,
+          );
+        }
+
+        planLessons = plan.lessons;
+        slotsToReserve = plan.lessons.map((l) => ({
+          date: l.date,
+          start_time: l.start_time,
+          end_time: l.end_time,
+          instructor_id: plan.instructorId!,
+        }));
       } else {
         const plan = computeCoursePlan(
           engineInput,
@@ -1009,6 +1071,34 @@ serve(async (req) => {
           end_time: l.end_time,
           instructor_id: plan.instructorId!,
         }));
+      }
+
+      // -----------------------------------------------------------------------
+      // E — defence in depth on the EXACT payload the reservation RPC receives,
+      // whichever plan source produced it (edited slots, the 3 preferred times,
+      // or the legacy first-picked slot). A reservation is only allowed when the
+      // course is COMPLETE and resolves to exactly ONE instructor; anything else
+      // is refused BEFORE any write, so nobody can ever be charged for a partial
+      // or instructor-mixed course.
+      // -----------------------------------------------------------------------
+      {
+        const completeCheck = validateCompleteSchedule({
+          lessons: planLessons,
+          totalLessons: courseTotalLessons,
+          instructorId: slotsToReserve[0]?.instructor_id ?? null,
+          lessonInstructorIds: slotsToReserve.map((s) => s.instructor_id),
+          durationMinutes: slotDuration,
+          windowDates: dateStarts,
+        });
+        const batchCheck = validateReservationBatch(slotsToReserve, courseTotalLessons);
+        if (!completeCheck.complete || !batchCheck.ok) {
+          throw new BookingError(
+            409,
+            "slot_conflict",
+            `This schedule can't be confirmed as a complete ${courseTotalLessons}-lesson course. Please go back and pick again.`,
+            { violations: [...new Set([...completeCheck.violations, ...batchCheck.violations])] },
+          );
+        }
       }
 
       // Learner-WIDE per-day rule (mirrors confirm_booking_slots v2). The
@@ -1090,6 +1180,8 @@ serve(async (req) => {
         date: r.date,
         start_time: r.start_time,
         end_time: r.end_time,
+        // TEMP-TEST (instructor name in slots)
+        instructorName: r.instructorName ?? null,
       }));
 
       const { error: selectUpdateError } = await client
@@ -1111,6 +1203,48 @@ serve(async (req) => {
       reserved,
       totalLessons: courseTotalLessons,
     });
+
+    // --- funnel instrumentation (never fatal) ------------------------------
+    // The booking flow is a lead capture: the customer has now handed over a
+    // name, a phone number and an e-mail, and the backend has confirmed the
+    // write. The `lead_captured` event is therefore emitted HERE — after the
+    // booking/enrollment rows exist, never before, and never by the browser.
+    try {
+      const dlStatus = body.has_a_DL === true
+        ? "has_dl"
+        : twoWheelerState === "ll_only"
+          ? "two_wheeler_ll_only"
+          : twoWheelerState === "active_dl"
+            ? "two_wheeler_active_dl"
+            : "no_dl";
+      await captureLead(client as never, {
+        phone,
+        name,
+        email: email || null,
+        locality:
+          typeof customer.city === "string" && customer.city.trim()
+            ? customer.city.trim()
+            : null,
+        area: String(resolvedArea.name),
+        source: "booking_flow",
+        serviceInterest: isRtoOnly ? "rto_paperwork" : courseName,
+        leadSource: null,
+        clientSessionId: body.client_session_id ?? null,
+        blockedReason: null,
+        dlStatus,
+        areaId: resolvedArea.id ? String(resolvedArea.id) : null,
+        state: null,
+        marketingConsent: null,
+        attribution: body.attribution ?? null,
+        pagePath: null,
+        userAgent: req.headers.get("user-agent"),
+      });
+    } catch (error) {
+      console.error(
+        "create-booking: funnel_capture_failed",
+        error instanceof Error ? error.message : String(error),
+      );
+    }
 
     return jsonResponse({
       bookingId,
@@ -1206,6 +1340,7 @@ interface HeldSlotRow {
   date: string;
   start_time: string;
   end_time: string;
+  instructorName?: string | null; // TEMP-TEST (instructor name in slots)
 }
 
 async function fetchHeldSlots(
@@ -1221,15 +1356,31 @@ async function fetchHeldSlots(
     : ["pending_payment"];
   const { data: heldRows } = await client
     .from("Schedule")
-    .select("id, date, start_time, end_time")
+    .select("id, date, start_time, end_time, instructor_id")
     .eq("booking_id", bookingId)
     .in("status", statusFilter)
     .order("id", { ascending: true });
+  // TEMP-TEST (instructor name in slots) — one lookup for the held lessons'
+  // instructor(s). REMOVE with the rest of the TEMP-TEST lines.
+  const instructorIds = [
+    ...new Set((heldRows || []).map((r) => String(r.instructor_id ?? "")).filter(Boolean)),
+  ];
+  const nameById = new Map<string, string>();
+  if (instructorIds.length > 0) {
+    const { data: instrRows } = await client
+      .from("Instructor")
+      .select("id_instructor, name")
+      .in("id_instructor", instructorIds);
+    for (const r of instrRows || []) {
+      nameById.set(String(r.id_instructor), r.name == null ? "" : String(r.name));
+    }
+  }
   return (heldRows || []).map((r, i) => ({
     lesson: i + 1,
     scheduleId: Number(r.id),
     date: String(r.date),
     start_time: String(r.start_time),
     end_time: String(r.end_time),
+    instructorName: nameById.get(String(r.instructor_id ?? "")) ?? null,
   }));
 }

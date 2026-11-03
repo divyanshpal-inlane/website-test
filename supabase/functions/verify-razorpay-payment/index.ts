@@ -207,35 +207,51 @@ serve(async (req) => {
       .eq("id", paymentId);
     if (completeError) throw completeError;
 
-    // Update booking status to payment_completed (R17)
-    const { data: bookingToUpdate } = await client
-      .from("booking")
-      .select("id, status")
-      .eq("learner_id", learnerId)
-      .eq("course_id", paymentType === "course" ? enrollment?.course_id : null)
-      .eq("status", "created")
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    if (bookingToUpdate) {
-      await client
-        .from("booking")
-        .update({ status: "payment_completed" })
-        .eq("id", bookingToUpdate.id);
-    }
-
     const paymentType = String(payment.payment_type || "course");
     const installmentType = String(payment.installment_type || "full");
     const learnerId = String(payment.learner_id);
 
-    if (paymentType === "course") {
-      const { data: enrollment, error: enrollmentError } = await client
-        .from("enrollment")
-        .select("id, payment_status, unlocked_lessons, progress, course_id")
-        .eq("payment_id", paymentId)
-        .maybeSingle();
-      if (enrollmentError) throw enrollmentError;
+    // The enrollment linked to this payment. Loaded ONCE, up-front: the
+    // booking-status update below needs its course_id and the "course" branch
+    // below needs the whole row.
+    //
+    // (Previously this query lived INSIDE the `paymentType === "course"`
+    // branch, while the booking update above referenced `enrollment` - a
+    // temporal-dead-zone ReferenceError that made this function 500 on every
+    // request that reached this point. The edge runtime does not type-check,
+    // so the bug deployed cleanly and only surfaced at runtime.)
+    const { data: enrollment, error: enrollmentError } = await client
+      .from("enrollment")
+      .select("id, payment_status, unlocked_lessons, progress, course_id")
+      .eq("payment_id", paymentId)
+      .maybeSingle();
+    if (enrollmentError) throw enrollmentError;
 
+    // Update booking status to payment_completed (R17)
+    const { data: bookingToUpdate, error: bookingLookupError } = await client
+      .from("booking")
+      .select("id, status")
+      .eq("learner_id", learnerId)
+      // `eq.null` is PostgREST's IS NULL: a non-course payment only ever
+      // matches a booking with no course attached.
+      .eq(
+        "course_id",
+        paymentType === "course" ? (enrollment?.course_id ?? null) : null,
+      )
+      .eq("status", "created")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (bookingLookupError) throw bookingLookupError;
+    if (bookingToUpdate) {
+      const { error: bookingUpdateError } = await client
+        .from("booking")
+        .update({ status: "payment_completed" })
+        .eq("id", bookingToUpdate.id);
+      if (bookingUpdateError) throw bookingUpdateError;
+    }
+
+    if (paymentType === "course") {
       if (enrollment) {
         let totalCourseLessons =
           (enrollment.progress as { total_hours?: number } | null)?.total_hours || 10;
