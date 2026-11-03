@@ -199,14 +199,18 @@ async function loadEngineData() {
     unavailability: instr.unavailability || [],
   }));
 
-  // Parse schedule blocks for engine
+  // Parse schedule blocks for engine. NOTE: the engine contract is
+  // { startMinute, endMinute } NUMBERS — a block whose times cannot be parsed is
+  // treated as BUSY for the whole instructor-day (fail-closed). Passing the raw
+  // Postgres `HH:MM:SS` strings under `start`/`end` therefore silently blocked an
+  // entire day per real row, which massively over-stated scarcity. Map them.
   const parsedBlocks = (schedules || []).map((s) => ({
     instructorId: s.instructor_id,
     date: s.date,
-    start: s.start_time,
-    end: s.end_time,
+    startMinute: timeToMinutes(String(s.start_time ?? "")),
+    endMinute: timeToMinutes(String(s.end_time ?? "")),
     status: s.status,
-    bookingId: s.booking_id,
+    ownerBookingId: s.booking_id,
     learnerId: s.learner_id,
   }));
 
@@ -656,8 +660,8 @@ describe("SPEC C: Complete-Schedule Acceptance Rule", () => {
       const conflictingBlock = {
         instructorId,
         date: TEST_START_DATE,
-        start: "13:00",
-        end: "14:00",
+        startMinute: timeToMinutes("13:00"),
+        endMinute: timeToMinutes("14:00"),
         status: "booked",
       };
 
@@ -670,12 +674,20 @@ describe("SPEC C: Complete-Schedule Acceptance Rule", () => {
       const plan = slot ? computeCoursePlan(conflictInput, { date: slot.date, start: slot.start }, 10) : { ok: false };
 
       if (plan.ok) {
-        // First lesson should NOT be at 13:00 on TEST_START_DATE (blocked)
-        const firstLesson = plan.lessons[0];
-        assert.ok(
-          !(firstLesson.date === TEST_START_DATE && firstLesson.start_time === "13:00"),
-          "Plan should avoid instructor conflict"
-        );
+        // If the engine picked the blocked instructor it must not place a lesson
+        // inside that instructor's 13:00-14:00 block; picking another instructor
+        // that is genuinely free at that time is correct behaviour.
+        if (plan.instructorId === instructorId) {
+          const clashes = plan.lessons.some(
+            (l) =>
+              l.date === TEST_START_DATE &&
+              timeToMinutes(l.start_time) < timeToMinutes("14:00") &&
+              timeToMinutes("13:00") < timeToMinutes(l.end_time),
+          );
+          assert.equal(clashes, false, "Plan must avoid the instructor's conflicting block");
+        } else {
+          assert.ok(true, "Plan routed to a different instructor who is free");
+        }
       }
     }
   });
@@ -1036,12 +1048,12 @@ describe("SPEC F: Edge-Case Testing (30 Scenarios)", () => {
     const instructorId = input.instructors[0]?.id;
 
     if (instructorId) {
-      // Add a leave block
+      // Add a leave block (engine shape: minute offsets, not HH:MM strings)
       const leaveBlock = {
         instructorId,
         date: TEST_START_DATE,
-        start: "13:00",
-        end: "14:00",
+        startMinute: timeToMinutes("13:00"),
+        endMinute: timeToMinutes("14:00"),
         status: "booked", // Simulate leave as booked
       };
 
@@ -1049,12 +1061,17 @@ describe("SPEC F: Edge-Case Testing (30 Scenarios)", () => {
       const plan = computeCoursePlan(leaveInput, { date: TEST_START_DATE, start: "13:00" }, 10);
 
       if (plan.ok) {
-        // Plan should avoid the blocked slot
-        const firstLesson = plan.lessons[0];
-        assert.ok(
-          !(firstLesson.date === TEST_START_DATE && firstLesson.start_time === "13:00"),
-          "Plan should route around instructor leave"
-        );
+        if (plan.instructorId === instructorId) {
+          const clashes = plan.lessons.some(
+            (l) =>
+              l.date === TEST_START_DATE &&
+              timeToMinutes(l.start_time) < timeToMinutes("14:00") &&
+              timeToMinutes("13:00") < timeToMinutes(l.end_time),
+          );
+          assert.equal(clashes, false, "Plan should route around instructor leave");
+        } else {
+          assert.ok(true, "Plan routed to another instructor who is free during the leave");
+        }
       }
     }
   });
@@ -1104,11 +1121,11 @@ describe("SPEC F: Edge-Case Testing (30 Scenarios)", () => {
     const instructorId = input.instructors[0]?.id;
 
     if (instructorId) {
-      // Block 3 consecutive days
+      // Block 13:00-14:00 on 3 consecutive days for THIS instructor only.
       const blocks = [
-        { instructorId, date: "2026-11-02", start: "13:00", end: "14:00", status: "booked" },
-        { instructorId, date: "2026-11-03", start: "13:00", end: "14:00", status: "booked" },
-        { instructorId, date: "2026-11-04", start: "13:00", end: "14:00", status: "booked" },
+        { instructorId, date: "2026-11-02", startMinute: timeToMinutes("13:00"), endMinute: timeToMinutes("14:00"), status: "booked" },
+        { instructorId, date: "2026-11-03", startMinute: timeToMinutes("13:00"), endMinute: timeToMinutes("14:00"), status: "booked" },
+        { instructorId, date: "2026-11-04", startMinute: timeToMinutes("13:00"), endMinute: timeToMinutes("14:00"), status: "booked" },
       ];
 
       const blockedInput = { ...input, blocks: [...input.blocks, ...blocks] };
@@ -1120,8 +1137,14 @@ describe("SPEC F: Edge-Case Testing (30 Scenarios)", () => {
       });
 
       if (result.ok && result.best) {
-        // First lesson should be after the blocked period
-        assert.ok(result.best.lessons[0].date > "2026-11-04");
+        // Only meaningful when the engine chose the blocked instructor; another
+        // instructor is legitimately free at 13:00 on those dates.
+        if (result.best.instructorId === instructorId) {
+          assert.ok(
+            result.best.lessons[0].date > "2026-11-04",
+            "Blocked instructor must start after the unavailable period",
+          );
+        }
       }
     }
   });
@@ -1223,8 +1246,8 @@ describe("SPEC F: Edge-Case Testing (30 Scenarios)", () => {
 
     // Add duplicate unavailability entries
     const duplicateBlocks = [
-      { instructorId: input.instructors[0]?.id, date: TEST_START_DATE, start: "13:00", end: "14:00", status: "booked" },
-      { instructorId: input.instructors[0]?.id, date: TEST_START_DATE, start: "13:00", end: "14:00", status: "booked" }, // Duplicate
+      { instructorId: input.instructors[0]?.id, date: TEST_START_DATE, startMinute: timeToMinutes("13:00"), endMinute: timeToMinutes("14:00"), status: "booked" },
+      { instructorId: input.instructors[0]?.id, date: TEST_START_DATE, startMinute: timeToMinutes("13:00"), endMinute: timeToMinutes("14:00"), status: "booked" }, // Duplicate
     ];
 
     const dupInput = { ...input, blocks: [...input.blocks, ...duplicateBlocks] };
@@ -1356,9 +1379,9 @@ describe("SPEC G: Final Validation", () => {
         ...input.blocks,
         ...input.instructors.flatMap((instr) =>
           dateStarts.slice(0, 5).flatMap((date) => [
-            { instructorId: instr.id, date, start: "13:00", end: "14:00", status: "booked" },
-            { instructorId: instr.id, date, start: "14:00", end: "15:00", status: "booked" },
-            { instructorId: instr.id, date, start: "15:00", end: "16:00", status: "booked" },
+            { instructorId: instr.id, date, startMinute: timeToMinutes("13:00"), endMinute: timeToMinutes("14:00"), status: "booked" },
+            { instructorId: instr.id, date, startMinute: timeToMinutes("14:00"), endMinute: timeToMinutes("15:00"), status: "booked" },
+            { instructorId: instr.id, date, startMinute: timeToMinutes("15:00"), endMinute: timeToMinutes("16:00"), status: "booked" },
           ])
         ),
       ],
@@ -1664,8 +1687,9 @@ describe("Integration Tests with Real Prod Data", () => {
     if (result.ok) {
       // Full validation
       const validation = validateCompleteSchedule({
-        lessons: result.best.lessons.map(l => ({ ...l, instructorId: result.best.instructorId })),
+        lessons: result.best.lessons,
         totalLessons: 10,
+        instructorId: result.best.instructorId,
         startDate: TEST_START_DATE,
         preferredStartMinutes: [timeToMinutes("13:00"), timeToMinutes("14:00"), timeToMinutes("15:00")],
         windowDates: dateStarts,

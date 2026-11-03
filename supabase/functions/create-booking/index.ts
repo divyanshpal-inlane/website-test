@@ -163,6 +163,11 @@ serve(async (req) => {
   // because prod has no scheduled janitor to clean up a half-written request.
   let writtenBookingId: string | null = null;
   let writtenEnrollmentId: string | null = null;
+  // Set only when THIS request inserted the learner (an existing learner is
+  // updated in place and must never be removed). A failure after the upsert —
+  // e.g. a plan that cannot be completed from the requested preferences — would
+  // otherwise leave an orphan Learner row behind forever.
+  let createdLearnerId: string | null = null;
 
   try {
     const client = serviceClient();
@@ -691,6 +696,7 @@ serve(async (req) => {
         .single();
       if (learnerCreateError) throw learnerCreateError;
       learnerId = String(createdLearner.id);
+      createdLearnerId = learnerId;
     }
 
     // ---------------------------------------------------------------------------
@@ -881,12 +887,17 @@ serve(async (req) => {
     const finalSelectedSlots: Array<{ lesson: number; date: string; start_time: string; end_time: string }> = [];
 
     if (body.has_a_DL && !isRtoOnly) {
-      if (!firstSlotRaw || !isValidDateISO(String(firstSlotRaw.date)) || !isValidTime(String(firstSlotRaw.start))) {
-        throw new BookingError(
-          422,
-          "validation_error",
-          "Pick a first-lesson time to continue.",
-        );
+      // Preferred-times requests deliberately carry no single first lesson: the
+      // engine derives one from the ranked preferences in branch C below. Only
+      // the explicit-first-slot / edited-plan paths need `firstSlotRaw` here.
+      if (!usingPreferredTimes) {
+        if (!firstSlotRaw || !isValidDateISO(String(firstSlotRaw.date)) || !isValidTime(String(firstSlotRaw.start))) {
+          throw new BookingError(
+            422,
+            "validation_error",
+            "Pick a first-lesson time to continue.",
+          );
+        }
       }
 
       if (courseTotalLessons > config.max_slots_per_booking) {
@@ -903,16 +914,20 @@ serve(async (req) => {
       const dateTo = addDaysISO(tomorrowIso, config.booking_days_ahead - 1);
       const slotDuration = config.slotDurationMinutes;
 
-      const firstDate = String(firstSlotRaw.date);
-      const firstStart = String(firstSlotRaw.start);
+      const firstDate = firstSlotRaw ? String(firstSlotRaw.date) : "";
+      const firstStart = firstSlotRaw ? String(firstSlotRaw.start) : "";
       const gridStarts = new Set(candidateStartMinutes(config).map((m) => m));
-      const startMinutes = timeToMinutes(firstStart);
-      if (firstDate < tomorrowIso || firstDate > dateTo || !gridStarts.has(startMinutes)) {
-        throw new BookingError(
-          422,
-          "validation_error",
-          "The picked first lesson is outside the bookable range.",
-        );
+      // Range check applies to a picked first lesson only; the preferred-times
+      // branch validates its own start date inside the bookable window.
+      if (!usingPreferredTimes) {
+        const startMinutes = timeToMinutes(firstStart);
+        if (firstDate < tomorrowIso || firstDate > dateTo || !gridStarts.has(startMinutes)) {
+          throw new BookingError(
+            422,
+            "validation_error",
+            "The picked first lesson is outside the bookable range.",
+          );
+        }
       }
 
       const dateStarts: string[] = [];
@@ -988,7 +1003,6 @@ serve(async (req) => {
         if (body.preferredTimes.length > 3) {
           throw new BookingError(422, "validation_error", "Pick between 1 and 3 preferred times.");
         }
-        const gridStarts = new Set(candidateStartMinutes(config).map((m) => m));
         const preferredMinutes: number[] = [];
         for (const t of body.preferredTimes) {
           if (!isValidTime(String(t))) {
@@ -1276,8 +1290,8 @@ serve(async (req) => {
     // Undo every row this request wrote before reporting the failure. Skipped
     // for pre-validation errors (nothing written) and for the idempotent replay
     // path (that returns early — the winning request owns those rows).
-    if (writtenBookingId || writtenEnrollmentId) {
-      await discardFailedBooking(writtenBookingId, writtenEnrollmentId);
+    if (writtenBookingId || writtenEnrollmentId || createdLearnerId) {
+      await discardFailedBooking(writtenBookingId, writtenEnrollmentId, createdLearnerId);
     }
     return errorResponse(error);
   }
@@ -1303,6 +1317,7 @@ serve(async (req) => {
 async function discardFailedBooking(
   bookingId: string | null,
   enrollmentId: string | null,
+  createdLearnerId: string | null = null,
 ): Promise<void> {
   try {
     const client = serviceClient();
@@ -1320,9 +1335,25 @@ async function discardFailedBooking(
     if (bookingId) {
       await client.from("booking").delete().eq("id", bookingId);
     }
+    // A learner inserted by this request is only removed when nothing else
+    // references it any more. Anything left over (or a failed count) keeps the
+    // row — a stray learner is harmless, deleting a real one is not.
+    if (createdLearnerId) {
+      const [bookings, enrollments, schedules] = await Promise.all([
+        client.from("booking").select("id", { count: "exact", head: true }).eq("learner_id", createdLearnerId),
+        client.from("enrollment").select("id", { count: "exact", head: true }).eq("learner_id", createdLearnerId),
+        client.from("Schedule").select("id", { count: "exact", head: true }).eq("learner_id", createdLearnerId),
+      ]);
+      const failed = bookings.error || enrollments.error || schedules.error;
+      const references = (bookings.count ?? 0) + (enrollments.count ?? 0) + (schedules.count ?? 0);
+      if (!failed && references === 0) {
+        await client.from("Learner").delete().eq("id", createdLearnerId);
+      }
+    }
     console.warn("create-booking: rolled back rows for a failed request", {
       bookingId,
       enrollmentId,
+      createdLearnerId,
     });
   } catch (cleanupError) {
     // Never mask the original failure — and never throw from the error path.
