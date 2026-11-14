@@ -8,7 +8,9 @@ import MiniCourseNew from "./MiniCourseNew";
 import SEOHead from "../SEOHead";
 import { seoData } from "../../utils/seoData";
 import beginnerCourseHours from "../../data/beginnerCourse";
+import miniCourses from "../../data/miniCourse";
 import { Link } from "react-router-dom";
+import { trackFunnelEvent } from "../../utils/funnelTracking";
 const NewCoursePage = () => {
   const [expandedHour, setExpandedHour] = useState(null);
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -21,6 +23,32 @@ const NewCoursePage = () => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Funnel: the customer saw the price list. This is the Phase-0 proxy for
+  // "prices viewed" (the PRD's `price_unlock_attempted` only exists from
+  // Phase 1, when the prices are actually gated behind a licence check).
+  //
+  // `course_ids` carries site-local slugs, NOT database course codes: the
+  // production `Courses.code` column is NULL for every mini-course, so a
+  // code-based join with the booking funnel is not possible today.
+  useEffect(() => {
+    const courseIds = miniCourses
+      .map((course) =>
+        String(course.title || "")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, ""),
+      )
+      .filter(Boolean);
+    trackFunnelEvent(
+      "course_list_viewed",
+      {
+        course_count: courseIds.length,
+        course_ids: courseIds.join(","),
+      },
+      { target: courseIds.join(",") },
+    );
   }, []);
 
   const calculateCarPosition = () => {

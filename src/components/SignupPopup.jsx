@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import {
   TextField,
   Button,
@@ -18,7 +18,7 @@ import {
   resolveUTMsForSubmission,
   buildLeadSource,
 } from "../utils/utmTracking";
-import { getFunnelSessionId } from "../utils/funnelTracking";
+import { getFunnelSessionId, trackFunnelEvent } from "../utils/funnelTracking";
 
 // Fetch country codes
 const fetchCountryCodes = async () => {
@@ -62,8 +62,28 @@ function getOrCreateClientId() {
   return clientId;
 }
 
-const SignupPopup = () => {
+// The booking funnel (/book, /book/schedule, ...) is a purchase flow: a lead-capture
+// modal there covers the whole page and makes every control (e.g. "Build my
+// schedule") unclickable. Matches with or without the GitHub Pages base path.
+const isBookingPath = (pathname = "") => /\/book(\/|$)/.test(pathname);
+
+const SignupPopup = ({ router }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [onBooking, setOnBooking] = useState(() =>
+    isBookingPath(router?.state?.location?.pathname ?? window.location.pathname),
+  );
+  const onBookingRef = useRef(onBooking);
+  onBookingRef.current = onBooking;
+
+  // Set to true once the form has been submitted successfully. A close that
+  // happens after a successful submit is NOT a dismissal.
+  const submittedRef = useRef(false);
+
+  // The popup lives outside the router, so follow route changes explicitly.
+  useEffect(() => {
+    if (!router?.subscribe) return undefined;
+    return router.subscribe((state) => setOnBooking(isBookingPath(state.location.pathname)));
+  }, [router]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [countryCodes, setCountryCodes] = useState([]);
   const [formData, setFormData] = useState({
@@ -81,8 +101,17 @@ const SignupPopup = () => {
     const count = parseInt(localStorage.getItem("popup_show_count") || "0", 10);
     if (count >= 1) return; // Already shown at least once
     const timer = setTimeout(() => {
+      // Never interrupt the booking funnel, and do not use up the show count there.
+      if (onBookingRef.current) return;
       setIsVisible(true);
       localStorage.setItem("popup_show_count", "1");
+      // The lead form is now open. Once per session per form (the deterministic
+      // client_event_id dedupes a React remount or a retried send).
+      void trackFunnelEvent(
+        "lead_capture_started",
+        { form: "homepage_popup", page_type: "marketing_home" },
+        { target: "homepage_popup" },
+      );
     }, 2000);
     return () => clearTimeout(timer);
   }, []);
@@ -102,9 +131,19 @@ const SignupPopup = () => {
     const count = parseInt(localStorage.getItem("popup_show_count") || "0", 10);
     setIsVisible(false);
 
+    // Funnel: the lead sheet was dismissed WITHOUT a successful submission.
+    // (A close that follows a successful submit is not a dismissal.)
+    if (!submittedRef.current) {
+      trackFunnelEvent("lead_sheet_dismissed", {
+        form: "homepage_popup",
+        page_type: "marketing_home",
+      });
+    }
+
     if (count === 1 || count === 2) {
       // First or second close — schedule next appearance after 30 seconds
       setTimeout(() => {
+        if (onBookingRef.current) return;
         setIsVisible(true);
         localStorage.setItem("popup_show_count", String(count + 1));
       }, 30000);
@@ -121,6 +160,13 @@ const SignupPopup = () => {
       }
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+
+    // Funnel: the customer told us whether they already hold a 4W licence.
+    if (name === "license") {
+      trackFunnelEvent("dl_status_selected", {
+        dl_status: value === "yes" ? "has_dl" : "no_dl",
+      });
     }
   }, []);
 
@@ -252,6 +298,7 @@ const SignupPopup = () => {
         } catch (_) {}
 
         localStorage.setItem("popup_show_count", "2"); // Mark as fully done — never show again
+        submittedRef.current = true;
         handleClose();
         window.location.href = "/thank-you";
       } catch (error) {
@@ -264,7 +311,7 @@ const SignupPopup = () => {
     [formData, isSubmitting, isPhoneValid],
   );
 
-  if (!isVisible) return null;
+  if (!isVisible || onBooking) return null;
 
   return (
     <>

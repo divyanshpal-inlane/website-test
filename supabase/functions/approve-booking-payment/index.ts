@@ -17,6 +17,12 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { handleOptions, jsonResponse } from "../_shared/cors.ts";
 import { errorResponse, BookingError } from "../_shared/errors.ts";
 import { serviceClient } from "../_shared/client.ts";
+import { addedServices, llServicesFor } from "../_shared/llServices.ts";
+import {
+  pipelineOpenedNote,
+  pipelineServiceAddedNote,
+  THANK_YOU_MESSAGE_TYPE,
+} from "../_shared/webRecords.ts";
 import { readBookingFlowConfig } from "../_shared/config.ts";
 import { getHalfPaymentLessons } from "../_shared/pricing.ts";
 import {
@@ -33,6 +39,12 @@ interface ApproveRequest {
   bookingId?: string;
   /** Funnel session id (uuid4) supplied by the website. */
   client_session_id?: string | null;
+  /**
+   * Test harnesses set this so no WhatsApp is sent to a made-up number. It only
+   * suppresses a courtesy message; it changes no record. (Test mode only - this
+   * whole function refuses to run in live payment mode.)
+   */
+  skipThankYou?: boolean;
 }
 
 /**
@@ -137,6 +149,8 @@ serve(async (req) => {
       throw new BookingError(404, "booking_not_found", "Booking not found.");
     }
 
+    const isRtoOnlyBooking = String(booking.case_type ?? "course_rto") === "rto_only";
+
     // Fetch RTO addon IDs for this booking
     const { data: bookingAddons } = await client
       .from("booking_addons")
@@ -196,11 +210,20 @@ serve(async (req) => {
     const courseId = booking.course_id ? String(booking.course_id) : null;
     const isRtoOnly = String(booking.case_type ?? "course_rto") === "rto_only";
 
-    const { data: enrollment } = await client
+    // A course booking pays against its course enrollment; a licence-only
+    // booking pays against the 'rto_only' licence-service enrollment that
+    // create-booking opened (the row Payment Tracker / Learner Management read).
+    const enrollmentQuery = client
       .from("enrollment")
       .select("id, payment_id, progress")
-      .eq("learner_id", learnerId)
-      .eq("course_id", courseId)
+      .eq("learner_id", learnerId);
+    const { data: enrollment } = await (isRtoOnly
+      ? enrollmentQuery
+          .eq("case_type", "rto_only")
+          .eq("acquired_via_funnel", true)
+          .is("payment_id", null)
+      : enrollmentQuery.eq("course_id", courseId)
+    )
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -246,11 +269,14 @@ serve(async (req) => {
     // a payment without a pipeline entry). If this fails, we return an error and
     // the caller can retry. ---
     let llAppId: string | null = null;
+    // Ops (Q7): a customer who bought a course AND an RTO service also gets the
+    // board's "Classes" tick. Everything RTO lives on the LL -> DL pipeline only.
+    const includeClasses = !isRtoOnlyBooking && !!booking.course_id;
     if (rtoAddonCodes && rtoAddonCodes.length > 0) {
       try {
         const { data: existingApp } = await client
           .from("ll_applications")
-          .select("id")
+          .select("id, services")
           .eq("learner_id", learnerId)
           .not("status", "in", "('dl_delivered','closed')")
           .maybeSingle();
@@ -259,7 +285,7 @@ serve(async (req) => {
             .from("ll_applications")
             .insert({
               learner_id: learnerId,
-              services: rtoAddonCodes,
+              services: llServicesFor(rtoAddonCodes, [], { includeClasses }),
               status: "payment_received",
               acquired_via_funnel: true,
             })
@@ -272,11 +298,32 @@ serve(async (req) => {
             learner_id: learnerId,
             event_type: "status_change",
             to_status: "payment_received",
-            actor_name: "auto-approved",
-            note: "RTO services booked via funnel",
+            actor_name: "System",
+            note: pipelineOpenedNote(rtoAddonCodes),
           });
         } else {
           llAppId = existingApp.id;
+          // Merge instead of dropping: a learner with an open application who buys
+          // another RTO service must see it on the existing board.
+          const current = Array.isArray(existingApp.services) ? (existingApp.services as string[]) : [];
+          const merged = llServicesFor(rtoAddonCodes, current, { includeClasses });
+          const added = addedServices(current, merged);
+          if (added.length > 0) {
+            const { error: mergeError } = await client
+              .from("ll_applications")
+              .update({ services: merged, updated_at: new Date().toISOString() })
+              .eq("id", existingApp.id);
+            if (mergeError) throw mergeError;
+            // Ops (Q27): a service added to an application the team already has
+            // must not be missed - leave a visible note in its timeline.
+            await client.from("ll_pipeline_events").insert({
+              application_id: existingApp.id,
+              learner_id: learnerId,
+              event_type: "note",
+              actor_name: "System",
+              note: pipelineServiceAddedNote(added),
+            });
+          }
         }
       } catch (e) {
         console.error("Failed to create LL application for RTO services:", e);
@@ -342,7 +389,9 @@ serve(async (req) => {
           amount: paidAmount,
           email: String(learner.email ?? ""),
           phone: String(learner.phone ?? ""),
-          payment_type: isRtoOnly ? "custom" : "course",
+          // A licence service is paid as a "course"-type payment against its
+          // rto_only enrollment, exactly as the hosted app records it.
+          payment_type: "course",
           status: "completed",
           name: String(learner.name ?? ""),
           installment_type: firstHalf ? "first_half" : "full",
@@ -380,14 +429,36 @@ serve(async (req) => {
     }
     const paymentId = String(paymentRow.id);
 
-    if (enrollment) {
+    if (enrollment && isRtoOnly) {
+      // Licence service: mark it paid and active - no lessons, no progress
+      // rewrite (same as the hosted app's licence-service payment handling).
+      const { error: licenceEnrollError } = await client
+        .from("enrollment")
+        .update({ payment_id: paymentId, payment_status: "full_paid", status: "active" })
+        .eq("id", String(enrollment.id));
+      if (licenceEnrollError) throw licenceEnrollError;
+    } else if (enrollment) {
+      // Ops decision (2026-11-13): a held class plan is not approved yet, so
+      // the learner must not look like an "Active Learner" until Ops approves
+      // it in Website bookings (review-booking approve flips this to
+      // "active"). Only applies when a plan was actually held at create-booking
+      // (has_a_DL) - a no-licence purchase (no held plan) has no Website-
+      // bookings review step, so it keeps today's behaviour (active on payment,
+      // same as a Sales customer awaiting scheduling).
+      const { count: heldPlanCount } = await client
+        .from("Schedule")
+        .select("id", { count: "exact", head: true })
+        .eq("booking_id", bookingId)
+        .eq("status", "pending_payment");
+      const enrollmentStatus = (heldPlanCount ?? 0) > 0 ? "pending" : "active";
+
       const progress = (enrollment.progress as Record<string, unknown>) || {};
       const { error: enrollError } = await client
         .from("enrollment")
         .update({
           payment_id: paymentId,
           payment_status: firstHalf ? "half_paid" : "full_paid",
-          status: "active",
+          status: enrollmentStatus,
           unlocked_lessons: unlockedLessons,
           progress: {
             ...progress,
@@ -433,6 +504,27 @@ const { error: bookingError } = await client
         payment_id: paymentId,
       },
     });
+
+    // Ops (Q5): same first message as every other paid customer (the hosted
+    // app sends this template when a payment completes). Fail-soft: a message
+    // problem must never affect a completed payment. send-message is a hosted
+    // function - it is only invoked here, never deployed.
+    try {
+      if (body.skipThankYou === true) throw new Error("thank-you skipped by caller");
+      const { error: messageError } = await client.functions.invoke("send-message", {
+        body: {
+          message_type: THANK_YOU_MESSAGE_TYPE,
+          learner_id: learnerId,
+          payment_amount: paidAmount,
+        },
+      });
+      if (messageError) throw messageError;
+    } catch (messageErr) {
+      console.error(
+        "approve-booking-payment: thank-you message failed",
+        messageErr instanceof Error ? messageErr.message : String(messageErr),
+      );
+    }
 
     return jsonResponse({
       success: true,

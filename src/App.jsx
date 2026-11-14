@@ -261,7 +261,7 @@ function App() {
 
   return (
     <HelmetProvider>
-      <SignupPopup />
+      <SignupPopup router={router} />
       <BookingProvider>
         <RouterProvider router={router} />
       </BookingProvider>

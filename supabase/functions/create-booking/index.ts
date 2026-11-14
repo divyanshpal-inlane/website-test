@@ -35,6 +35,13 @@ import {
   validateReservationBatch,
 } from "../_shared/scheduling.ts";
 import { toOneRow } from "../_shared/embed.ts";
+import {
+  licenceRequirementsFromAddons,
+  mergeLearnerFlags,
+  phoneVariants,
+  pickLearnerMatch,
+  rtoOnlyEnrollmentRow,
+} from "../_shared/webRecords.ts";
 import { captureLead } from "../_shared/funnelEvents.ts";
 import {
   addDaysISO,
@@ -672,20 +679,34 @@ serve(async (req) => {
       needs_scheduling: !learnerWillSelfSchedule,
     };
 
-    const { data: existingLearner } = await client
+    // Ops handover: the same number is stored as 10 digits, 91XXXXXXXXXX and
+    // +91XXXXXXXXXX. Look across all three so a returning customer is never
+    // duplicated (Ops cannot merge or delete learners).
+    const { data: matchRows, error: matchError } = await client
       .from("Learner")
-      .select("id")
-      .eq("phone", phone)
+      .select("id, phone, created_at, has_a_DL, LL_received, address_change_required, has_two_wheeler_license, two_wheeler_license_state, two_wheeler_licence_in_ka")
+      .in("phone", phoneVariants(phone))
       .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
+      .limit(20);
+    if (matchError) throw matchError;
+    const existingLearner = pickLearnerMatch(matchRows ?? [], phone) as
+      | ({ id: string } & Record<string, unknown>)
+      | null;
+    if ((matchRows ?? []).length > 1) {
+      console.warn("create-booking: several learners share this phone; attaching to one", {
+        count: (matchRows ?? []).length,
+        learnerId: existingLearner?.id,
+      });
+    }
 
     let learnerId: string;
     if (existingLearner) {
       learnerId = String(existingLearner.id);
+      // A returning customer's licence flags are only ever upgraded.
+      const mergedFields = mergeLearnerFlags(existingLearner, learnerFields);
       const { error: learnerUpdateError } = await client
         .from("Learner")
-        .update(learnerFields)
+        .update(mergedFields)
         .eq("id", learnerId);
       if (learnerUpdateError) throw learnerUpdateError;
     } else {
@@ -835,6 +856,9 @@ serve(async (req) => {
             // and never nag pre-existing/admin-created ones (migration
             // 20261012120000_enrollment_funnel_source.sql).
             acquired_via_funnel: true,
+            // Same licence-requirement fields Learner Management stores for a
+            // Sales-sold "RTO + classes" enrollment (derived from the add-ons).
+            ...(licenceRequirementsFromAddons(addons.map((a) => a.code)) ?? {}),
             payment_id: null,
             status: "pending",
             payment_status: "pending",
@@ -854,6 +878,30 @@ serve(async (req) => {
       if (enrollmentError) throw enrollmentError;
       enrollmentId = String(enrollmentRow.id);
       writtenEnrollmentId = enrollmentId;
+    }
+
+    // A licence-only purchase has no course, but Sales' "Licence service" tab
+    // still gives it an enrollment (case_type 'rto_only') - that is the row
+    // Payment Tracker, the payment page and Learner Management read. Create the
+    // same row so a website licence purchase is not invisible to them.
+    if (isRtoOnly) {
+      const { data: licenceRow, error: licenceError } = await client
+        .from("enrollment")
+        .insert([
+          rtoOnlyEnrollmentRow({
+            learnerId,
+            amount: amounts.total,
+            installment1: installment.installment1,
+            installment2: installment.installment2,
+            codes: addons.map((a) => a.code),
+          }),
+        ])
+        .select("id")
+        .single();
+      if (licenceError) throw licenceError;
+      writtenEnrollmentId = String(licenceRow.id);
+      // Not assigned to enrollmentId: enrollment_addons snapshots stay a
+      // course-only concept (unchanged behaviour).
     }
 
     // ---------------------------------------------------------------------------

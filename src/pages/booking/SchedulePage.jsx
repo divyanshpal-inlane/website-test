@@ -92,7 +92,11 @@ export default function SchedulePage() {
     setForm({ startDate: date, preferredSlots: [], planPreview: null });
   };
 
-  const togglePreferredSlot = (start) => {
+  // `shownDate` is the day whose times the customer is looking at. The selector
+  // shows the first available day by default without saving it, so picking a time
+  // without first clicking a date tab must save that day as the start date -
+  // otherwise "Build my schedule" stays disabled with 3 times visibly picked.
+  const togglePreferredSlot = (start, shownDate) => {
     const current = Array.isArray(form.preferredSlots) ? [...form.preferredSlots] : [];
     const idx = current.indexOf(start);
     if (idx >= 0) {
@@ -104,7 +108,11 @@ export default function SchedulePage() {
     setPlanEditSlots([]);
     setPlanEditError(null);
     setPlanError(null);
-    setForm({ preferredSlots: current, planPreview: null });
+    setForm({
+      preferredSlots: current,
+      planPreview: null,
+      ...(!form.startDate && shownDate ? { startDate: shownDate } : {}),
+    });
   };
 
   const clearPreferredSlots = () => {
@@ -339,7 +347,9 @@ export default function SchedulePage() {
                   </Button>
                   {planError && <div className="w-full"><BookingErrorNotice error={planError} /></div>}
                   <p className="text-xs text-gray-500">
-                    Uses your ranked preferences across every course day from the start date.
+                    {!form.startDate || !Array.isArray(form.preferredSlots) || form.preferredSlots.length === 0
+                      ? "Pick a start date and at least one preferred time to continue."
+                      : "Uses your ranked preferences across every course day from the start date."}
                   </p>
                 </div>
 

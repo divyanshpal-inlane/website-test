@@ -12,6 +12,7 @@ import {
 import Navbar2 from "../components/Navbar";
 import Footer from "../components/Footer";
 import RTOLeadModal from "../components/RTOLeadModal";
+import { trackFunnelEvent } from "../utils/funnelTracking";
 import SEOHead from "../components/SEOHead";
 import { getServiceBySlug, servicesByCategory } from "../data/rtoServicesData";
 import { getServiceContent } from "../data/rtoServiceContent";
@@ -406,7 +407,14 @@ export default function RTOServiceDetailPage() {
           </div>
           <button
             type="button"
-            onClick={() => setChatOpen(true)}
+            onClick={() => {
+              // Funnel: the customer asked to speak to a driving expert.
+              trackFunnelEvent("expert_contact_requested", {
+                cta_location: "still_confused",
+                page_type: "rto_service_detail",
+              });
+              setChatOpen(true);
+            }}
             className="shrink-0 self-start rounded-[10px] bg-white px-6 py-3 font-['Bricolage_Grotesque'] text-[15px] font-bold text-black transition-transform duration-200 hover:scale-[1.02] md:self-auto md:text-[16px]"
           >
             Talk to an expert

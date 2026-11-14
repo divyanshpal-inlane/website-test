@@ -5,6 +5,7 @@ import Navbar2 from "../components/Navbar";
 import RTOLeadModal from "../components/RTOLeadModal";
 import Footer from "../components/Footer";
 import SEOHead from "../components/SEOHead";
+import { trackFunnelEvent } from "../utils/funnelTracking";
 import {
   SERVICE_CATEGORIES,
   servicesByCategory,
@@ -314,7 +315,14 @@ export default function RTOHeroSection() {
 
             <button
               type="button"
-              onClick={() => setChatOpen(true)}
+              onClick={() => {
+                // Funnel: the customer asked to speak to a driving expert.
+                trackFunnelEvent("expert_contact_requested", {
+                  cta_location: "hero",
+                  page_type: "rto_services",
+                });
+                setChatOpen(true);
+              }}
               className="flex items-center justify-center rounded-full
                          border-[3px] border-white bg-white
                          font-['Bricolage_Grotesque'] font-bold text-black

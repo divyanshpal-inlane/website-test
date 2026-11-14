@@ -33,7 +33,7 @@ import {
   buildLeadSource,
 } from "../utils/utmTracking";
 
-import { getFunnelSessionId } from "../utils/funnelTracking";
+import { getFunnelSessionId, trackFunnelEvent } from "../utils/funnelTracking";
 
 // Fetch country codes and flags
 const fetchCountryCodes = async () => {
@@ -211,6 +211,17 @@ const Signup = () => {
         : iconStyles.large;
   }, [isSmallScreen, isMediumScreen, iconStyles]);
 
+  // The signup page IS the lead-capture form: record that the visitor opened
+  // it. Once per session per form (deterministic client_event_id dedupes a
+  // React remount / StrictMode double-invoke).
+  useEffect(() => {
+    void trackFunnelEvent(
+      "lead_capture_started",
+      { form: "signup_page", page_type: "signup" },
+      { target: "signup_page" },
+    );
+  }, []);
+
   // Load country codes on component mount
   useEffect(() => {
     let isMounted = true;
@@ -300,6 +311,13 @@ const Signup = () => {
       }
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+
+    // Funnel: the customer told us whether they already hold a 4W licence.
+    if (name === "license") {
+      trackFunnelEvent("dl_status_selected", {
+        dl_status: value === "yes" ? "has_dl" : "no_dl",
+      });
     }
   }, []);
 

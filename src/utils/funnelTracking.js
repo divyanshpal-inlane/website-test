@@ -278,4 +278,97 @@ export function trackFunnelEvents(events) {
   }
 }
 
+/**
+ * The last-touch + first-touch attribution the lead capture needs.
+ * Mirrors the shape the server's `sanitizeLeadUtms` / `sanitizeLeadFirstTouch`
+ * accept.
+ */
+export function getLeadAttribution() {
+  try {
+    const utms = resolveUTMsForSubmission();
+    return {
+      attribution: {
+        utm_source: utms.utm_source || "",
+        utm_medium: utms.utm_medium || "",
+        utm_campaign: utms.utm_campaign || "",
+        utm_term: utms.utm_term || "",
+        utm_content: utms.utm_content || "",
+        gclid: utms.gclid || "",
+      },
+      first_touch: {
+        first_utm_source: utms.first_utm_source || "",
+        first_utm_medium: utms.first_utm_medium || "",
+        first_utm_campaign: utms.first_utm_campaign || "",
+        first_utm_term: utms.first_utm_term || "",
+        first_utm_content: utms.first_utm_content || "",
+        first_gclid: utms.first_gclid || "",
+        first_captured_at: utms.first_captured_at || "",
+      },
+    };
+  } catch {
+    return { attribution: {}, first_touch: {} };
+  }
+}
+
+function edgeHeaders() {
+  return {
+    "Content-Type": "application/json",
+    apikey: ANON_KEY,
+    Authorization: `Bearer ${ANON_KEY}`,
+  };
+}
+
+/**
+ * Capture a lead through the authoritative server path.
+ *
+ * The server owns the CRM (Cratio) and lead-sheet delivery: it records the
+ * lead, writes the `lead_captured` event and forwards the lead downstream.
+ *
+ * The response tells the caller what to do next:
+ *   * `clientFallback: false` — the server delivered the lead. The caller
+ *     must NOT deliver it again.
+ *   * `clientFallback: true`  — the server did NOT deliver the lead (the CRM
+ *     is not configured, or the CRM call failed). The caller MUST perform its
+ *     original browser-side delivery so the lead is never lost.
+ *
+ * @param {object} lead  The lead fields (see the `capture-lead` contract).
+ * @returns {Promise<{ok: boolean, clientFallback: boolean, response: object}>}
+ */
+export async function captureFunnelLead(lead) {
+  const fallback = { ok: false, clientFallback: true, response: {} };
+  if (!TRACKING_ENABLED) return fallback;
+  if (!SUPABASE_URL || !ANON_KEY) return fallback;
+
+  const { attribution, first_touch } = getLeadAttribution();
+  const body = {
+    ...lead,
+    client_session_id: getFunnelSessionId(),
+    page_path: currentPagePath(),
+    attribution,
+    first_touch,
+  };
+
+  try {
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/capture-lead`, {
+      method: "POST",
+      headers: edgeHeaders(),
+      body: JSON.stringify(body),
+    });
+    if (!response.ok) {
+      // 429 (rate limited) or a server error — the caller falls back.
+      return fallback;
+    }
+    const data = await response.json();
+    return {
+      ok: true,
+      // Be conservative: anything other than an explicit "false" means the
+      // caller must deliver the lead itself.
+      clientFallback: data?.clientFallback !== false,
+      response: data || {},
+    };
+  } catch {
+    return fallback;
+  }
+}
+
 export { CLIENT_EVENT_NAMES };

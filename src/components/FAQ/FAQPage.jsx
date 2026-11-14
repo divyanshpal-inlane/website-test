@@ -5,6 +5,7 @@ import Footer from '../Footer';
 import SEOHead from '../SEOHead';
 import LetsChatModal from '../LetsChatModal';
 import { seoData } from '../../utils/seoData';
+import { trackFunnelEvent } from '../../utils/funnelTracking';
 
 // Memoized FAQ Item for performance
 const FAQItem = memo(({ faq, isActive, onClick, searchTerm }) => (
@@ -340,7 +341,14 @@ const FAQPage = () => {
                 For More Information
               </h3>
               <button
-                onClick={() => setChatOpen(true)}
+                onClick={() => {
+                  // Funnel: the customer asked to speak to a driving expert.
+                  trackFunnelEvent("expert_contact_requested", {
+                    cta_location: "faq_signup",
+                    page_type: "faq",
+                  });
+                  setChatOpen(true);
+                }}
                 className="bg-gradient-to-r from-[#00CE84] to-[#00BC78] text-white px-6 py-2 rounded-full font-grotesque font-medium hover:shadow-lg transition-all duration-300 transform hover:scale-105"
               >
                 Talk to an Expert

@@ -5,6 +5,7 @@ import {
   resolveUTMsForSubmission,
   buildLeadSource,
 } from "../utils/utmTracking";
+import { captureFunnelLead, trackFunnelEvent } from "../utils/funnelTracking";
 /**
  * RTOLeadModal
  * --------------------------------------------------------------------------
@@ -146,6 +147,13 @@ export default function RTOLeadModal({ open, onClose, service, onSubmit }) {
     if (open) {
       setSubmitted(false);
       setErrors({});
+      // The RTO lead form is now open. Once per session per form — the
+      // deterministic client_event_id absorbs a re-open or a React remount.
+      void trackFunnelEvent(
+        "lead_capture_started",
+        { form: "rto_modal", page_type: "rto" },
+        { target: "rto_modal" },
+      );
     }
   }, [open]);
 
@@ -207,16 +215,40 @@ export default function RTOLeadModal({ open, onClose, service, onSubmit }) {
         timestamp: new Date().toISOString(),
       };
 
-      await fetch(import.meta.env.VITE_CRATIO_RTO_WEBHOOK_URL, {
-        method: "POST",
-        mode: "no-cors",
-        cache: "no-cache",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(cratioPayload),
+      // ── Authoritative capture ──────────────────────────────────────────────
+      // The server records the lead, writes the `lead_captured` event and
+      // owns the CRM delivery. The RTO form never posted to the Google Sheet,
+      // so `sheets_target` is "none".
+      const capture = await captureFunnelLead({
+        phone,
+        country_code: "+91",
+        name,
+        email,
+        locality: location,
+        service: service || "",
+        service_interest: serviceInterest.trim() || "",
+        source: "rto_modal",
+        ad_name: "RTO Lead Form",
+        sheets_target: "none",
+        lead_owner: "Christopher Rosewan",
       });
+
+      if (!capture.ok || capture.clientFallback) {
+        // The server did NOT deliver the lead — fall back to the original
+        // browser-side CRM delivery so a lead is never lost.
+        await fetch(import.meta.env.VITE_CRATIO_RTO_WEBHOOK_URL, {
+          method: "POST",
+          mode: "no-cors",
+          cache: "no-cache",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(cratioPayload),
+        });
+      } else {
+        console.log("✅ Lead delivered by the server (no client delivery needed)");
+      }
 
       onSubmit?.(leadData);
       setSubmitted(true);

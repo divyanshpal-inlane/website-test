@@ -23,6 +23,7 @@ import {
 } from "../_shared/funnelEvents.ts";
 import { findLeadByPhone } from "../_shared/funnelStore.ts";
 import { phoneToLast10 } from "../_shared/funnelTaxonomy.ts";
+import { routeBooking } from "../_shared/opsRouting.ts";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -71,6 +72,7 @@ async function emitBookingConfirmed(
     scheduledCount: number;
   },
 ): Promise<void> {
+  await routeToOps(client, args.bookingId);
   try {
     await emitServerEvent(client as never, {
       eventName: "booking_confirmed",
@@ -96,6 +98,30 @@ async function emitBookingConfirmed(
       "booking_confirmed",
       error instanceof Error ? error.message : String(error),
     );
+  }
+}
+
+/**
+ * Hand a paid + confirmed booking to Operations (ops_workstream / ops_exception).
+ * Idempotent and never throws: a routing problem must not fail a confirmation,
+ * and calling this again (replayed confirm) is the retry.
+ */
+async function routeToOps(client: unknown, bookingId: string): Promise<void> {
+  try {
+    // FROZEN (final plan v2, 2026-11-06): website purchases now join the normal
+    // Sales stream (New Schedules + the LL -> DL pipeline), so the parallel
+    // ops_workstream layer is OFF unless app_settings.ops_routing.enabled is
+    // explicitly true. The module and tables are kept, not deleted.
+    const { data: cfg } = await (client as { from: (t: string) => any })
+      .from("app_settings")
+      .select("value")
+      .eq("key", "ops_routing")
+      .maybeSingle();
+    if (cfg?.value?.enabled !== true) return;
+    const r = await routeBooking(client, bookingId, crypto.randomUUID());
+    if (!r.ok) console.error("confirm-booking: ops routing failed", bookingId, r.error);
+  } catch (error) {
+    console.error("confirm-booking: ops routing threw", bookingId, error instanceof Error ? error.message : String(error));
   }
 }
 
@@ -139,6 +165,7 @@ serve(async (req) => {
     const currentStatus = String(booking.status);
 
     if (currentStatus === "confirmed") {
+      await routeToOps(client, bookingId);
       return jsonResponse({
         success: true,
         alreadyConfirmed: true,
@@ -356,6 +383,7 @@ serve(async (req) => {
     }
 
     if (rpcOut.scheduling_mode === "already_confirmed") {
+      await routeToOps(client, bookingId);
       return jsonResponse({
         success: true,
         alreadyConfirmed: true,

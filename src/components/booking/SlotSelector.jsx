@@ -115,7 +115,7 @@ export default function SlotSelector({
                 key={`${slot.date}|${slot.start}`}
                 type="button"
                 disabled={disabled}
-                onClick={() => onTogglePreferred(slot.start)}
+                onClick={() => onTogglePreferred(slot.start, currentDate)}
                 className={`relative rounded-xl border px-2 py-3 flex flex-col items-center justify-center gap-1 text-sm font-medium transition-all ${
                   picked
                     ? "bg-[#00ce84] border-[#00ce84] text-white"

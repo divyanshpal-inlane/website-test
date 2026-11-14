@@ -34,6 +34,17 @@
 //                       not stay live on the roster while their documents are
 //                       unresolved. Booking stays 'confirmed', so nothing is
 //                       cancelled and the payment is untouched.
+//   action = release {bookingId} -> the website customer's proposed plan is dropped so
+//                       Ops can schedule the learner from scratch in New Schedules
+//                       ("Edit schedule"). Only that booking's 'tentative'
+//                       lessons are cancelled (status 'cancelled', enabled=false,
+//                       isTentative=false); 'booked' lessons are never touched.
+//                       The learner's pending 'new' scheduling request is left
+//                       in place so the normal Create Schedule flow can resolve it.
+//
+// Approving a booking also completes the learner's pending 'new' scheduling
+// request (reschedule_requests) - exactly what Create Schedule does for a
+// Sales-sold customer - so the learner leaves the New Schedules queue.
 //
 // No docs are returned here: the hosted app looks up the learner's uploaded
 // documents directly (ll_applications / ll_documents / LL bucket by phone).
@@ -91,6 +102,115 @@ interface ListBookingRow {
  * resubmission marker here is what hides the card from `list` and makes the
  * learner webapp show its upload nudge; the learner app clears it on re-upload.
  */
+/**
+ * Close the learner's pending 'new' scheduling request after Ops approved the
+ * proposed plan (the same end state Create Schedule leaves for a Sales-sold
+ * customer). Best-effort: it must never fail an approval.
+ */
+async function completePendingNewRequests(
+  client: ReturnType<typeof serviceClient>,
+  learnerId: string | null | undefined,
+): Promise<void> {
+  if (!learnerId) return;
+  try {
+    const { error } = await client
+      .from("reschedule_requests")
+      .update({ status: "completed" })
+      .eq("learner_id", learnerId)
+      .eq("type", "new")
+      .eq("status", "pending");
+    if (error) throw error;
+  } catch (e) {
+    console.error("review-booking: complete pending new request failed", {
+      learnerId,
+      error: e instanceof Error ? e.message : String(e),
+    });
+  }
+}
+
+/**
+ * The same "your schedule is confirmed" WhatsApp the hosted app sends when Ops
+ * presses Create Schedule for a type='new' request (message_type
+ * SCHEDULE_PREPARED, start_date dd/MM/yyyy + start_time of the FIRST lesson).
+ * Approving a website purchase's proposed plan reaches the same end state
+ * (the request completes, the lessons go live), so the customer gets the same
+ * message - otherwise they are silently scheduled with no confirmation.
+ * Fail-soft: never throws, and never sent on a replayed/no-op approve.
+ */
+/**
+ * Ops decision (2026-11-13): approving the booking's held plan is what makes
+ * this a real, active request - the learner must now look exactly like a
+ * normal (Sales-origin) active learner everywhere else in the webapp
+ * (Active Learners, reschedules, manual payments, ...), with no further code
+ * changes needed anywhere. approve-booking-payment deliberately left this
+ * enrollment at status='pending' (not 'active') while the plan awaited this
+ * approval; this is the one place that flips it. Idempotent (plain SET, safe
+ * to call again on a replayed approve); never throws.
+ */
+async function activateFunnelEnrollment(
+  client: ReturnType<typeof serviceClient>,
+  learnerId: string | null | undefined,
+  courseId: string | null | undefined,
+): Promise<void> {
+  if (!learnerId || !courseId) return;
+  try {
+    const { error } = await client
+      .from("enrollment")
+      .update({ status: "active" })
+      .eq("learner_id", learnerId)
+      .eq("course_id", courseId)
+      .eq("acquired_via_funnel", true)
+      .eq("status", "pending");
+    if (error) throw error;
+  } catch (e) {
+    console.error("review-booking: activate funnel enrollment failed", {
+      learnerId,
+      courseId,
+      error: e instanceof Error ? e.message : String(e),
+    });
+  }
+}
+
+async function notifyScheduleConfirmed(
+  client: ReturnType<typeof serviceClient>,
+  bookingId: string,
+  learnerId: string | null | undefined,
+): Promise<void> {
+  if (!learnerId) return;
+  try {
+    const { data: firstLesson, error } = await client
+      .from("Schedule")
+      .select("date, start_time")
+      .eq("booking_id", bookingId)
+      .eq("status", "booked")
+      .order("date", { ascending: true })
+      .order("start_time", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    if (error) throw error;
+    if (!firstLesson?.date) return;
+
+    const [y, m, d] = String(firstLesson.date).split("-");
+    const startDate = d && m && y ? `${d}/${m}/${y}` : String(firstLesson.date);
+
+    const { error: messageError } = await client.functions.invoke("send-message", {
+      body: {
+        message_type: "SCHEDULE_PREPARED",
+        learner_id: learnerId,
+        start_date: startDate,
+        start_time: firstLesson.start_time,
+      },
+    });
+    if (messageError) throw messageError;
+  } catch (e) {
+    console.error("review-booking: schedule-confirmed message failed", {
+      bookingId,
+      learnerId,
+      error: e instanceof Error ? e.message : String(e),
+    });
+  }
+}
+
 async function setFunnelEnrollmentResubmission(
   client: ReturnType<typeof serviceClient>,
   booking: { learner_id?: string | null; course_id?: string | null },
@@ -301,11 +421,11 @@ serve(async (req) => {
     }
 
     const action = String(body.action ?? "").trim();
-    if (!["list", "approve", "reject", "revert"].includes(action)) {
+    if (!["list", "approve", "reject", "revert", "release"].includes(action)) {
       throw new BookingError(
         422,
         "validation_error",
-        'action must be one of "list", "approve", "reject", "revert".',
+        'action must be one of "list", "approve", "reject", "revert", "release".',
       );
     }
 
@@ -459,6 +579,23 @@ serve(async (req) => {
       return jsonResponse({ ok: true, action: "revert", flipped });
     }
 
+    // release — drop the proposed plan so Ops can schedule from scratch.
+    if (action === "release") {
+      if (!body.bookingId || !UUID_RE.test(body.bookingId)) {
+        throw new BookingError(422, "validation_error", "A valid booking id is required.");
+      }
+      const { data: released, error: releaseError } = await client
+        .from("Schedule")
+        .update({ status: "cancelled", isTentative: false, enabled: false })
+        .eq("booking_id", body.bookingId)
+        .eq("status", "tentative")
+        .select("id");
+      if (releaseError) throw releaseError;
+      const cancelled = (released ?? []).length;
+      console.log("review-booking: release", { bookingId: body.bookingId, cancelled });
+      return jsonResponse({ ok: true, action: "release", released: cancelled });
+    }
+
     // approve / reject — a valid booking id is required.
     if (!body.bookingId || !UUID_RE.test(body.bookingId)) {
       throw new BookingError(422, "validation_error", "A valid booking id is required.");
@@ -580,6 +717,16 @@ serve(async (req) => {
       });
     }
 
+    // Activate the enrollment BEFORE flipping any lesson to booked: a DB
+    // safety trigger (phase0_schedule_guard -> phase0_require_payment) requires
+    // the linked enrollment to already be active + full_paid/half_paid at the
+    // exact moment a tentative lesson is approved, or the update is rejected.
+    await activateFunnelEnrollment(
+      client,
+      bookingRow.learner_id as string | null,
+      bookingRow.course_id as string | null,
+    );
+
     // approve — tentative -> booked, atomically (the RPC also clears isTentative
     // and sets enabled=true).
     const { data: rpcResult, error: rpcError } = await client.rpc(
@@ -624,6 +771,7 @@ serve(async (req) => {
           error: clearError instanceof Error ? clearError.message : clearError,
         });
       }
+      await completePendingNewRequests(client, bookingRow.learner_id as string | null);
       return jsonResponse({
         ok: true,
         alreadyApplied: true,
@@ -648,6 +796,9 @@ serve(async (req) => {
         error: clearError instanceof Error ? clearError.message : clearError,
       });
     }
+
+    await completePendingNewRequests(client, bookingRow.learner_id as string | null);
+    await notifyScheduleConfirmed(client, body.bookingId, bookingRow.learner_id as string | null);
 
     console.log("review-booking:", {
       action,
