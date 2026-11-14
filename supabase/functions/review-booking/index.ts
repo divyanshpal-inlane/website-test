@@ -82,8 +82,8 @@ interface ListBookingRow {
   installment1_amount: number | null;
   created_at: string;
   Learner:
-    | { id: string; name: string | null; phone: string | null; email: string | null }
-    | { id: string; name: string | null; phone: string | null; email: string | null }[]
+    | { id: string; name: string | null; phone: string | null; email: string | null; has_a_DL: boolean | null }
+    | { id: string; name: string | null; phone: string | null; email: string | null; has_a_DL: boolean | null }[]
     | null;
   Courses: { id: string; name: string | null } | null;
   Schedule: Array<{
@@ -435,7 +435,7 @@ serve(async (req) => {
         .from("booking")
         .select(
           `id, case_type, learner_id, course_id, total_amount, installment1_amount, created_at,
-           Learner!inner(id, name, phone, email),
+           Learner!inner(id, name, phone, email, has_a_DL),
            Courses(id, name),
            Schedule!booking_id!inner(id, date, start_time, end_time, Instructor(id_instructor, name))`,
         )
@@ -525,6 +525,7 @@ serve(async (req) => {
                 name: learner.name ?? null,
                 phone: learner.phone ?? null,
                 email: learner.email ?? null,
+                hasADL: learner.has_a_DL ?? null,
               }
             : null,
           course: course
